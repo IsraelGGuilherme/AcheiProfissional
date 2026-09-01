@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Buscar profissionais - Achei Profissional</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #0876d1;
+            --primary-dark: #0567b9;
+            --background: #f5faff;
+            --text: #172b3f;
+            --muted: #718096;
+            --border: #d8e1e8;
+            --yellow: #f4b400;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+        }
+
+        /* ========================================
+           TOPO
+        ======================================== */
+
+        /* ========================================
+           NAVBAR PADRAO
+        ======================================== */
+
+        .top-border {
+            height: 4px;
+            background: #202020;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #dce4eb;
+        }
+
+        .navbar-inner-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            min-height: 68px;
+            padding: 10px 0;
+        }
+
+        .brand {
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .navbar-toggler-custom {
+            display: none;
+            width: 38px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d5dfe7;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--primary);
+            font-size: 18px;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .navbar-toggler-custom:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(8, 118, 209, .15);
+        }
+
+        .nav-collapse {
+            flex-basis: 100%;
+        }
+
+        .nav-links-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link-custom {
+            color: #354454;
+            font-size: 13px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: #e4f2ff;
+            color: var(--primary);
+        }
+
+        .nav-link-login {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .nav-link-login:hover,
+        .nav-link-login.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 767.98px) {
+
+            .navbar-inner-wrap {
+                min-height: 58px;
+                padding: 8px 0;
+            }
+
+            .navbar-toggler-custom {
+                display: flex;
+            }
+
+            .nav-collapse {
+                width: 100%;
+            }
+
+            .nav-links-wrap {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 10px 0 14px;
+                margin-top: 4px;
+                border-top: 1px solid #e6edf2;
+            }
+
+            .nav-link-custom {
+                padding: 10px 12px;
+            }
+
+            .nav-link-login {
+                margin-left: 0;
+                margin-top: 2px;
+                text-align: center;
+            }
+
+        }
+
+        @media (min-width: 768px) {
+
+            .nav-collapse {
+                display: flex !important;
+                height: auto !important;
+                flex-basis: auto;
+            }
+
+        }
+
+
+        /* ========================================
+           HERO
+        ======================================== */
+
+        .hero {
+            position: relative;
+
+            padding: 42px 20px 36px;
+
+            background:
+                linear-gradient(120deg,
+                    #0566bd 0%,
+                    #0876d1 55%,
+                    #1d91d3 100%);
+
+            color: #fff;
+
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+            height: 600px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, .04);
+
+            right: -250px;
+            top: -350px;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 4px 9px;
+
+            border-radius: 5px;
+
+            background: rgba(255, 255, 255, .9);
+
+            color: #526273;
+
+            font-size: 10px;
+            font-weight: 500;
+
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+
+            max-width: 720px;
+
+            margin: 0 auto 10px;
+
+            font-size: 31px;
+            line-height: 1.05;
+
+            font-weight: 700;
+        }
+
+        .hero-description {
+            position: relative;
+            z-index: 1;
+
+            max-width: 600px;
+
+            margin: 0 auto 26px;
+
+            color: rgba(255, 255, 255, .88);
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        /* ========================================
+           FILTROS
+        ======================================== */
+
+        .search-box {
+            position: relative;
+            z-index: 2;
+
+            max-width: 640px;
+
+            margin: 0 auto;
+
+            background: #fff;
+
+            border-radius: 15px;
+
+            padding: 15px 13px 12px;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, .10);
+        }
+
+        .filter-label {
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #354454;
+
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            height: 35px;
+
+            border: 1px solid #d5dfe7;
+
+            border-radius: 7px;
+
+            color: #667788;
+
+            font-size: 11px;
+
+            box-shadow: none !important;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-search {
+            height: 34px;
+
+            padding: 0 20px;
+
+            margin-top: 17px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: var(--primary);
+
+            color: #fff;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .btn-search:hover {
+            background: var(--primary-dark);
+        }
+
+
+        /* ========================================
+           CONTEÚDO
+        ======================================== */
+
+        .content {
+            max-width: 700px;
+
+            margin: 0 auto;
+
+            padding: 26px 15px 45px;
+        }
+
+
+        /* ========================================
+           CATEGORIAS
+        ======================================== */
+
+        .section-label {
+            color: #6d7c8a;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .category-list {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-bottom: 25px;
+        }
+
+        .category {
+            display: inline-flex;
+            align-items: center;
+
+            height: 25px;
+
+            padding: 0 11px;
+
+            border: 1px solid #d6e0e7;
+
+            border-radius: 20px;
+
+            background: #fff;
+
+            color: #526170;
+
+            font-size: 10px;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .category:hover,
+        .category.active {
+            border-color: #b8daf5;
+
+            background: #e8f4ff;
+
+            color: var(--primary);
+        }
+
+
+        /* ========================================
+           CABEÇALHO DOS RESULTADOS
+        ======================================== */
+
+        .results-header {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+        }
+
+        .results-title {
+            margin: 0;
+
+            font-size: 16px;
+
+            font-weight: 700;
+        }
+
+        .results-order {
+            color: #7b8794;
+
+            font-size: 10px;
+        }
+
+
+        /* ========================================
+           CARD PROFISSIONAL
+        ======================================== */
+
+        .professional-card {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            background: #fff;
+
+            border: 1px solid var(--border);
+
+            border-radius: 13px;
+
+            padding: 12px;
+
+            margin-bottom: 10px;
+
+            box-shadow:
+                0 3px 10px rgba(40, 70, 100, .05);
+        }
+
+        .avatar {
+            flex: 0 0 40px;
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: #dff1ff;
+
+            color: #176fae;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .professional-info {
+            min-width: 0;
+
+            flex: 1;
+        }
+
+        .professional-name-row {
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            margin-bottom: 2px;
+        }
+
+        .professional-name {
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #27394a;
+        }
+
+        .professional-category {
+            padding: 2px 6px;
+
+            border-radius: 4px;
+
+            background: #e8f3fc;
+
+            color: #39749c;
+
+            font-size: 8px;
+
+            white-space: nowrap;
+        }
+
+        .rating {
+            display: flex;
+
+            align-items: center;
+
+            gap: 4px;
+
+            margin-bottom: 2px;
+        }
+
+        .stars {
+            color: var(--yellow);
+
+            font-size: 11px;
+
+            letter-spacing: -2px;
+        }
+
+        .rating-text {
+            color: #718096;
+
+            font-size: 9px;
+        }
+
+        .description {
+            color: #74818e;
+
+            font-size: 9px;
+
+            line-height: 1.35;
+
+            margin-bottom: 4px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .professional-meta {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            align-items: center;
+
+            gap: 8px;
+
+            color: #73808d;
+
+            font-size: 8px;
+        }
+
+        .professional-meta i {
+            margin-right: 2px;
+        }
+
+        .tag {
+            padding: 2px 6px;
+
+            border: 1px solid #d5dfe7;
+
+            border-radius: 8px;
+
+            color: #596979;
+
+            background: #fff;
+
+            font-size: 8px;
+        }
+
+
+        /* ========================================
+           AÇÕES
+        ======================================== */
+
+        .professional-actions {
+            flex: 0 0 110px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+        .btn-profile,
+        .btn-whatsapp {
+            width: 100%;
+
+            height: 25px;
+
+            border-radius: 6px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+        .btn-profile {
+            border: none;
+
+            background: var(--primary);
+
+            color: #fff;
+        }
+
+        .btn-profile:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-whatsapp {
+            border: 1px solid #2aa876;
+
+            background: #fff;
+
+            color: #239b6d;
+        }
+
+        .btn-whatsapp:hover {
+            background: #effcf7;
+        }
+
+
+        /* ========================================
+           RESPONSIVO
+        ======================================== */
+
+        @media (max-width: 576px) {
+
+            .hero {
+                padding-top: 35px;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .search-box {
+                padding: 14px;
+            }
+
+            .professional-card {
+                align-items: flex-start;
+            }
+
+            .professional-actions {
+                flex-basis: 85px;
+            }
+
+            .description {
+                white-space: normal;
+            }
+
+        }
+
+        @media (max-width: 430px) {
+
+            .professional-card {
+                flex-wrap: wrap;
+            }
+
+            .professional-info {
+                width: calc(100% - 55px);
+            }
+
+            .professional-actions {
+                width: 100%;
+
+                flex-direction: row;
+
+                flex-basis: 100%;
+            }
+
+        }
+    </style>
+
+
+    <!-- Ajuste para telas maiores: amplia o conteúdo proporcionalmente em monitores de computador -->
+    <style>
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            body { zoom: 1.15; }
+        }
+        @media (min-width: 1200px) and (max-width: 1599.98px) {
+            body { zoom: 1.3; }
+        }
+        @media (min-width: 1600px) {
+            body { zoom: 1.45; }
+        }
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+     TOPO
+=========================================== -->
+
+    <div class="top-border"></div>
+
+    <header class="navbar-custom">
+        <div class="container navbar-inner-wrap">
+
+            <a href="<?= site_url('busca') ?>" class="brand">
+                Achei Profissional
+            </a>
+
+            <button
+                class="navbar-toggler-custom"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarPadrao"
+                aria-controls="navbarPadrao"
+                aria-expanded="false"
+                aria-label="Abrir menu de navegação">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <nav class="collapse nav-collapse" id="navbarPadrao">
+                <div class="nav-links-wrap">
+
+                    <a href="<?= site_url('busca') ?>" class="nav-link-custom active">
+                        Buscar
+                    </a>
+
+                    <a href="<?= site_url('perfil/contratante') ?>" class="nav-link-custom">
+                        Sou Contratante
+                    </a>
+
+                    <a href="<?= site_url('perfil/profissional') ?>" class="nav-link-custom">
+                        Sou Profissional
+                    </a>
+
+                    <a href="<?= site_url('admin') ?>" class="nav-link-custom">
+                        Admin
+                    </a>
+
+                    <a href="<?= site_url('login') ?>" class="nav-link-custom nav-link-login">
+                        Entrar
+                    </a>
+
+                </div>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- ==========================================
+     HERO
+=========================================== -->
+
+    <section class="hero">
+
+        <div class="container text-center">
+
+            <div class="location-badge">
+
+                <i class="bi bi-geo-alt"></i>
+
+                Muriaé-MG e cidades vizinhas
+
+            </div>
+
+
+            <h1>
+                Encontre um profissional de confiança
+                <br>
+                perto de você
+            </h1>
+
+
+            <p class="hero-description">
+
+                Eletricista, encanador, diarista, pedreiro e muito mais.
+                Veja avaliações de outros moradores e chame direto no WhatsApp.
+
+            </p>
+
+
+            <!-- ==================================
+             FILTROS
+        =================================== -->
+
+            <div class="search-box text-start">
+
+                <div class="row g-2">
+
+                    <!-- Categoria -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Categoria
+                        </label>
+
+                        <select class="form-select filter-select">
+
+                            <option>
+                                Todas as categorias
+                            </option>
+
+                            <option>
+                                Eletricista
+                            </option>
+
+                            <option>
+                                Encanador
+                            </option>
+
+                            <option>
+                                Pedreiro
+                            </option>
+
+                            <option>
+                                Pintor
+                            </option>
+
+                            <option>
+                                Marceneiro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Cidade -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Cidade
+                        </label>
+
+                        <select class="form-select filter-select">
+
+                            <option>
+                                Muriaé
+                            </option>
+
+                            <option>
+                                Mirai
+                            </option>
+
+                            <option>
+                                Eugenópolis
+                            </option>
+
+                            <option>
+                                Patrocínio do Muriaé
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Bairro -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Bairro
+                        </label>
+
+                        <select class="form-select filter-select">
+
+                            <option>
+                                Todos os bairros
+                            </option>
+
+                            <option>
+                                Centro
+                            </option>
+
+                            <option>
+                                Barra
+                            </option>
+
+                            <option>
+                                Safira
+                            </option>
+
+                            <option>
+                                Porto
+                            </option>
+
+                            <option>
+                                São Joaquim
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Avaliação -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Avaliação
+                        </label>
+
+                        <select class="form-select filter-select">
+
+                            <option>
+                                Qualquer nota
+                            </option>
+
+                            <option>
+                                5 estrelas
+                            </option>
+
+                            <option>
+                                4 estrelas ou mais
+                            </option>
+
+                            <option>
+                                3 estrelas ou mais
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <button type="button" class="btn-search">
+
+                    <i class="bi bi-search me-1"></i>
+
+                    Pesquisar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+     CONTEÚDO
+=========================================== -->
+
+    <main class="content">
+
+
+        <!-- ======================================
+         CATEGORIAS
+    ======================================= -->
+
+        <div class="section-label">
+            Categorias
+        </div>
+
+
+        <div class="category-list">
+
+            <button class="category active">
+                Eletricista
+            </button>
+
+            <button class="category">
+                Encanador
+            </button>
+
+            <button class="category">
+                Pedreiro
+            </button>
+
+            <button class="category">
+                Pintor
+            </button>
+
+            <button class="category">
+                Marceneiro
+            </button>
+
+            <button class="category">
+                Mecânico
+            </button>
+
+            <button class="category">
+                Costureira
+            </button>
+
+            <button class="category">
+                Diarista
+            </button>
+
+            <button class="category">
+                Cuidador de idosos
+            </button>
+
+            <button class="category">
+                Professor particular
+            </button>
+
+            <button class="category">
+                Técnico em informática
+            </button>
+
+            <button class="category">
+                Jardineiro
+            </button>
+
+            <button class="category">
+                Chaveiro
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+         RESULTADOS
+    ======================================= -->
+
+        <div class="results-header">
+
+            <h2 class="results-title">
+                5 profissionais encontrados
+            </h2>
+
+            <span class="results-order">
+                Ordenado por avaliação
+            </span>
+
+        </div>
+
+
+        <!-- ======================================
+         PROFISSIONAL 1
+    ======================================= -->
+
+        <article class="professional-card">
+
+            <div class="avatar">
+                JE
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        João Eletricista
+                    </span>
+
+                    <span class="professional-category">
+                        Eletricista
+                    </span>
+
+                </div>
+
+
+                <div class="rating">
+
+                    <span class="stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="rating-text">
+                        5,0 · 34 avaliações
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    Instalações elétricas residenciais e comerciais,
+                    troca de quadros de energia, chuveiros e tomadas.
+                    Atendo emergências 24 horas em Muriaé e região.
+
+                </div>
+
+
+                <div class="professional-meta">
+
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        Centro, Muriaé
+                    </span>
+
+                    <span>
+                        <i class="bi bi-house"></i>
+                        Atende em domicílio
+                    </span>
+
+                    <span class="tag">
+                        Atende emergência
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="professional-actions">
+
+                <button class="btn-profile">
+                    Ver perfil
+                </button>
+
+                <button class="btn-whatsapp">
+
+                    <i class="bi bi-whatsapp"></i>
+
+                    WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+
+        <!-- ======================================
+         PROFISSIONAL 2
+    ======================================= -->
+
+        <article class="professional-card">
+
+            <div class="avatar">
+                DR
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        Dona Rita Diarista
+                    </span>
+
+                    <span class="professional-category">
+                        Diarista
+                    </span>
+
+                </div>
+
+
+                <div class="rating">
+
+                    <span class="stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="rating-text">
+                        5,0 · 41 avaliações
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    Limpeza residencial completa,
+                    passadoria e organização de armários.
+
+                </div>
+
+
+                <div class="professional-meta">
+
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        Porto, Muriaé
+                    </span>
+
+                    <span>
+                        <i class="bi bi-house"></i>
+                        Atende em domicílio
+                    </span>
+
+                    <span class="tag">
+                        Diária o meio diária
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="professional-actions">
+
+                <button class="btn-profile">
+                    Ver perfil
+                </button>
+
+                <button class="btn-whatsapp">
+
+                    <i class="bi bi-whatsapp"></i>
+
+                    WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+
+        <!-- ======================================
+         PROFISSIONAL 3
+    ======================================= -->
+
+        <article class="professional-card">
+
+            <div class="avatar">
+                CE
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        Carlos Encanador
+                    </span>
+
+                    <span class="professional-category">
+                        Encanador
+                    </span>
+
+                </div>
+
+
+                <div class="rating">
+
+                    <span class="stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="rating-text">
+                        4,8 · 27 avaliações
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    Desentupimento, caça-vazamentos com equipamento
+                    próprio e reparos hidráulicos em geral.
+
+                </div>
+
+
+                <div class="professional-meta">
+
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        Safira, Muriaé
+                    </span>
+
+                    <span>
+                        <i class="bi bi-house"></i>
+                        Atende em domicílio
+                    </span>
+
+                    <span class="tag">
+                        Caça-vazamentos
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="professional-actions">
+
+                <button class="btn-profile">
+                    Ver perfil
+                </button>
+
+                <button class="btn-whatsapp">
+
+                    <i class="bi bi-whatsapp"></i>
+
+                    WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+
+        <!-- ======================================
+         PROFISSIONAL 4
+    ======================================= -->
+
+        <article class="professional-card">
+
+            <div class="avatar">
+                TI
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        Tiago Informática
+                    </span>
+
+                    <span class="professional-category">
+                        Técnico em informática
+                    </span>
+
+                </div>
+
+
+                <div class="rating">
+
+                    <span class="stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="rating-text">
+                        4,6 · 22 avaliações
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    Formatação, manutenção de notebooks,
+                    montagem de redes e instalação de câmeras
+                    de segurança.
+
+                </div>
+
+
+                <div class="professional-meta">
+
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        Bom Pastor, Muriaé
+                    </span>
+
+                    <span>
+                        <i class="bi bi-house"></i>
+                        Atende em domicílio
+                    </span>
+
+                    <span class="tag">
+                        Atende em domicílio
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="professional-actions">
+
+                <button class="btn-profile">
+                    Ver perfil
+                </button>
+
+                <button class="btn-whatsapp">
+
+                    <i class="bi bi-whatsapp"></i>
+
+                    WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+
+        <!-- ======================================
+         PROFISSIONAL 5
+    ======================================= -->
+
+        <article class="professional-card">
+
+            <div class="avatar">
+                MI
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        Maria Instalações
+                    </span>
+
+                    <span class="professional-category">
+                        Eletricista
+                    </span>
+
+                </div>
+
+
+                <div class="rating">
+
+                    <span class="stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="rating-text">
+                        4,5 · 18 avaliações
+                    </span>
+
+                </div>
+
+
+                <div class="description">
+
+                    Especialista em instalação residencial,
+                    quadros de energia, ventiladores de teto
+                    e iluminação em LED.
+
+                </div>
+
+
+                <div class="professional-meta">
+
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        Barra, Muriaé
+                    </span>
+
+                    <span>
+                        <i class="bi bi-house"></i>
+                        Atende em domicílio
+                    </span>
+
+                    <span class="tag">
+                        Especialista em residencial
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="professional-actions">
+
+                <button class="btn-profile">
+                    Ver perfil
+                </button>
+
+                <button class="btn-whatsapp">
+
+                    <i class="bi bi-whatsapp"></i>
+
+                    WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+
+    </main>
+
+
+    <!-- ==========================================
+     JAVASCRIPT
+=========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        /*
+         * Seleção visual das categorias
+         */
+
+        const categories =
+            document.querySelectorAll('.category');
+
+        categories.forEach(category => {
+
+            category.addEventListener('click', () => {
+
+                categories.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                category.classList.add('active');
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

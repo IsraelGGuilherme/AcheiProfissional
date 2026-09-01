@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meu perfil - Contratante</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+
+            --primary: #0876d1;
+            --background: #f4f9fd;
+            --text: #172b3f;
+            --muted: #718096;
+            --border: #d8e1e8;
+
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            background: var(--background);
+
+            color: var(--text);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+        }
+
+        /* ========================================
+           NAVBAR PADRAO
+        ======================================== */
+
+        .top-border {
+            height: 4px;
+            background: #202020;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #dce4eb;
+        }
+
+        .navbar-inner-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            min-height: 68px;
+            padding: 10px 0;
+        }
+
+        .brand {
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .navbar-toggler-custom {
+            display: none;
+            width: 38px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d5dfe7;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--primary);
+            font-size: 18px;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .navbar-toggler-custom:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(8, 118, 209, .15);
+        }
+
+        .nav-collapse {
+            flex-basis: 100%;
+        }
+
+        .nav-links-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link-custom {
+            color: #354454;
+            font-size: 13px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: #e4f2ff;
+            color: var(--primary);
+        }
+
+        .nav-link-login {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .nav-link-login:hover,
+        .nav-link-login.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 767.98px) {
+
+            .navbar-inner-wrap {
+                min-height: 58px;
+                padding: 8px 0;
+            }
+
+            .navbar-toggler-custom {
+                display: flex;
+            }
+
+            .nav-collapse {
+                width: 100%;
+            }
+
+            .nav-links-wrap {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 10px 0 14px;
+                margin-top: 4px;
+                border-top: 1px solid #e6edf2;
+            }
+
+            .nav-link-custom {
+                padding: 10px 12px;
+            }
+
+            .nav-link-login {
+                margin-left: 0;
+                margin-top: 2px;
+                text-align: center;
+            }
+
+        }
+
+        @media (min-width: 768px) {
+
+            .nav-collapse {
+                display: flex !important;
+                height: auto !important;
+                flex-basis: auto;
+            }
+
+        }
+
+        .page {
+
+            padding: 28px 15px 50px;
+
+        }
+
+        .page-container {
+
+            max-width: 680px;
+
+            margin: auto;
+
+        }
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            margin-bottom: 18px;
+
+        }
+
+        .page-title {
+
+            margin: 0;
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+        }
+
+        .page-description {
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            margin-top: 2px;
+
+        }
+
+        .status-badge {
+
+            border: 1px solid #d5dfe7;
+
+            background: #fff;
+
+            border-radius: 12px;
+
+            padding: 4px 8px;
+
+            font-size: 8px;
+
+            color: #667788;
+
+        }
+
+        .profile-card {
+
+            background: #fff;
+
+            border: 1px solid var(--border);
+
+            border-radius: 13px;
+
+            padding: 15px;
+
+            margin-bottom: 14px;
+
+            box-shadow:
+                0 3px 10px rgba(35, 70, 100, .05);
+
+        }
+
+        .card-title {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 14px;
+
+        }
+
+        .form-label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 9px;
+
+            color: #354454;
+
+            font-weight: 500;
+
+        }
+
+        .form-control,
+        .form-select {
+
+            height: 34px;
+
+            border: 1px solid #ccd9e3;
+
+            border-radius: 7px;
+
+            font-size: 10px;
+
+            box-shadow: none !important;
+
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+
+            border-color: var(--primary);
+
+        }
+
+        .profile-photo-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 17px;
+
+        }
+
+        .profile-photo {
+
+            width: 58px;
+
+            height: 58px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background: #e2f1ff;
+
+            color: #1975b9;
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            overflow: hidden;
+
+        }
+
+        .profile-photo img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+        .btn-photo {
+
+            border: 1px solid #cfdbe5;
+
+            background: #fff;
+
+            color: #405365;
+
+            border-radius: 7px;
+
+            padding: 6px 9px;
+
+            font-size: 9px;
+
+        }
+
+        .photo-description {
+
+            color: #8a98a6;
+
+            font-size: 8px;
+
+            margin-top: 4px;
+
+        }
+
+        .location-info {
+
+            padding: 10px;
+
+            background: #fafcfe;
+
+            border: 1px solid #dbe4eb;
+
+            border-radius: 9px;
+
+        }
+
+        .btn-save {
+
+            border: none;
+
+            background: var(--primary);
+
+            color: white;
+
+            border-radius: 7px;
+
+            padding: 8px 16px;
+
+            font-size: 9px;
+
+        }
+
+        @media(max-width:576px) {
+
+            .page-header {
+
+                flex-direction: column;
+
+                gap: 7px;
+
+            }
+
+        }
+    </style>
+
+
+    <!-- Ajuste para telas maiores: amplia o conteúdo proporcionalmente em monitores de computador -->
+    <style>
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            body { zoom: 1.15; }
+        }
+        @media (min-width: 1200px) and (max-width: 1599.98px) {
+            body { zoom: 1.3; }
+        }
+        @media (min-width: 1600px) {
+            body { zoom: 1.45; }
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+
+    <div class="top-border"></div>
+
+
+    <header class="navbar-custom">
+        <div class="container navbar-inner-wrap">
+
+            <a href="<?= site_url('busca') ?>" class="brand">
+                Achei Profissional
+            </a>
+
+            <button
+                class="navbar-toggler-custom"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarPadrao"
+                aria-controls="navbarPadrao"
+                aria-expanded="false"
+                aria-label="Abrir menu de navegação">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <nav class="collapse nav-collapse" id="navbarPadrao">
+                <div class="nav-links-wrap">
+
+                    <a href="<?= site_url('busca') ?>" class="nav-link-custom">
+                        Buscar
+                    </a>
+
+                    <a href="<?= site_url('perfil/contratante') ?>" class="nav-link-custom active">
+                        Sou Contratante
+                    </a>
+
+                    <a href="<?= site_url('perfil/profissional') ?>" class="nav-link-custom">
+                        Sou Profissional
+                    </a>
+
+                    <a href="<?= site_url('admin') ?>" class="nav-link-custom">
+                        Admin
+                    </a>
+
+                    <a href="<?= site_url('login') ?>" class="nav-link-custom nav-link-login">
+                        Entrar
+                    </a>
+
+                </div>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <main class="page">
+
+        <div class="page-container">
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1 class="page-title">
+                        Meu perfil
+                    </h1>
+
+                    <div class="page-description">
+                        Mantenha seus dados atualizados.
+                    </div>
+
+                </div>
+
+                <span class="status-badge">
+                    Perfil ativo
+                </span>
+
+            </div>
+
+
+            <!-- DADOS BÁSICOS -->
+
+            <section class="profile-card">
+
+                <div class="card-title">
+                    Dados básicos
+                </div>
+
+
+                <!-- FOTO -->
+
+                <div class="profile-photo-area">
+
+                    <div class="profile-photo">
+
+                        <span id="initials">
+                            CH
+                        </span>
+
+                        <img id="photo" style="display:none">
+
+                    </div>
+
+                    <div>
+
+                        <button type="button" class="btn-photo" onclick="document.getElementById('photoInput').click()">
+
+                            <i class="bi bi-camera me-1"></i>
+
+                            Enviar foto de perfil
+
+                        </button>
+
+                        <input type="file" id="photoInput" hidden accept="image/*">
+
+                        <div class="photo-description">
+                            JPG ou PNG. Tamanho máximo recomendado: 5 MB.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row g-3">
+
+
+                    <!-- NOME -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Nome de exibição
+                        </label>
+
+                        <input type="text" class="form-control" value="Carlos Henrique">
+
+                    </div>
+
+
+                    <!-- TIPO -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Tipo de pessoa
+                        </label>
+
+                        <select id="personTypeContractor" class="form-select">
+
+                            <option value="pf" selected>
+                                Pessoa Física
+                            </option>
+
+                            <option value="pj">
+                                Pessoa Jurídica
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CPF -->
+
+                    <div class="col-md-6" id="cpfContractor">
+
+                        <label class="form-label">
+                            CPF
+                        </label>
+
+                        <input type="text" class="form-control" placeholder="000.000.000-00" value="123.456.789-00">
+
+                    </div>
+
+
+                    <!-- CNPJ -->
+
+                    <div class="col-md-6" id="cnpjContractor" style="display:none">
+
+                        <label class="form-label">
+                            CNPJ
+                        </label>
+
+                        <input type="text" class="form-control" placeholder="00.000.000/0000-00">
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTATO -->
+
+            <section class="profile-card">
+
+                <div class="card-title">
+                    Contato
+                </div>
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            WhatsApp
+                        </label>
+
+                        <input class="form-control" value="(32) 99999-0000">
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Telefone
+                        </label>
+
+                        <input class="form-control" placeholder="(32) 3000-0000">
+
+                    </div>
+
+
+                    <div class="col-md-12">
+
+                        <label class="form-label">
+                            E-mail
+                        </label>
+
+                        <input type="email" class="form-control" value="carlos@email.com">
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- LOCALIZAÇÃO -->
+
+            <section class="profile-card">
+
+                <div class="card-title">
+                    Localização
+                </div>
+
+                <div class="location-info">
+
+                    <div class="row g-3">
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Estado
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    Minas Gerais
+                                </option>
+
+                                <option>
+                                    Rio de Janeiro
+                                </option>
+
+                                <option>
+                                    São Paulo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Cidade
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    Muriaé
+                                </option>
+
+                                <option>
+                                    Miradouro
+                                </option>
+
+                                <option>
+                                    Eugenópolis
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="form-label">
+                                Bairro
+                            </label>
+
+                            <input class="form-control" value="Centro">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SALVAR -->
+
+            <div class="text-end">
+
+                <button class="btn-save">
+
+                    <i class="bi bi-floppy me-1"></i>
+
+                    Salvar alterações
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+
+        /* ==================================================
+           CPF / CNPJ
+        ================================================== */
+
+        const typeContractor =
+            document.getElementById(
+                'personTypeContractor'
+            );
+
+        const cpfContractor =
+            document.getElementById(
+                'cpfContractor'
+            );
+
+        const cnpjContractor =
+            document.getElementById(
+                'cnpjContractor'
+            );
+
+
+        typeContractor.addEventListener(
+            'change',
+            function () {
+
+                if (this.value === 'pf') {
+
+                    cpfContractor.style.display =
+                        'block';
+
+                    cnpjContractor.style.display =
+                        'none';
+
+                } else {
+
+                    cpfContractor.style.display =
+                        'none';
+
+                    cnpjContractor.style.display =
+                        'block';
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           FOTO
+        ================================================== */
+
+        document
+            .getElementById('photoInput')
+            .addEventListener(
+                'change',
+                function () {
+
+                    const file =
+                        this.files[0];
+
+                    if (!file) return;
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        function (e) {
+
+                            document
+                                .getElementById('photo')
+                                .src =
+                                e.target.result;
+
+                            document
+                                .getElementById('photo')
+                                .style.display =
+                                'block';
+
+                            document
+                                .getElementById('initials')
+                                .style.display =
+                                'none';
+
+                        };
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+    </script>
+
+
+</body>
+
+</html>

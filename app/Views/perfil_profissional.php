@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu perfil - Profissional</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #0876d1;
+            --background: #f4f9fd;
+            --text: #172b3f;
+            --muted: #718096;
+            --border: #d8e1e8;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        /* ========================================
+           NAVBAR PADRAO
+        ======================================== */
+
+        .top-border {
+            height: 4px;
+            background: #202020;
+        }
+
+        .navbar-custom {
+            background: #fff;
+            border-bottom: 1px solid #dce4eb;
+        }
+
+        .navbar-inner-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            min-height: 68px;
+            padding: 10px 0;
+        }
+
+        .brand {
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .navbar-toggler-custom {
+            display: none;
+            width: 38px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d5dfe7;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--primary);
+            font-size: 18px;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .navbar-toggler-custom:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(8, 118, 209, .15);
+        }
+
+        .nav-collapse {
+            flex-basis: 100%;
+        }
+
+        .nav-links-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link-custom {
+            color: #354454;
+            font-size: 13px;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: #e4f2ff;
+            color: var(--primary);
+        }
+
+        .nav-link-login {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .nav-link-login:hover,
+        .nav-link-login.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 767.98px) {
+
+            .navbar-inner-wrap {
+                min-height: 58px;
+                padding: 8px 0;
+            }
+
+            .navbar-toggler-custom {
+                display: flex;
+            }
+
+            .nav-collapse {
+                width: 100%;
+            }
+
+            .nav-links-wrap {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 10px 0 14px;
+                margin-top: 4px;
+                border-top: 1px solid #e6edf2;
+            }
+
+            .nav-link-custom {
+                padding: 10px 12px;
+            }
+
+            .nav-link-login {
+                margin-left: 0;
+                margin-top: 2px;
+                text-align: center;
+            }
+
+        }
+
+        @media (min-width: 768px) {
+
+            .nav-collapse {
+                display: flex !important;
+                height: auto !important;
+                flex-basis: auto;
+            }
+
+        }
+
+        .page {
+            padding: 28px 15px 50px
+        }
+
+        .page-container {
+            max-width: 680px;
+            margin: auto
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 700
+        }
+
+        .page-description {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 2px
+        }
+
+        .status-badge {
+            border: 1px solid #d5dfe7;
+            background: #fff;
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-size: 8px;
+            color: #667788
+        }
+
+        .profile-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 15px;
+            margin-bottom: 14px;
+            box-shadow: 0 3px 10px rgba(35, 70, 100, .05)
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 9px;
+            color: #354454;
+            font-weight: 500
+        }
+
+        .form-control,
+        .form-select {
+            height: 34px;
+            border: 1px solid #ccd9e3;
+            border-radius: 7px;
+            font-size: 10px;
+            box-shadow: none !important
+        }
+
+        textarea.form-control {
+            height: 75px
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary)
+        }
+
+        .input-help,
+        .photo-description {
+            color: #8a98a6;
+            font-size: 8px;
+            margin-top: 4px
+        }
+
+        .profile-photo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 17px
+        }
+
+        .profile-photo {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #e2f1ff;
+            color: #1975b9;
+            font-size: 20px;
+            font-weight: 700;
+            overflow: hidden
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .btn-photo {
+            border: 1px solid #cfdbe5;
+            background: #fff;
+            color: #405365;
+            border-radius: 7px;
+            padding: 6px 9px;
+            font-size: 9px
+        }
+
+        /* Categorias */
+        .btn-add-category {
+            border: 1px solid #b9d7ee;
+            background: #fff;
+            color: #0876d1;
+            border-radius: 7px;
+            padding: 5px 9px;
+            font-size: 9px
+        }
+
+        .btn-add-category:hover {
+            background: #eef8ff
+        }
+
+        .selected-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 38px;
+            padding: 6px;
+            border: 1px solid #d8e2e9;
+            border-radius: 8px;
+            background: #fbfdff
+        }
+
+        .category-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 8px;
+            border-radius: 13px;
+            background: #eaf5ff;
+            border: 1px solid #b7d9f4;
+            color: #0876d1;
+            font-size: 8px
+        }
+
+        .category-tag button {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            color: #0876d1;
+            font-size: 10px;
+            line-height: 1
+        }
+
+        .category-tag button:hover {
+            color: #dc3545
+        }
+
+        .category-more {
+            padding: 5px 8px;
+            border-radius: 13px;
+            background: #eef1f4;
+            color: #687887;
+            font-size: 8px
+        }
+
+        /* Avaliação */
+        .rating-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 12px;
+            border: 1px solid #dbe4eb;
+            border-radius: 9px;
+            background: #fbfdff
+        }
+
+        .rating-number {
+            font-size: 27px;
+            font-weight: 700
+        }
+
+        .rating-stars {
+            color: #f4b400;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+
+        .rating-info {
+            font-size: 9px;
+            color: var(--muted)
+        }
+
+        /* Localização */
+        .location-info {
+            padding: 10px;
+            background: #fafcfe;
+            border: 1px solid #dbe4eb;
+            border-radius: 9px
+        }
+
+        .area-form {
+            padding: 12px;
+            border: 1px solid #dbe4eb;
+            border-radius: 9px;
+            background: #fafcfe
+        }
+
+        .btn-add {
+            border: 0;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 7px;
+            padding: 7px 13px;
+            font-size: 9px
+        }
+
+        .locations-title {
+            display: flex;
+            justify-content: space-between;
+            margin: 16px 0 7px
+        }
+
+        .locations-title strong {
+            font-size: 10px
+        }
+
+        .locations-title span {
+            color: var(--muted);
+            font-size: 8px
+        }
+
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid #e5ebf0
+        }
+
+        .location-name {
+            font-size: 9px;
+            font-weight: 600
+        }
+
+        .location-bairros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px
+        }
+
+        .bairro {
+            padding: 3px 6px;
+            background: #edf5fa;
+            border-radius: 8px;
+            color: #5c7180;
+            font-size: 7px
+        }
+
+        .location-actions {
+            display: flex;
+            gap: 4px
+        }
+
+        .location-actions button {
+            width: 27px;
+            height: 25px;
+            border: 1px solid #d6e0e7;
+            background: #fff;
+            border-radius: 6px;
+            color: #687887;
+            font-size: 9px
+        }
+
+        .location-actions .danger:hover {
+            color: #dc3545
+        }
+
+        .status {
+            display: inline-block;
+            margin-left: 4px;
+            padding: 2px 5px;
+            border-radius: 7px;
+            font-size: 7px
+        }
+
+        .status.active {
+            background: #e8f7f0;
+            color: #24966b
+        }
+
+        .status.inactive {
+            background: #f1f3f5;
+            color: #89939c
+        }
+
+        .btn-save {
+            border: 0;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 7px;
+            padding: 8px 16px;
+            font-size: 9px
+        }
+
+        /* Modal */
+        .category-modal .modal-dialog {
+            max-width: 520px
+        }
+
+        .category-modal .modal-content {
+            border: 1px solid #d8e1e8;
+            border-radius: 13px;
+            overflow: hidden
+        }
+
+        .category-modal .modal-header {
+            padding: 15px 17px 10px;
+            border-bottom: 1px solid #e3e9ee
+        }
+
+        .category-modal .modal-title {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .category-modal .modal-body {
+            padding: 14px 17px
+        }
+
+        .category-search {
+            position: relative;
+            margin-bottom: 12px
+        }
+
+        .category-search i {
+            position: absolute;
+            left: 11px;
+            top: 9px;
+            color: #8997a5;
+            font-size: 11px
+        }
+
+        .category-search input {
+            height: 34px;
+            padding-left: 31px;
+            font-size: 10px;
+            border-radius: 7px;
+            border: 1px solid #ccd9e3;
+            box-shadow: none
+        }
+
+        .category-search input:focus {
+            border-color: var(--primary)
+        }
+
+        .category-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px
+        }
+
+        .category-counter span {
+            font-size: 9px;
+            color: #718096
+        }
+
+        .category-counter strong {
+            color: var(--primary)
+        }
+
+        .category-list {
+            max-height: 310px;
+            overflow-y: auto;
+            border: 1px solid #e0e7ec;
+            border-radius: 8px
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 11px;
+            border-bottom: 1px solid #edf1f4;
+            cursor: pointer
+        }
+
+        .category-option:last-child {
+            border-bottom: 0
+        }
+
+        .category-option:hover {
+            background: #f5faff
+        }
+
+        .category-option input {
+            width: 15px;
+            height: 15px;
+            accent-color: #0876d1;
+            cursor: pointer
+        }
+
+        .category-option span {
+            font-size: 9px;
+            color: #354454
+        }
+
+        .category-modal .modal-footer {
+            border-top: 1px solid #e3e9ee;
+            padding: 10px 17px
+        }
+
+        .btn-category-cancel {
+            border: 1px solid #d3dde5;
+            background: #fff;
+            color: #526575;
+            border-radius: 7px;
+            padding: 7px 13px;
+            font-size: 9px
+        }
+
+        .btn-category-confirm {
+            border: 0;
+            background: #0876d1;
+            color: #fff;
+            border-radius: 7px;
+            padding: 7px 13px;
+            font-size: 9px
+        }
+
+        @media(max-width:576px) {
+            .page-header {
+                flex-direction: column;
+                gap: 7px
+            }
+
+            .location-item {
+                align-items: flex-start
+            }
+        }
+    </style>
+
+    <!-- Ajuste para telas maiores: amplia o conteúdo proporcionalmente em monitores de computador -->
+    <style>
+        @media (min-width: 992px) and (max-width: 1199.98px) {
+            body {
+                zoom: 1.15;
+            }
+        }
+
+        @media (min-width: 1200px) and (max-width: 1599.98px) {
+            body {
+                zoom: 1.3;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            body {
+                zoom: 1.45;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="top-border"></div>
+
+    <header class="navbar-custom">
+        <div class="container navbar-inner-wrap">
+
+            <a href="<?= site_url('busca') ?>" class="brand">Achei Profissional</a>
+
+            <button class="navbar-toggler-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPadrao"
+                aria-controls="navbarPadrao" aria-expanded="false" aria-label="Abrir menu de navegação">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <nav class="collapse nav-collapse" id="navbarPadrao">
+                <div class="nav-links-wrap">
+                    <a href="<?= site_url('busca') ?>" class="nav-link-custom">Buscar</a>
+                    <a href="<?= site_url('perfil/contratante') ?>" class="nav-link-custom">Sou Contratante</a>
+                    <a href="<?= site_url('perfil/profissional') ?>" class="nav-link-custom active">Sou Profissional</a>
+                    <a href="<?= site_url('admin') ?>" class="nav-link-custom">Admin</a>
+                    <a href="<?= site_url('login') ?>" class="nav-link-custom nav-link-login">Entrar</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="page-container">
+
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Meu perfil</h1>
+                    <div class="page-description">Mantenha seus dados profissionais atualizados.</div>
+                </div>
+                <span class="status-badge">Perfil aprovado</span>
+            </div>
+
+            <!-- DADOS BÁSICOS -->
+            <section class="profile-card">
+                <div class="card-title">Dados básicos</div>
+
+                <div class="profile-photo-area">
+                    <div class="profile-photo">
+                        <span id="initials">JE</span>
+                        <img id="photo" style="display:none">
+                    </div>
+                    <div>
+                        <button type="button" class="btn-photo" onclick="document.getElementById('photoInput').click()">
+                            <i class="bi bi-camera me-1"></i> Enviar foto de perfil
+                        </button>
+                        <input type="file" id="photoInput" hidden accept="image/*">
+                        <div class="photo-description">JPG ou PNG. Tamanho máximo recomendado: 5 MB.</div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nome de exibição</label>
+                        <input type="text" class="form-control" value="João Eletricista">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Tipo de pessoa</label>
+                        <select id="personTypeProfessional" class="form-select">
+                            <option value="pf" selected>Pessoa Física</option>
+                            <option value="pj">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6" id="cpfProfessional">
+                        <label class="form-label">CPF</label>
+                        <input type="text" class="form-control" placeholder="000.000.000-00" value="123.456.789-00">
+                    </div>
+
+                    <div class="col-md-6" id="cnpjProfessional" style="display:none">
+                        <label class="form-label">CNPJ</label>
+                        <input type="text" class="form-control" placeholder="00.000.000/0000-00">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Categoria principal</label>
+                        <select class="form-select">
+                            <option>Eletricista</option>
+                            <option>Encanador</option>
+                            <option>Pedreiro</option>
+                            <option>Pintor</option>
+                            <option>Marceneiro</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label mb-0">Categorias de atuação</label>
+                            <button type="button" class="btn-add-category" data-bs-toggle="modal"
+                                data-bs-target="#modalCategorias">
+                                <i class="bi bi-plus-lg me-1"></i> Adicionar categorias
+                            </button>
+                        </div>
+
+                        <div id="categoriasSelecionadas" class="selected-categories"></div>
+
+                        <div class="input-help">
+                            Você pode selecionar quantas categorias quiser. Use a pesquisa para encontrar uma categoria
+                            rapidamente.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Descrição</label>
+                        <textarea
+                            class="form-control">Instalações elétricas residenciais e comerciais. Atendo emergências 24 horas.</textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AVALIAÇÃO -->
+            <section class="profile-card">
+                <div class="card-title">Minha avaliação</div>
+
+                <div class="rating-box">
+                    <div>
+                        <div class="rating-number">4,8</div>
+                        <div class="rating-stars">★★★★★</div>
+                    </div>
+                    <div>
+                        <div class="rating-info">Avaliação média</div>
+                        <strong style="font-size:11px">34 avaliações</strong>
+                        <div class="rating-info mt-1">Qualificação de 1 a 5 estrelas</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTATO -->
+            <section class="profile-card">
+                <div class="card-title">Contato</div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">WhatsApp</label>
+                        <input class="form-control" value="(32) 98888-0001">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Telefone</label>
+                        <input class="form-control" placeholder="(32) 3000-0000">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Instagram</label>
+                        <input class="form-control" value="@joao.eletricista">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" class="form-control" value="joao@email.com">
+                    </div>
+                </div>
+            </section>
+
+            <!-- LOCALIZAÇÃO -->
+            <section class="profile-card">
+                <div class="card-title">Minha localização</div>
+
+                <div class="location-info">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select">
+                                <option>Minas Gerais</option>
+                                <option>Rio de Janeiro</option>
+                                <option>São Paulo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cidade</label>
+                            <select class="form-select">
+                                <option>Muriaé</option>
+                                <option>Miradouro</option>
+                                <option>Eugenópolis</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Bairro</label>
+                            <input class="form-control" value="Centro">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÁREA DE ATUAÇÃO -->
+            <section class="profile-card">
+                <div class="card-title">Área de atuação</div>
+
+                <div class="input-help mb-3">
+                    Selecione as cidades e depois cadastre os bairros onde você realmente presta serviços.
+                </div>
+
+                <div class="area-form">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label">Estado</label>
+                            <select id="areaEstado" class="form-select">
+                                <option>Minas Gerais</option>
+                                <option>Rio de Janeiro</option>
+                                <option>São Paulo</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Cidade</label>
+                            <select id="areaCidade" class="form-select">
+                                <option>Muriaé</option>
+                                <option>Miradouro</option>
+                                <option>Eugenópolis</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Bairro</label>
+                            <select class="form-select">
+                                <option>Centro</option>
+                                <option>Barra</option>
+                                <option>Safira</option>
+                                <option>São Joaquim</option>
+                                <option>Bom Pastor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn-add mt-3">
+                        <i class="bi bi-plus-lg"></i> Adicionar área
+                    </button>
+                </div>
+
+                <div class="locations-title">
+                    <strong>Áreas cadastradas</strong>
+                    <span>3 locais</span>
+                </div>
+
+                <div class="location-item">
+                    <div>
+                        <div class="location-name">
+                            Muriaé - MG
+                            <span class="status active">Ativo</span>
+                        </div>
+                        <div class="location-bairros">
+                            <span class="bairro">Centro</span>
+                            <span class="bairro">Barra</span>
+                            <span class="bairro">Safira</span>
+                            <span class="bairro">São Joaquim</span>
+                        </div>
+                    </div>
+                    <div class="location-actions">
+                        <button title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button title="Inativar"><i class="bi bi-pause-circle"></i></button>
+                        <button title="Excluir" class="danger"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>
+
+                <div class="location-item">
+                    <div>
+                        <div class="location-name">
+                            Miradouro - MG
+                            <span class="status active">Ativo</span>
+                        </div>
+                        <div class="location-bairros">
+                            <span class="bairro">Centro</span>
+                            <span class="bairro">São José</span>
+                        </div>
+                    </div>
+                    <div class="location-actions">
+                        <button title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button title="Inativar"><i class="bi bi-pause-circle"></i></button>
+                        <button title="Excluir" class="danger"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="text-end">
+                <button class="btn-save">
+                    <i class="bi bi-floppy me-1"></i> Salvar alterações
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL DE CATEGORIAS -->
+    <div class="modal fade category-modal" id="modalCategorias" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Selecionar categorias</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="category-search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="pesquisaCategoria" class="form-control"
+                            placeholder="Pesquisar categoria...">
+                    </div>
+
+                    <div class="category-counter">
+                        <span>Selecione todas as categorias que você atende</span>
+                        <span><strong id="contadorCategorias">0</strong> selecionadas</span>
+                    </div>
+
+                    <div class="category-list" id="listaCategorias">
+
+                        <label class="category-option"><input type="checkbox" value="Eletricista"
+                                checked><span>Eletricista</span></label>
+                        <label class="category-option"><input type="checkbox" value="Instalações elétricas"
+                                checked><span>Instalações elétricas</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Manutenção"><span>Manutenção</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Automação"><span>Automação</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Iluminação"><span>Iluminação</span></label>
+                        <label class="category-option"><input type="checkbox" value="Energia solar"><span>Energia
+                                solar</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Cabeamento"><span>Cabeamento</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Instalação de câmeras"><span>Instalação de câmeras</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Eletrônica"><span>Eletrônica</span></label>
+                        <label class="category-option"><input type="checkbox" value="Redes"><span>Redes</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Telefonia"><span>Telefonia</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Encanador"><span>Encanador</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Pedreiro"><span>Pedreiro</span></label>
+                        <label class="category-option"><input type="checkbox" value="Pintor"><span>Pintor</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Marceneiro"><span>Marceneiro</span></label>
+                        <label class="category-option"><input type="checkbox" value="Ar condicionado"><span>Ar
+                                condicionado</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Sistemas de segurança"><span>Sistemas de segurança</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Automação residencial"><span>Automação residencial</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Manutenção residencial"><span>Manutenção residencial</span></label>
+                        <label class="category-option"><input type="checkbox"
+                                value="Manutenção comercial"><span>Manutenção comercial</span></label>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-category-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-category-confirm" id="confirmarCategorias" data-bs-dismiss="modal">
+                        Confirmar categorias
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const typeProfessional = document.getElementById('personTypeProfessional');
+        const cpfProfessional = document.getElementById('cpfProfessional');
+        const cnpjProfessional = document.getElementById('cnpjProfessional');
+
+        typeProfessional.addEventListener('change', function () {
+            const pf = this.value === 'pf';
+            cpfProfessional.style.display = pf ? 'block' : 'none';
+            cnpjProfessional.style.display = pf ? 'none' : 'block';
+        });
+
+        /* Foto */
+        document.getElementById('photoInput').addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('photo').src = e.target.result;
+                document.getElementById('photo').style.display = 'block';
+                document.getElementById('initials').style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        /* Categorias */
+        const listaCategorias = document.getElementById('listaCategorias');
+        const categoriasSelecionadas = document.getElementById('categoriasSelecionadas');
+        const contadorCategorias = document.getElementById('contadorCategorias');
+        const pesquisaCategoria = document.getElementById('pesquisaCategoria');
+
+        function atualizarContador() {
+            contadorCategorias.textContent =
+                listaCategorias.querySelectorAll('input[type="checkbox"]:checked').length;
+        }
+
+        function renderizarCategorias() {
+            const selecionadas = listaCategorias.querySelectorAll('input[type="checkbox"]:checked');
+            const limite = 4;
+
+            categoriasSelecionadas.innerHTML = '';
+
+            selecionadas.forEach((checkbox, index) => {
+                if (index >= limite) return;
+
+                const tag = document.createElement('div');
+                tag.className = 'category-tag';
+
+                tag.innerHTML = `
+            <span>${checkbox.value}</span>
+            <button type="button" title="Remover">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+
+                tag.querySelector('button').addEventListener('click', () => {
+                    checkbox.checked = false;
+                    atualizarContador();
+                    renderizarCategorias();
+                });
+
+                categoriasSelecionadas.appendChild(tag);
+            });
+
+            if (selecionadas.length > limite) {
+                const more = document.createElement('span');
+                more.className = 'category-more';
+                more.textContent = `+ ${selecionadas.length - limite} categorias`;
+                categoriasSelecionadas.appendChild(more);
+            }
+
+            if (selecionadas.length === 0) {
+                categoriasSelecionadas.innerHTML =
+                    '<span style="color:#8997a5;font-size:8px">Nenhuma categoria selecionada</span>';
+            }
+        }
+
+        listaCategorias.addEventListener('change', function (e) {
+            if (e.target.matches('input[type="checkbox"]')) atualizarContador();
+        });
+
+        document.getElementById('confirmarCategorias').addEventListener('click', function () {
+            atualizarContador();
+            renderizarCategorias();
+        });
+
+        pesquisaCategoria.addEventListener('input', function () {
+            const termo = this.value.toLowerCase().trim();
+
+            document.querySelectorAll('.category-option').forEach(option => {
+                const nome = option.querySelector('span').textContent.toLowerCase();
+                option.style.display = nome.includes(termo) ? 'flex' : 'none';
+            });
+        });
+
+        document.getElementById('modalCategorias').addEventListener('shown.bs.modal', function () {
+            pesquisaCategoria.value = '';
+            document.querySelectorAll('.category-option').forEach(option => option.style.display = 'flex');
+            atualizarContador();
+            pesquisaCategoria.focus();
+        });
+
+        atualizarContador();
+        renderizarCategorias();
+    </script>
+
+</body>
+
+</html>

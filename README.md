@@ -312,3 +312,20 @@ git push origin feature/nova-funcionalidade
 ## 📄 Licença
 
 Este projeto foi desenvolvido para fins acadêmicos como parte de um projeto de extensão.
+
+
+## 🎨 Views do protótipo visual
+
+As páginas do protótipo foram convertidas para views PHP em `app/Views` e podem ser acessadas pelas seguintes rotas:
+
+| Página | Rota |
+|---|---|
+| Busca de profissionais | `/` ou `/busca` |
+| Login | `/login` |
+| Perfil do contratante | `/perfil/contratante` |
+| Perfil do profissional | `/perfil/profissional` |
+| Administração | `/admin` |
+
+O controlador `App\Controllers\Visual` renderiza as telas, enquanto `App\Models\DemoDataModel` fornece dados estáticos exclusivamente para a apresentação visual. Não foi implementada persistência, autenticação ou processamento real dos formulários nesta etapa.
+
+Para iniciar o projeto, execute `composer install` e depois `php spark serve`. A aplicação ficará disponível em `http://localhost:8080`.
