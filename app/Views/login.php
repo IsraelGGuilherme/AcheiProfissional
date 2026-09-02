@@ -736,7 +736,7 @@
 
                     <div class="text-end mb-4">
 
-                        <a href="#" class="forgot-password">
+                        <a href="<?= site_url('recuperar-senha') ?>" class="forgot-password">
                             Esqueci minha senha
                         </a>
 
@@ -759,7 +759,7 @@
 
                         Ainda não tem uma conta?
 
-                        <a href="#">
+                        <a href="<?= site_url('cadastro') ?>">
                             Criar conta
                         </a>
 

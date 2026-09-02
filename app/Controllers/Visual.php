@@ -34,6 +34,16 @@ class Visual extends BaseController
         return view('login', ['titulo' => 'Login - Achei Profissional']);
     }
 
+    public function cadastro(): string
+    {
+        return view('cadastro');
+    }
+
+    public function recuperarSenha(): string
+    {
+        return view('recuperar_senha');
+    }
+
     public function perfilContratante(): string
     {
         return view('perfil_contratante', $this->dados->perfilContratante());
@@ -47,5 +57,15 @@ class Visual extends BaseController
     public function admin(): string
     {
         return view('admin', $this->dados->administracao());
+    }
+
+    public function categorias(): string
+    {
+        return view('categorias');
+    }
+
+    public function denuncias(): string
+    {
+        return view('denuncias');
     }
 }
