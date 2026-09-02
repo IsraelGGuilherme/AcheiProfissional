@@ -29,6 +29,12 @@
         .info { display:flex; gap:10px; align-items:flex-start; color:#566675; margin-bottom:13px; } .info i { color:var(--primary); font-size:17px; }
         .btn-primary-custom { display:block; width:100%; border:0; border-radius:8px; padding:11px 15px; background:var(--primary); color:#fff; text-align:center; text-decoration:none; font-weight:600; }
         .btn-outline-custom { display:block; width:100%; border:1px solid var(--primary); border-radius:8px; padding:10px 15px; background:#fff; color:var(--primary); text-align:center; text-decoration:none; margin-top:10px; }
+        .review-card { margin-top:16px; } .stars-select { display:flex; flex-direction:row-reverse; justify-content:flex-end; gap:3px; margin-bottom:12px; }
+        .stars-select input { position:absolute; opacity:0; } .stars-select label { cursor:pointer; color:#c8d1d8; font-size:29px; line-height:1; transition:.15s; }
+        .stars-select label:hover, .stars-select label:hover ~ label, .stars-select input:checked ~ label { color:#f2b01e; }
+        .review-input { width:100%; box-sizing:border-box; border:1px solid var(--border); border-radius:8px; padding:11px; font:inherit; color:var(--ink); resize:vertical; min-height:78px; margin-bottom:10px; }
+        .review-input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(8,118,209,.1); }
+        .review-feedback { display:none; padding:10px 12px; border-radius:8px; margin-top:12px; background:#eafaf3; color:#18794e; font-size:13px; }
         @media (max-width: 700px) { .navbar-inner { align-items:flex-start; flex-direction:column; } .nav-links { width:100%; } .profile-hero { align-items:flex-start; flex-direction:column; } .grid { grid-template-columns:1fr; } }
     </style>
 </head>
@@ -83,6 +89,34 @@
                 </section>
             </aside>
         </div>
+
+        <section class="card review-card">
+            <h2>Avalie este profissional</h2>
+            <p style="margin-bottom:14px;">Conte como foi sua experiência para ajudar outras pessoas.</p>
+            <form id="reviewForm">
+                <div class="stars-select" aria-label="Escolha uma nota de 1 a 5 estrelas">
+                    <input type="radio" id="star5" name="nota" value="5" required><label for="star5" title="5 estrelas">★</label>
+                    <input type="radio" id="star4" name="nota" value="4"><label for="star4" title="4 estrelas">★</label>
+                    <input type="radio" id="star3" name="nota" value="3"><label for="star3" title="3 estrelas">★</label>
+                    <input type="radio" id="star2" name="nota" value="2"><label for="star2" title="2 estrelas">★</label>
+                    <input type="radio" id="star1" name="nota" value="1"><label for="star1" title="1 estrela">★</label>
+                </div>
+                <textarea class="review-input" name="comentario" placeholder="Escreva um comentário sobre o serviço (opcional)"></textarea>
+                <button type="submit" class="btn-primary-custom"><i class="bi bi-send"></i> Enviar avaliação</button>
+                <div id="reviewFeedback" class="review-feedback"></div>
+            </form>
+        </section>
     </main>
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const nota = document.querySelector('input[name="nota"]:checked');
+            const feedback = document.getElementById('reviewFeedback');
+            if (!nota) return;
+            feedback.textContent = 'Obrigado! Sua avaliação de ' + nota.value + ' estrela(s) foi registrada nesta demonstração.';
+            feedback.style.display = 'block';
+            this.reset();
+        });
+    </script>
 </body>
 </html>
