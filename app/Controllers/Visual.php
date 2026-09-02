@@ -18,11 +18,20 @@ class Visual extends BaseController
         return view('busca', $this->dados->busca());
     }
 
+    public function perfil(string $slug): string
+    {
+        $profissional = $this->dados->profissionalPorSlug($slug);
+
+        if ($profissional === null) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Profissional não encontrado.');
+        }
+
+        return view('profissional_detalhe', ['profissional' => $profissional]);
+    }
+
     public function login(): string
     {
-        return view('login', [
-            'titulo' => 'Login - Achei Profissional',
-        ]);
+        return view('login', ['titulo' => 'Login - Achei Profissional']);
     }
 
     public function perfilContratante(): string

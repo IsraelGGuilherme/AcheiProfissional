@@ -1136,9 +1136,9 @@
 
             <div class="professional-actions">
 
-                <button class="btn-profile">
+                <a href="<?= site_url('profissional/joao-eletricista') ?>" class="btn-profile">
                     Ver perfil
-                </button>
+                </a>
 
                 <button class="btn-whatsapp">
 
@@ -1222,9 +1222,9 @@
 
             <div class="professional-actions">
 
-                <button class="btn-profile">
+                <a href="<?= site_url('profissional/mariana-designer') ?>" class="btn-profile">
                     Ver perfil
-                </button>
+                </a>
 
                 <button class="btn-whatsapp">
 
@@ -1308,9 +1308,9 @@
 
             <div class="professional-actions">
 
-                <button class="btn-profile">
+                <a href="<?= site_url('profissional/carlos-encanador') ?>" class="btn-profile">
                     Ver perfil
-                </button>
+                </a>
 
                 <button class="btn-whatsapp">
 
@@ -1395,9 +1395,9 @@
 
             <div class="professional-actions">
 
-                <button class="btn-profile">
+                <a href="<?= site_url('profissional/tiago-informatica') ?>" class="btn-profile">
                     Ver perfil
-                </button>
+                </a>
 
                 <button class="btn-whatsapp">
 
@@ -1482,9 +1482,9 @@
 
             <div class="professional-actions">
 
-                <button class="btn-profile">
+                <a href="<?= site_url('profissional/maria-instalacoes') ?>" class="btn-profile">
                     Ver perfil
-                </button>
+                </a>
 
                 <button class="btn-whatsapp">
 
