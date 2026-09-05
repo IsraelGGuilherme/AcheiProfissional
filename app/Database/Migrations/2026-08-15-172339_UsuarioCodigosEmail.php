@@ -27,16 +27,21 @@ class UsuarioCodigosEmail extends Migration
                 ],
                 'null'       => false,
             ],
+            'codigo' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '255',
+                'null'       => false,
+            ],
             'tentativas' => [
                 'type'       => 'TINYINT',
                 'unsigned'   => true,
                 'default'    => '0',
-                'null'       => false,
+                'null'       => true,
             ],
             'utilizado' => [
                 'type'       => 'BOOLEAN',
                 'default'    => '0',
-                'null'       => false,
+                'null'       => true,
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
