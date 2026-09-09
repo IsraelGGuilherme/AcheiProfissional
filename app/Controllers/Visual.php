@@ -39,6 +39,21 @@ class Visual extends BaseController
         return view('cadastro');
     }
 
+    public function cadastroUsuario(): string
+    {
+        return view('cadastro_usuario');
+    }
+
+    public function cadastroProfissional(): string
+    {
+        return view('cadastro_profissional');
+    }
+
+    public function cadastroContratante(): string
+    {
+        return view('cadastro_contratante');
+    }
+
     public function recuperarSenha(): string
     {
         return view('recuperar_senha');
@@ -67,5 +82,10 @@ class Visual extends BaseController
     public function denuncias(): string
     {
         return view('denuncias');
+    }
+
+    public function aprovacoes(): string
+    {
+        return view('aprovacoes');
     }
 }

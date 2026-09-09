@@ -117,6 +117,13 @@
                 <div id="reviewFeedback" class="review-feedback"></div>
             </form>
         </section>
+
+        <section class="card review-card">
+            <h2>Avaliações recentes</h2>
+            <article style="border-bottom:1px solid #edf1f4;padding:0 0 15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;gap:10px;"><strong>Mariana Oliveira</strong><span style="color:#e9a400;">★★★★★</span></div><p style="font-size:13px;margin-top:7px;">Excelente atendimento, explicou tudo com clareza e realizou o serviço no prazo.</p><span style="color:var(--muted);font-size:11px;">Publicado há 2 semanas</span></article>
+            <article style="border-bottom:1px solid #edf1f4;padding:0 0 15px;margin-bottom:15px;"><div style="display:flex;justify-content:space-between;gap:10px;"><strong>Carlos Mendes</strong><span style="color:#e9a400;">★★★★★</span></div><p style="font-size:13px;margin-top:7px;">Profissional muito cuidadoso e organizado. Recomendo para instalações residenciais.</p><span style="color:var(--muted);font-size:11px;">Publicado há 1 mês</span></article>
+            <article><div style="display:flex;justify-content:space-between;gap:10px;"><strong>Ana Paula Souza</strong><span style="color:#e9a400;">★★★★☆</span></div><p style="font-size:13px;margin-top:7px;">Bom serviço e comunicação rápida pelo WhatsApp.</p><span style="color:var(--muted);font-size:11px;">Publicado há 2 meses</span></article>
+        </section>
     </main>
 
     <div class="modal-backdrop-custom" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
