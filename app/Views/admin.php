@@ -375,7 +375,6 @@ body{
                 <a href="<?= site_url('admin') ?>" class="nav-link-custom active">Admin</a>
                 <a href="<?= site_url('admin/categorias') ?>" class="nav-link-custom">Categorias</a>
                 <a href="<?= site_url('admin/denuncias') ?>" class="nav-link-custom">Denúncias</a>
-                <a href="<?= site_url('admin/aprovacoes') ?>" class="nav-link-custom">Aprovações</a>
                 <a href="<?= site_url('login') ?>" class="nav-link-custom nav-link-login">Entrar</a>
             </div>
         </nav>
@@ -390,7 +389,7 @@ body{
         <div>
             <h1 class="page-title">Administração</h1>
             <div class="page-description">
-                Gerencie usuários, aprovações, denúncias, categorias e acompanhe os indicadores da plataforma.
+                Gerencie usuários, denúncias, categorias e acompanhe os indicadores da plataforma.
             </div>
         </div>
         <span class="admin-badge">

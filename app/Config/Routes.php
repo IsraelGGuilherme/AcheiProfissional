@@ -17,4 +17,3 @@ $routes->get('perfil/profissional', 'Visual::perfilProfissional');
 $routes->get('admin', 'Visual::admin');
 $routes->get('admin/categorias', 'Visual::categorias');
 $routes->get('admin/denuncias', 'Visual::denuncias');
-$routes->get('admin/aprovacoes', 'Visual::aprovacoes');

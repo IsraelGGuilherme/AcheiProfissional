@@ -83,9 +83,4 @@ class Visual extends BaseController
     {
         return view('denuncias');
     }
-
-    public function aprovacoes(): string
-    {
-        return view('aprovacoes');
-    }
 }
