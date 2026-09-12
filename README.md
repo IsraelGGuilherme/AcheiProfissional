@@ -166,15 +166,26 @@ php spark migrate:rollback
 
 ## 🌱 Executando Seeds
 
-Caso o projeto possua **Seeders** para inserir dados iniciais, eles podem ser executados através do Spark.
+Para inserir os dados iniciais essenciais da aplicação, utilize os **Seeders** do CodeIgniter 4 via Spark.
 
-Exemplo:
+### Povoamento de Localidades (Obrigatório)
+
+A plataforma necessita da base de dados de localidades (país, estados, municípios e bairros) para o cadastro de endereços e regiões de atendimento dos profissionais. Essa base conta com mais de 23.000 registros e é importada via dump SQL nativo:
+
+```bash
+php spark db:seed LocalidadesSeeder
+```
+
+> **Nota:** A base de dados utilizada pelo seeder fica armazenada em `app/Database/Seeds/data/localidades.sql`.
+
+### Outros Seeds
+
+Para executar outros seeders que venham a ser criados:
 
 ```bash
 php spark db:seed NomeDoSeeder
 ```
 
-Substitua `NomeDoSeeder` pelo nome da classe do Seeder.
 
 ---
 
@@ -270,12 +281,12 @@ Depois:
 1. Criar o banco de dados MySQL.
 2. Configurar as credenciais no `.env`.
 3. Executar as migrations.
-4. Executar os Seeders, caso necessários.
+4. Povoar a base de localidades com a Seeder.
 5. Iniciar o servidor.
 
 ```bash
 php spark migrate
-php spark db:seed NomeDoSeeder
+php spark db:seed LocalidadesSeeder
 php spark serve
 ```
 
