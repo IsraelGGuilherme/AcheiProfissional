@@ -19,14 +19,30 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
-     */
+    public static function emailService(bool $getShared = true): \App\Services\EmailService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('emailService');
+        }
+
+        return new \App\Services\EmailService();
+    }
+
+    public static function codigoVerificacaoService(bool $getShared = true): \App\Services\CodigoVerificacaoService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('codigoVerificacaoService');
+        }
+
+        return new \App\Services\CodigoVerificacaoService();
+    }
+
+    public static function authService(bool $getShared = true): \App\Services\AuthService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('authService');
+        }
+
+        return new \App\Services\AuthService();
+    }
 }

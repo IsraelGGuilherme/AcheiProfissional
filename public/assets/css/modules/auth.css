@@ -1,0 +1,534 @@
+/* =========================================
+   MÓDULO: FLUXO DE AUTENTICAÇÃO E CADASTRO
+========================================= */
+
+/* Seções de fundo das telas de auth */
+.auth-section,
+.register-section,
+.login-section {
+    min-height: calc(100vh - 72px);
+    padding: 45px 20px 70px;
+    background:
+        radial-gradient(ellipse 75% 55% at 0% 15%,
+            #e3f1ff 0%,
+            transparent 65%),
+        #f6faff;
+}
+
+/* Card centralizado */
+.auth-card,
+.register-card,
+.login-card {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #edf1f5;
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 8px 30px rgba(33, 65, 92, 0.08);
+}
+
+/* Link de voltar */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: color .2s ease;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+/* Título e subtítulo de boas-vindas */
+.welcome-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #172b3f;
+}
+
+.welcome-text {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 26px;
+    line-height: 1.5;
+}
+
+/* Badge de tipo de usuário/etapa */
+.badge-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #e8f4fd;
+    color: var(--primary);
+    margin-bottom: 18px;
+}
+
+/* Botão principal de envio/continuação */
+.btn-submit {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 9px;
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background .2s, transform .1s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+
+.btn-submit:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.btn-submit:disabled {
+    background: #9cc6ea;
+    cursor: not-allowed;
+}
+
+.btn-outline-custom {
+    border: 1px solid #cfd9e2;
+    background: #ffffff;
+    color: var(--text);
+    border-radius: 9px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all .2s ease;
+}
+
+.btn-outline-custom:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #b7c6d4;
+}
+
+.btn-outline-custom:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.fade-in {
+    animation: fadeIn 0.35s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Link para login / cadastro alternativo */
+.auth-link-box,
+.login-link-box {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #657386;
+}
+
+.auth-link-box a,
+.login-link-box a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.auth-link-box a:hover,
+.login-link-box a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   ELEMENTOS ADICIONAIS DE LOGIN
+========================================= */
+
+.forgot-password {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.btn-login {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-login:hover {
+    background: var(--primary-dark);
+}
+
+.social-button {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #d6dfe7;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #27384a;
+    font-size: 14px;
+    font-weight: 500;
+    transition: .2s;
+}
+
+.social-button:hover {
+    background: #f8fafc;
+    border-color: #c5d0da;
+}
+
+.social-button + .social-button {
+    margin-top: 10px;
+}
+
+.google-icon {
+    color: #4285f4;
+    margin-right: 8px;
+}
+
+.whatsapp-icon {
+    color: #25d366;
+    margin-right: 8px;
+}
+
+.create-account {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 14px;
+    color: #657386;
+}
+
+.create-account a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.create-account a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   SELETOR DE TIPO DE CONTA (TELA DE LOGIN)
+========================================= */
+
+.account-selector {
+    display: flex;
+    padding: 4px;
+    background: #f6f8fa;
+    border: 1px solid #e3e8ed;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.account-option {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #657386;
+    padding: 12px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all .2s;
+}
+
+.account-option i {
+    margin-right: 6px;
+}
+
+.account-option.active {
+    background: #e4f1ff;
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+}
+
+/* =========================================
+   CARDS DE OPÇÃO (ESCOLHA DE CADASTRO)
+========================================= */
+
+.account-type-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 20px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 2px solid #e2eaf1;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all .25s ease;
+    cursor: pointer;
+}
+
+.account-type-card:hover {
+    border-color: var(--primary);
+    background: #f7fbff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(8, 118, 209, 0.10);
+    color: var(--text);
+}
+
+.account-type-icon {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 14px;
+    background: #e4f2ff;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: all .25s ease;
+}
+
+.account-type-card:hover .account-type-icon {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.account-type-info {
+    flex: 1;
+}
+
+.account-type-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.account-type-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #172b3f;
+}
+
+.account-type-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #e8f4fd;
+    color: var(--primary);
+}
+
+.account-type-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.account-type-arrow {
+    color: #92a4b8;
+    font-size: 18px;
+    transition: transform .2s ease, color .2s ease;
+}
+
+.account-type-card:hover .account-type-arrow {
+    color: var(--primary);
+    transform: translateX(4px);
+}
+
+/* =========================================
+   VERIFICAÇÃO DE E-MAIL (BOX & OTP)
+========================================= */
+
+.email-display-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.email-display-icon {
+    width: 42px;
+    height: 42px;
+    background: #eaf5ff;
+    color: var(--primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.email-display-info {
+    overflow: hidden;
+}
+
+.email-display-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 2px;
+}
+
+.email-display-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.otp-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px 0 24px;
+}
+
+.otp-input {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text);
+    transition: all .2s ease;
+}
+
+.otp-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(8, 118, 209, .15);
+    outline: none;
+}
+
+.otp-input.is-filled {
+    border-color: #0876d1;
+    background-color: #f8fbff;
+}
+
+.otp-input.is-invalid {
+    border-color: #dc3545 !important;
+    background-color: #fff8f8 !important;
+    color: #dc3545 !important;
+}
+
+@keyframes otpShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+.otp-container.shake {
+    animation: otpShake 0.4s ease-in-out;
+}
+
+/* =========================================
+   SEÇÃO DE BENEFÍCIOS (RODAPÉ DE AUTH)
+========================================= */
+
+.benefits {
+    max-width: 700px;
+    margin: 45px auto 0;
+}
+
+.benefit {
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.benefit-icon {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e4f2ff;
+    color: var(--primary);
+    font-size: 24px;
+}
+
+.benefit-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #172b3f;
+}
+
+.benefit-text {
+    color: #778697;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* =========================================
+   RESPONSIVIDADE DAS TELAS DE AUTH
+========================================= */
+
+@media (max-width: 576px) {
+    .auth-section,
+    .register-section,
+    .login-section {
+        padding-top: 25px;
+    }
+
+    .welcome-title {
+        font-size: 23px;
+    }
+
+    .auth-card,
+    .register-card,
+    .login-card {
+        padding: 24px 18px;
+    }
+
+    .benefits {
+        margin-top: 30px;
+    }
+
+    .otp-input {
+        width: 42px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
