@@ -110,7 +110,26 @@ database.default.DBDriver = MySQLi
 database.default.port = 3306
 ```
 
-> **Importante:** o arquivo `.env` não deve ser enviado ao GitHub, pois pode conter informações sensíveis, como credenciais do banco de dados.
+Depois, configure o serviço de envio de e-mails via **SMTP** (necessário para o envio dos códigos de verificação de conta e recuperação de senha):
+
+```ini
+#
+# EMAIL
+#
+
+email.protocol = 'smtp'
+email.SMTPHost = 'smtp.gmail.com'
+email.SMTPPort = 587
+email.SMTPUser = 'seu_email@gmail.com'
+email.fromEmail = 'seu_email@gmail.com'
+email.fromName = 'Achei Profissional'
+email.SMTPPass = 'sua_senha_de_aplicativo'
+email.SMTPCrypto = 'tls'
+```
+
+> **Nota:** Se você utilizar o Gmail, lembre-se de ativar a verificação em duas etapas e gerar uma **Senha de App** (App Password) para o `email.SMTPPass`.
+
+> **Importante:** o arquivo `.env` não deve ser enviado ao GitHub, pois pode conter informações sensíveis, como credenciais do banco de dados e senhas de e-mail.
 
 ---
 
@@ -279,7 +298,7 @@ cp env .env
 Depois:
 
 1. Criar o banco de dados MySQL.
-2. Configurar as credenciais no `.env`.
+2. Configurar as credenciais no `.env` (banco de dados e e-mail SMTP).
 3. Executar as migrations.
 4. Povoar a base de localidades com a Seeder.
 5. Iniciar o servidor.
