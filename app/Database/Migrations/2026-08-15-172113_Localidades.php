@@ -43,8 +43,9 @@ class Localidades extends Migration
                 'null'       => true,
             ],
             'localidade_pai_id' => [
-                'type'           => 'BIGINT',
-                'unsigned'       => true,
+                'type'       => 'BIGINT',
+                'unsigned'   => true,
+                'null'       => true,
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',

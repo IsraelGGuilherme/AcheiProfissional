@@ -20,7 +20,7 @@ class FontesLocalidades extends Migration
                 'constraint' => '100',
                 'null'       => false,
             ],
-            'nome' => [
+            'descricao' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '255',
                 'null'       => true,
