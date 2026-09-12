@@ -1,0 +1,40 @@
+/* =========================================
+   VARIÁVEIS GLOBAIS E CONFIGURAÇÕES BASE
+========================================= */
+
+:root {
+    --primary: #0876d1;
+    --primary-dark: #0567b9;
+    --light-blue: #eaf5ff;
+    --background: #f4f9fd;
+    --text: #172b3f;
+    --muted: #718096;
+    --border: #d9e2ea;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* =========================================
+   AJUSTE DE ZOOM PROPORCIONAL EM MONITORES
+========================================= */
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    body {
+        zoom: 1.15;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1599.98px) {
+    body {
+        zoom: 1.3;
+    }
+}
+
+@media (min-width: 1600px) {
+    body {
+        zoom: 1.45;
+    }
+}
+
