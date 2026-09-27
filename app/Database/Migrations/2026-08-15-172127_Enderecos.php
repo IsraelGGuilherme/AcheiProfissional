@@ -60,7 +60,7 @@ class Enderecos extends Migration
                 'constraint' => '10,8',
                 'null'       => true,
             ],
-            'complemento' => [
+            'longitude' => [
                 'type'       => 'DECIMAL',
                 'constraint' => '11,8',
                 'null'       => true,

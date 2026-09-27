@@ -10,6 +10,7 @@ use App\Services\AuthService;
 use App\Services\CodigoVerificacaoService;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 use CodeIgniter\HTTP\ResponseInterface;
+use Throwable;
 
 class Register extends BaseController
 {
@@ -194,7 +195,22 @@ class Register extends BaseController
         $insert = $params;
         $insert['id'] = session('usuario')->id;
 
-        $this->usuariosComunsModel->insert($insert);
+        try {
+            $db = db_connect();
+            $db->transStart();
+
+            $this->usuariosComunsModel->insert($insert);
+
+            $this->usuariosModel->update(session('usuario')->id, [
+                'status' => 'PENDENTE_ENDERECO',
+            ]);
+
+            $db->transComplete();
+        } catch (Throwable $e) {
+            return redirect()->back()->withInput()->with('error',
+                'Ocorreu um erro inesperado'
+            );
+        }
 
         return redirect()->to('cadastrarendereco');
     }

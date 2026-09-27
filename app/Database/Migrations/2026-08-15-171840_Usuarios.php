@@ -33,7 +33,7 @@ class Usuarios extends Migration
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['ATIVO', 'PENDENTE_EMAIL', 'PENDENTE_PERFIL', 'BLOQUEADO'],
+                'constraint' => ['ATIVO', 'PENDENTE_EMAIL', 'PENDENTE_PERFIL', 'PENDENTE_ENDERECO', 'BLOQUEADO'],
                 'default'    => 'PENDENTE_EMAIL',
                 'null'       => true,
             ],

@@ -1,5 +1,9 @@
 <?php
 
+use CodeIgniter\Router\RouteCollection;
+
+/** @var RouteCollection $routes */
+
 // Login
 $routes->get('login', 'Auth\Login::index');
 $routes->post('login', 'Auth\Login::login');
@@ -30,3 +34,10 @@ $routes->post('redefinirsenha', 'Auth\Login::redefinirSenha');
 // Em desenvolvimento
 $routes->get('usuariocomum/criarconta', 'Auth\Register::registerUsuarioComumForm');
 $routes->get('profissional/criarconta', 'Auth\Register::registerProfissionalForm');
+$routes->post('register/usuariocomum/criarconta', 'Auth\Register::registerUsuarioComumDados');
+$routes->post('register/usuarioprofissional/criarconta', 'Auth\Register::registerProfissionalDados');
+    
+// Endereços
+$routes->get('cadastrarendereco', 'Auth\Enderecos::formCadastrarEndereco');
+$routes->post('cadastrarendereco', 'Auth\Enderecos::cadastrarEndereco');
+$routes->get('enderecos/filhos/(:num)', 'Auth\Enderecos::getFilhos/$1');

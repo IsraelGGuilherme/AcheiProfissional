@@ -56,6 +56,8 @@ class Login extends BaseController
                     return redirect()->to('usuarioprofissional/criarconta');
                 }
                 return redirect()->to('completarperfil');
+            case 'PENDENTE_ENDERECO':
+                return redirect()->to('cadastrarendereco');
             case 'BLOQUEADO':
                 session()->destroy();
                 return redirect()->to('login')->with('error', 'Sua conta foi bloqueada. Entre em contato com o suporte.');

@@ -1,7 +1,11 @@
 <?php
+
 $currentUri = uri_string();
 $activeNav  = $activeNav ?? null;
+$estaLogado = session()->has('usuario');
+
 ?>
+
 <header class="navbar-custom">
     <div class="container navbar-inner-wrap">
 
@@ -26,21 +30,18 @@ $activeNav  = $activeNav ?? null;
                 <a href="<?= base_url('/') ?>" class="nav-link-custom <?= ($activeNav === 'home' || url_is('/') || $currentUri === '') ? 'active' : '' ?>">
                     Buscar
                 </a>
-
-                <a href="<?= base_url('register/usuario') ?>" class="nav-link-custom <?= ($activeNav === 'contratante' || url_is('register/usuario*')) ? 'active' : '' ?>">
-                    Sou Contratante
+                <a href="<?= base_url('quemsomos') ?>" class="nav-link-custom <?= ($activeNav === 'quemsomos' || url_is('quemsomos*')) ? 'active' : '' ?>">
+                    Quem Somos
                 </a>
-
-                <a href="<?= base_url('register/profissional') ?>" class="nav-link-custom <?= ($activeNav === 'profissional' || url_is('register/profissional*')) ? 'active' : '' ?>">
-                    Sou Profissional
-                </a>
-
-                <a href="<?= base_url('admin') ?>" class="nav-link-custom <?= ($activeNav === 'admin' || url_is('admin*')) ? 'active' : '' ?>">
-                    Admin
-                </a>
-                <a href="<?= base_url('login') ?>" class="nav-link-custom nav-link-login <?= ($activeNav === 'login' || url_is('login*')) ? 'active' : '' ?>">
-                    <?= session()->has('usuario') ? 'Logado' : 'Entrar' ?>
-                </a>
+                <?php if ($estaLogado): ?>
+                    <a href="<?= base_url('logout') ?>" class="nav-link-custom nav-link-logout">
+                        Sair
+                    </a>
+                <?php else: ?>
+                    <a href="<?= base_url('login') ?>" class="nav-link-custom nav-link-login <?= ($activeNav === 'login' || url_is('login*')) ? 'active' : '' ?>">
+                        Entrar
+                    </a>
+                <?php endif; ?>
 
             </div>
         </nav>
