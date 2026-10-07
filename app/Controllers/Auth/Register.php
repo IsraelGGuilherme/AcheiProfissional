@@ -178,6 +178,11 @@ class Register extends BaseController
         return view('Auth/Register/registerUsuarioComumForm');
     }
 
+    public function registerProfissionalForm()
+    {
+        return view('Auth/Register/registerProfissionalForm');
+    }
+
     public function registerUsuarioComumDados()
     {
         $params = $this->request->getPost();
@@ -213,6 +218,77 @@ class Register extends BaseController
         }
 
         return redirect()->to('cadastrarendereco');
+    }
+
+    public function registerProfissionalDados()
+    {
+        $params = $this->request->getPost();
+
+        $rules = [
+            'tipo_pessoa'      => 'required|in_list[PF,PJ]',
+            'cpf_cnpj'         => 'required|max_length[18]',
+            'nome'             => 'required|max_length[150]',
+            'descricao'        => 'permit_empty|string',
+            'telefone_contato' => 'permit_empty|max_length[20]',
+            'whatsapp'         => 'permit_empty|max_length[20]',
+            'instagram'        => 'permit_empty|max_length[100]',
+            'site'             => 'permit_empty|max_length[255]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput();
+        }
+
+        helper('url');
+
+        $slugOriginal = url_title($params['nome'], '-', true);
+        $slug = $slugOriginal;
+        $count = 1;
+        while ($this->profissionaisModel->where('slug', $slug)->first()) {
+            $slug = $slugOriginal . '-' . $count;
+            $count++;
+        }
+
+        $insert = $params;
+        $insert['id'] = session('usuario')->id;
+        $insert['slug'] = $slug;
+        
+        // Remove non-numeric characters just to be safe (matching constraint sizes)
+        $insert['cpf_cnpj'] = preg_replace('/\D/', '', $insert['cpf_cnpj']);
+        if (!empty($insert['telefone_contato'])) {
+            $insert['telefone_contato'] = preg_replace('/\D/', '', $insert['telefone_contato']);
+        }
+        if (!empty($insert['whatsapp'])) {
+            $insert['whatsapp'] = preg_replace('/\D/', '', $insert['whatsapp']);
+        }
+
+        try {
+            $db = db_connect();
+            $db->transStart();
+
+            $this->profissionaisModel->insert($insert);
+
+            $this->usuariosModel->update(session('usuario')->id, [
+                'status' => 'PENDENTE_ENDERECO',
+            ]);
+
+            $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                throw new \Exception('Erro ao salvar os dados do profissional.');
+            }
+        } catch (Throwable $e) {
+            log_message('error', '[Register] Erro ao cadastrar dados do profissional: {error} \nStack Trace: {trace}', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            dd($e);
+            return redirect()->back()->withInput()->with('error',
+                'Ocorreu um erro inesperado ao salvar os dados.'
+            );
+        }
+        
+        return redirect()->to('profissional/categorias');
     }
 
     private function usuarioEncontrado(): array

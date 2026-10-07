@@ -53,22 +53,35 @@ class Enderecos extends BaseController
             return redirect()->back()->withInput();
         }
 
+        $tipoUsuario = session('usuario')->tipo;
+
         try {
             $db = db_connect();
             $db->transStart();
 
             $this->enderecosModel->insert($params);
 
+            $status = $tipoUsuario === 'COMUM' ? 'ATIVO' : 'PENDENTE_LOCAIS_ATENDIMENTO';
+
             $this->usuariosModel->update($params['usuario_id'],[
-                'status' => 'ATIVO'
+                'status' => $status
             ]);
+
             $db->transComplete();
+
+            if ($db->transStatus() === false) {
+                throw new \Exception('Erro ao salvar o endereço.');
+            }
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()
                 ->with(
                     'error',
                     'Ocorreu um erro ao cadastrar o endereço. Por favor, tente novamente mais tarde.'
                 );
+        }
+
+        if ($tipoUsuario === 'PROFISSIONAL') {
+            return redirect()->to('profissional/locaisatendimento');
         }
 
         return redirect('/')->with('success', 'Endereço cadastrado com sucesso!');

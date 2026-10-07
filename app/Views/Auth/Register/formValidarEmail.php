@@ -433,9 +433,16 @@
                     `;
                     btnConfirmarCodigo.style.background = '#198754';
 
+                    const tipoUsuario = '<?= strtolower(session('usuario')->tipo) ?>';
+
+                    const tipoUsuarioLink = 
+                        (tipoUsuario === 'comum') 
+                        ? 'usuariocomum'
+                        : (tipoUsuario === 'profissional') ? 'profissional' : 'admin';
+
                     const urlDestino = (data && data.redirect)
                         ? data.redirect
-                        : '<?= base_url('usuario' . strtolower(session('usuario')->tipo . '/criarconta')) ?>';
+                        : '<?= base_url() ?>' + tipoUsuarioLink + '/criarconta';
                     setTimeout(() => {
                         window.location.href = urlDestino;
                     }, 1200);

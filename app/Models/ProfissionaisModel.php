@@ -9,10 +9,23 @@ class ProfissionaisModel extends Model
     protected $table            = 'profissionais';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
+    protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'id',
+        'nome',
+        'descricao',
+        'foto_capa',
+        'telefone_contato',
+        'whatsapp',
+        'instagram',
+        'site',
+        'cpf_cnpj',
+        'tipo_pessoa',
+        'trabalha_feriados',
+        'slug'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

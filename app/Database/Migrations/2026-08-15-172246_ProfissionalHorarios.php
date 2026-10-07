@@ -11,8 +11,9 @@ class ProfissionalHorarios extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type'      => 'BIGINT',
-                'unsigned'  => true,
+                'type'           => 'BIGINT',
+                'unsigned'       => true,
+                'auto_increment' => true,
             ],
             'profissional_id' => [
                 'type'       => 'BIGINT',
@@ -45,7 +46,7 @@ class ProfissionalHorarios extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('id', 'usuarios', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('profissional_id', 'profissionais', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('profissional_horarios');
     }
 

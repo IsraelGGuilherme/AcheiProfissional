@@ -35,9 +35,21 @@ $routes->post('redefinirsenha', 'Auth\Login::redefinirSenha');
 $routes->get('usuariocomum/criarconta', 'Auth\Register::registerUsuarioComumForm');
 $routes->get('profissional/criarconta', 'Auth\Register::registerProfissionalForm');
 $routes->post('register/usuariocomum/criarconta', 'Auth\Register::registerUsuarioComumDados');
-$routes->post('register/usuarioprofissional/criarconta', 'Auth\Register::registerProfissionalDados');
+$routes->post('register/profissional/criarconta', 'Auth\Register::registerProfissionalDados');
     
 // Endereços
 $routes->get('cadastrarendereco', 'Auth\Enderecos::formCadastrarEndereco');
 $routes->post('cadastrarendereco', 'Auth\Enderecos::cadastrarEndereco');
 $routes->get('enderecos/filhos/(:num)', 'Auth\Enderecos::getFilhos/$1');
+
+// Categorias
+$routes->get('profissional/categorias', 'Auth\Categorias::formCategorias');
+$routes->post('profissional/categorias', 'Auth\Categorias::cadastrarCategorias');
+
+// Locais de Atendimento
+$routes->get('profissional/locaisatendimento', 'Auth\LocaisAtendimento::formLocaisAtendimento');
+$routes->post('profissional/locaisatendimento', 'Auth\LocaisAtendimento::cadastrarLocais');
+
+// Horários de Atendimento
+$routes->get('profissional/horarios', 'Auth\HorariosAtendimento::formHorariosAtendimento');
+$routes->post('profissional/horarios', 'Auth\HorariosAtendimento::cadastrarHorarios');
