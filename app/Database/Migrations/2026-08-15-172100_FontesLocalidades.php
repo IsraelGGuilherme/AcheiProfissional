@@ -45,6 +45,6 @@ class FontesLocalidades extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('fontes_localidades');
+        $this->forge->dropTable('fontes_localidades');
     }
 }

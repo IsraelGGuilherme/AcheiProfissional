@@ -61,12 +61,6 @@ class Enderecos extends BaseController
 
             $this->enderecosModel->insert($params);
 
-            $status = $tipoUsuario === 'COMUM' ? 'ATIVO' : 'PENDENTE_LOCAIS_ATENDIMENTO';
-
-            $this->usuariosModel->update($params['usuario_id'],[
-                'status' => $status
-            ]);
-
             $db->transComplete();
 
             if ($db->transStatus() === false) {

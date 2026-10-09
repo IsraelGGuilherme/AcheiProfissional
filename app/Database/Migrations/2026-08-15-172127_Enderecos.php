@@ -89,6 +89,6 @@ class Enderecos extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('enderecos');
+        $this->forge->dropTable('enderecos');
     }
 }

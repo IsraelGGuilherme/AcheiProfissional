@@ -143,7 +143,9 @@ class Register extends BaseController
             );
 
             if ($codigoValido['success']) {
-                $this->usuariosModel->update($usuario->id, ['status' => 'PENDENTE_PERFIL']);
+                $this->usuariosModel->update($usuario->id, [
+                    'email_verificado_em' => date('Y-m-d H:i:s')
+                ]);
 
                 return $this->response->setJSON([
                     'success' => true,
@@ -206,10 +208,6 @@ class Register extends BaseController
 
             $this->usuariosComunsModel->insert($insert);
 
-            $this->usuariosModel->update(session('usuario')->id, [
-                'status' => 'PENDENTE_ENDERECO',
-            ]);
-
             $db->transComplete();
         } catch (Throwable $e) {
             return redirect()->back()->withInput()->with('error',
@@ -268,10 +266,6 @@ class Register extends BaseController
 
             $this->profissionaisModel->insert($insert);
 
-            $this->usuariosModel->update(session('usuario')->id, [
-                'status' => 'PENDENTE_ENDERECO',
-            ]);
-
             $db->transComplete();
 
             if ($db->transStatus() === false) {
@@ -282,7 +276,7 @@ class Register extends BaseController
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            dd($e);
+
             return redirect()->back()->withInput()->with('error',
                 'Ocorreu um erro inesperado ao salvar os dados.'
             );

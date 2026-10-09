@@ -42,6 +42,6 @@ class Categorias extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('categorias');
+        $this->forge->dropTable('categorias');
     }
 }

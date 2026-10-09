@@ -45,6 +45,6 @@ class UsuariosComuns extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('usuarios_comuns');
+        $this->forge->dropTable('usuarios_comuns');
     }
 }

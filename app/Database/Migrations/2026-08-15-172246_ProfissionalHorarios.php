@@ -52,6 +52,6 @@ class ProfissionalHorarios extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('profissional_horarios');
+        $this->forge->dropTable('profissional_horarios');
     }
 }

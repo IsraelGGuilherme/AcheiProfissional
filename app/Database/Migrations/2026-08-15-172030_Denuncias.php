@@ -74,6 +74,6 @@ class Denuncias extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('denuncias');
+        $this->forge->dropTable('denuncias');
     }
 }

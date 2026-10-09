@@ -50,6 +50,6 @@ class Favoritos extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('favoritos');
+        $this->forge->dropTable('favoritos');
     }
 }

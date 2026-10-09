@@ -61,6 +61,6 @@ class UsuarioCodigosEmail extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('usuario_codigos_email');
+        $this->forge->dropTable('usuario_codigos_email');
     }
 }

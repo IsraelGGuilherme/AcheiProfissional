@@ -49,6 +49,6 @@ class ProfissionalImagensGaleria extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('profissional_imagens_galeria');
+        $this->forge->dropTable('profissional_imagens_galeria');
     }
 }

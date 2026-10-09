@@ -46,24 +46,8 @@ class Login extends BaseController
 
         $usuario = session('usuario');
 
-        switch ($usuario->status) {
-            case 'PENDENTE_EMAIL':
-                return redirect()->to('verificaremail');
-            case 'PENDENTE_PERFIL':
-                if ($usuario->tipo === 'COMUM') {
-                    return redirect()->to('usuariocomum/criarconta');
-                } elseif ($usuario->tipo === 'PROFISSIONAL') {
-                    return redirect()->to('usuarioprofissional/criarconta');
-                }
-                return redirect()->to('completarperfil');
-            case 'PENDENTE_ENDERECO':
-                return redirect()->to('cadastrarendereco');
-            case 'BLOQUEADO':
-                session()->destroy();
-                return redirect()->to('login')->with('error', 'Sua conta foi bloqueada. Entre em contato com o suporte.');
-            default:
-                return redirect()->to('/');
-        }
+        // O filtro RegistrationFlowFilter interceptará se estiver faltando algo
+        return redirect()->to('/');
     }
 
     public function formEsqueciMinhaSenha()
@@ -115,8 +99,10 @@ class Login extends BaseController
             );
         }
 
-        return redirect()->to('recuperarconta')
-            ->with('success', 'Código de recuperação enviado para o seu e-mail.');
+        return response()->setJSON([
+            'success' => true,
+            'message' => 'Código de recuperação enviado para o seu e-mail.',
+        ]);
     }
 
     public function validarCodigoRecuperacao()

@@ -33,8 +33,12 @@ class Usuarios extends Migration
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['ATIVO', 'PENDENTE_EMAIL', 'PENDENTE_PERFIL', 'PENDENTE_ENDERECO', 'BLOQUEADO', 'PENDENTE_LOCAIS_ATENDIMENTO'],
-                'default'    => 'PENDENTE_EMAIL',
+                'constraint' => ['ATIVO', 'PENDENTE', 'BLOQUEADO'],
+                'default'    => 'PENDENTE',
+                'null'       => true,
+            ],
+            'email_verificado_em' => [
+                'type'       => 'DATETIME',
                 'null'       => true,
             ],
             'foto_perfil' => [
@@ -57,6 +61,6 @@ class Usuarios extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('usuarios');
+        $this->forge->dropTable('usuarios');
     }
 }

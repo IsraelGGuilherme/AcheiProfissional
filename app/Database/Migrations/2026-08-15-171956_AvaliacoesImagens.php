@@ -43,6 +43,6 @@ class AvaliacoesImagens extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('avaliacoes_imagens');
+        $this->forge->dropTable('avaliacoes_imagens');
     }
 }

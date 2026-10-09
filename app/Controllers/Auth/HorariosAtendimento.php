@@ -70,11 +70,6 @@ class HorariosAtendimento extends BaseController
 
             $horariosModel->insertBatch($dataInsert);
 
-            // Última etapa do cadastro, atualiza status do usuário para ATIVO
-            $usuariosModel->update($profissionalId, [
-                'status' => 'ATIVO'
-            ]);
-
             $db->transComplete();
 
             if ($db->transStatus() === false) {

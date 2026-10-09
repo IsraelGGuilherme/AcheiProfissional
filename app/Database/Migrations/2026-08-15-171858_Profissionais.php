@@ -84,6 +84,6 @@ class Profissionais extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('profissionais');
+        $this->forge->dropTable('profissionais');
     }
 }

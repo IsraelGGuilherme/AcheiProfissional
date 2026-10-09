@@ -13,7 +13,7 @@ class UsuariosModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'email', 'senha', 'tipo', 'status', 'foto_perfil'
+        'email', 'senha', 'tipo', 'status', 'email_verificado_em', 'foto_perfil'
     ];
 
     protected bool $allowEmptyInserts = false;

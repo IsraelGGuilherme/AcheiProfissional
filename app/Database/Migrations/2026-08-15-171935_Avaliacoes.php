@@ -58,6 +58,6 @@ class Avaliacoes extends Migration
 
     public function down()
     {
-        // $this->forge->dropTable('avaliacoes');
+        $this->forge->dropTable('avaliacoes');
     }
 }
