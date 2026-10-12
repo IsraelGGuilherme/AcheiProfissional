@@ -197,6 +197,14 @@ php spark db:seed LocalidadesSeeder
 
 > **Nota:** A base de dados utilizada pelo seeder fica armazenada em `app/Database/Seeds/data/localidades.sql`.
 
+### Povoamento de Categorias de Serviços (Obrigatório)
+
+A plataforma também precisa de uma lista prévia de categorias (como Pedreiro, Eletricista, Encanador, Diarista) para que os profissionais possam selecionar os serviços que prestam no momento do cadastro. Para inserir essas categorias padrões, execute:
+
+```bash
+php spark db:seed CategoriasSeeder
+```
+
 ### Outros Seeds
 
 Para executar outros seeders que venham a ser criados:
@@ -306,6 +314,7 @@ Depois:
 ```bash
 php spark migrate
 php spark db:seed LocalidadesSeeder
+php spark db:seed CategoriasSeeder
 php spark serve
 ```
 
