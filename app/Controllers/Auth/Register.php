@@ -48,7 +48,7 @@ class Register extends BaseController
         $params = $this->request->getPost();
 
         $rules = [
-            'email' => 'required|valid_email|max_length[255]',
+            'email' => 'required|valid_email|max_length[191]',
             'senha' => 'required',
             'tipo'  => 'required|in_list[COMUM,PROFISSIONAL]',
         ];
