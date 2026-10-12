@@ -3,6 +3,8 @@
 $routesFiles = [
     'Public',
     'Auth',
+    'Profissionais',
+    'Perfil',
 ];
 
 foreach ($routesFiles as $filename) {

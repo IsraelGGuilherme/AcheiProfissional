@@ -34,6 +34,9 @@ $estaLogado = session()->has('usuario');
                     Quem Somos
                 </a>
                 <?php if ($estaLogado): ?>
+                    <a href="<?= base_url('perfil') ?>" class="nav-link-custom <?= ($activeNav === 'perfil' || url_is('perfil*')) ? 'active' : '' ?>">
+                        Meu perfil
+                    </a>
                     <a href="<?= base_url('logout') ?>" class="nav-link-custom nav-link-logout">
                         Sair
                     </a>

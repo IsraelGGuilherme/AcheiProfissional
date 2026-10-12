@@ -1,0 +1,21 @@
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+/** @var RouteCollection $routes */
+
+// Área logada: "Meu perfil". Todos os POSTs passam por CSRF.
+$routes->get('perfil', 'Perfil\Inicio::index', ['filter' => 'auth']);
+
+// Profissional
+$routes->get('perfil/profissional', 'Perfil\Profissional::index', ['filter' => 'auth:PROFISSIONAL']);
+$routes->post('perfil/profissional', 'Perfil\Profissional::salvarDados', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/categorias', 'Perfil\Profissional::salvarCategorias', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/endereco', 'Perfil\Profissional::salvarEnderecoPerfil', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/locais', 'Perfil\Profissional::adicionarLocal', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/locais/(:num)/remover', 'Perfil\Profissional::removerLocal/$1', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+
+// Contratante (usuário comum)
+$routes->get('perfil/contratante', 'Perfil\Contratante::index', ['filter' => 'auth:COMUM']);
+$routes->post('perfil/contratante', 'Perfil\Contratante::salvarDados', ['filter' => ['csrf', 'auth:COMUM']]);
+$routes->post('perfil/contratante/endereco', 'Perfil\Contratante::salvarEnderecoPerfil', ['filter' => ['csrf', 'auth:COMUM']]);

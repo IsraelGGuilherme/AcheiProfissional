@@ -8,6 +8,7 @@ use App\Models\UsuariosComunsModel;
 use App\Models\UsuariosModel;
 use App\Services\AuthService;
 use App\Services\CodigoVerificacaoService;
+use App\Services\ImagemUploadService;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 use CodeIgniter\HTTP\ResponseInterface;
 use Throwable;
@@ -233,6 +234,15 @@ class Register extends BaseController
             'site'             => 'permit_empty|max_length[255]',
         ];
 
+        // Fotos são opcionais: só validamos o campo se um arquivo foi realmente enviado.
+        foreach (['foto_perfil', 'foto_capa'] as $campoFoto) {
+            $arquivo = $this->request->getFile($campoFoto);
+
+            if ($arquivo !== null && $arquivo->getError() !== UPLOAD_ERR_NO_FILE) {
+                $rules[$campoFoto] = 'uploaded[' . $campoFoto . ']|' . ImagemUploadService::regra($campoFoto);
+            }
+        }
+
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput();
         }
@@ -281,7 +291,25 @@ class Register extends BaseController
                 'Ocorreu um erro inesperado ao salvar os dados.'
             );
         }
-        
+
+        // Fotos opcionais: uma falha aqui não impede o cadastro (dá para enviar depois em "Meu perfil").
+        try {
+            $imagens = new ImagemUploadService();
+            $id      = (int) session('usuario')->id;
+
+            $fotoPerfil = $imagens->salvar($this->request->getFile('foto_perfil'), 'perfil');
+            if ($fotoPerfil !== null) {
+                $this->usuariosModel->update($id, ['foto_perfil' => $fotoPerfil]);
+            }
+
+            $fotoCapa = $imagens->salvar($this->request->getFile('foto_capa'), 'capas');
+            if ($fotoCapa !== null) {
+                $this->profissionaisModel->update($id, ['foto_capa' => $fotoCapa]);
+            }
+        } catch (Throwable $e) {
+            log_message('error', '[Register] Erro ao salvar fotos do profissional: {error}', ['error' => $e->getMessage()]);
+        }
+
         return redirect()->to('profissional/categorias');
     }
 

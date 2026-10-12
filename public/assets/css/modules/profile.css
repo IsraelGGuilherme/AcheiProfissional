@@ -1,0 +1,307 @@
+/* =========================================
+   PERFIL PÚBLICO, MEU PERFIL E PÁGINAS INSTITUCIONAIS
+   Prefixo .ap- para não conflitar com Bootstrap nem com home.css
+========================================= */
+
+:root {
+    --ap-ink: #263746;
+    --ap-border: #dce6ee;
+    --ap-star: #f2b01e;
+    --ap-danger: #b34b4b;
+}
+
+.page-narrow,
+.page-wide {
+    margin: 0 auto;
+    padding: 34px 20px 60px;
+}
+
+.page-narrow { max-width: 680px; }
+.page-wide   { max-width: 850px; }
+
+/* ---------- Cartões e tipografia ---------- */
+
+.ap-card {
+    background: #fff;
+    border: 1px solid var(--ap-border);
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(35, 70, 100, .06);
+}
+
+.ap-card h2 {
+    font-size: 16px;
+    margin: 0 0 15px;
+    font-weight: 700;
+}
+
+.ap-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 14px;
+}
+
+.ap-text,
+.ap-card p {
+    color: #566675;
+    line-height: 1.65;
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.ap-muted { color: var(--muted); font-size: 12px; }
+
+.ap-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+/* ---------- Botões ---------- */
+
+.ap-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+.ap-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: .2s;
+}
+
+.ap-btn-block { display: flex; width: 100%; }
+
+.ap-btn-primary { background: var(--primary); color: #fff; }
+.ap-btn-primary:hover { background: var(--primary-dark); color: #fff; }
+
+.ap-btn-outline { background: #fff; border-color: var(--primary); color: var(--primary); }
+.ap-btn-outline:hover { background: var(--light-blue); color: var(--primary); }
+
+.ap-btn-whatsapp { background: #fff; border-color: #2aa876; color: #239b6d; }
+.ap-btn-whatsapp:hover { background: #effcf7; color: #239b6d; }
+
+.ap-btn-small { padding: 6px 11px; font-size: 12px; }
+
+.ap-link-danger {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--ap-danger);
+    text-align: center;
+    padding: 10px 15px;
+    margin-top: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.ap-link-danger:hover { color: #8f2929; text-decoration: underline; }
+
+/* ---------- Avatar ---------- */
+
+.ap-avatar {
+    width: 88px;
+    height: 88px;
+    flex: 0 0 88px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dff0ff;
+    color: var(--primary);
+    font-size: 25px;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+.ap-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.ap-avatar-sm { width: 58px; height: 58px; flex-basis: 58px; font-size: 18px; border-radius: 12px; }
+
+/* ---------- Cabeçalho do perfil público ---------- */
+
+.ap-hero {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--ap-border);
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(35, 70, 100, .06);
+    overflow: hidden;
+}
+
+.ap-hero-capa {
+    height: 120px;
+    background: linear-gradient(120deg, #0566bd 0%, #0876d1 60%, #3a9be6 100%);
+    background-size: cover;
+    background-position: center;
+}
+
+.ap-hero-body { display: flex; gap: 22px; align-items: center; padding: 24px 28px 26px; }
+.ap-hero-body.com-capa { margin-top: -44px; align-items: flex-end; }
+.ap-hero-body.com-capa .ap-avatar { border: 4px solid #fff; background-color: #dff0ff; }
+
+.ap-hero h1 { font-size: 24px; margin: 0 0 4px; font-weight: 700; }
+.ap-hero .ap-categoria { color: var(--muted); margin-bottom: 8px; font-size: 14px; }
+
+.ap-stars { color: var(--ap-star); font-size: 16px; letter-spacing: 1px; }
+.ap-stars small { color: var(--muted); font-size: 12px; letter-spacing: 0; margin-left: 4px; }
+
+.ap-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+
+.ap-chip {
+    display: inline-block;
+    background: #eef7ff;
+    color: #176aa8;
+    border-radius: 20px;
+    padding: 7px 12px;
+    margin: 0 7px 8px 0;
+    font-size: 12px;
+}
+
+.ap-info { display: flex; gap: 10px; align-items: flex-start; color: #566675; margin-bottom: 13px; font-size: 13px; }
+.ap-info i { color: var(--primary); font-size: 16px; }
+.ap-info a { color: inherit; }
+
+.ap-horarios { width: 100%; font-size: 13px; color: #566675; }
+.ap-horarios td { padding: 4px 0; vertical-align: top; }
+.ap-horarios td:first-child { font-weight: 600; padding-right: 12px; white-space: nowrap; }
+
+/* ---------- Avaliações ---------- */
+
+.ap-stars-select { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 3px; margin-bottom: 12px; }
+.ap-stars-select input { position: absolute; opacity: 0; }
+.ap-stars-select label { cursor: pointer; color: #c8d1d8; font-size: 29px; line-height: 1; transition: .15s; }
+.ap-stars-select label:hover,
+.ap-stars-select label:hover ~ label,
+.ap-stars-select input:checked ~ label { color: var(--ap-star); }
+.ap-stars-select input:focus-visible + label { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+.ap-textarea,
+.ap-input,
+.ap-select {
+    width: 100%;
+    border: 1px solid #ccd9e3;
+    border-radius: 8px;
+    padding: 10px 11px;
+    background: #fff;
+    font: inherit;
+    font-size: 13px;
+    color: var(--ap-ink);
+}
+
+.ap-textarea { resize: vertical; min-height: 84px; }
+
+.ap-textarea:focus,
+.ap-input:focus,
+.ap-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(8, 118, 209, .1);
+}
+
+.ap-review { border-bottom: 1px solid #edf1f4; padding: 0 0 15px; margin-bottom: 15px; }
+.ap-review:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+.ap-review-head { display: flex; justify-content: space-between; gap: 10px; }
+.ap-review p { font-size: 13px; margin: 7px 0; }
+
+/* ---------- Modal de denúncia ---------- */
+
+.ap-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(22, 39, 54, .55);
+}
+
+.ap-modal-backdrop.open { display: flex; }
+
+.ap-modal-box {
+    width: min(520px, 100%);
+    max-height: 100%;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, .22);
+}
+
+.ap-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 8px; }
+.ap-modal-head h2 { margin: 0; font-size: 19px; }
+.ap-modal-close { border: 0; background: transparent; color: #71808e; font-size: 23px; cursor: pointer; line-height: 1; }
+.ap-label { display: block; color: #354454; font-size: 13px; font-weight: 600; margin: 15px 0 7px; }
+.ap-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 19px; }
+.ap-btn-danger { background: var(--ap-danger); color: #fff; }
+.ap-btn-danger:hover { background: #8f2929; color: #fff; }
+
+/* ---------- Meu perfil ---------- */
+
+.ap-page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.ap-page-header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+.ap-badge { border: 1px solid #d5dfe7; background: #fff; border-radius: 12px; padding: 4px 10px; font-size: 11px; color: #667788; white-space: nowrap; }
+.ap-badge.ok { border-color: #bfe8d6; background: #e8f7f0; color: #24966b; }
+
+.ap-form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.ap-form-row.tres { grid-template-columns: 1fr 1fr 1fr; }
+.ap-field { margin-bottom: 12px; }
+.ap-field label { display: block; margin-bottom: 5px; font-size: 12px; color: #354454; font-weight: 600; }
+.ap-help { color: #8a98a6; font-size: 11px; margin-top: 4px; }
+.ap-input[readonly] { background: #f3f6f9; color: #6b7a88; }
+
+.ap-radio-line { display: flex; gap: 18px; font-size: 13px; }
+.ap-radio-line label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; margin: 0; }
+
+.ap-foto-area { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.ap-foto-area .ap-foto-controles { display: flex; flex-direction: column; gap: 6px; }
+.ap-check { font-size: 12px; color: #6b7a88; display: inline-flex; gap: 6px; align-items: center; }
+
+.ap-capa-preview {
+    height: 90px;
+    border-radius: 10px;
+    border: 1px dashed #c3d3df;
+    background: #f7fafc center / cover no-repeat;
+    margin-bottom: 8px;
+}
+
+.ap-rating-box { display: flex; align-items: center; gap: 18px; padding: 12px; border: 1px solid #dbe4eb; border-radius: 9px; background: #fbfdff; }
+.ap-rating-number { font-size: 28px; font-weight: 700; }
+
+.ap-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; border: 1px solid #d8e2e9; border-radius: 8px; background: #fbfdff; min-height: 40px; }
+.ap-tag { padding: 5px 10px; border-radius: 13px; background: #eaf5ff; border: 1px solid #b7d9f4; color: var(--primary); font-size: 12px; }
+
+.ap-list-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #e5ebf0; font-size: 13px; }
+.ap-list-item:last-child { border-bottom: 0; }
+.ap-list-item small { color: var(--muted); }
+
+.ap-icon-btn { width: 30px; height: 28px; border: 1px solid #d6e0e7; background: #fff; border-radius: 6px; color: #687887; }
+.ap-icon-btn:hover { color: #dc3545; border-color: #f1b5bb; }
+
+.ap-checklist { max-height: 300px; overflow-y: auto; border: 1px solid #e0e7ec; border-radius: 8px; margin-top: 10px; }
+.ap-checklist label { display: flex; align-items: center; gap: 9px; padding: 9px 11px; margin: 0; border-bottom: 1px solid #edf1f4; cursor: pointer; font-size: 13px; font-weight: 500; }
+.ap-checklist label:last-child { border-bottom: 0; }
+.ap-checklist label:hover { background: #f5faff; }
+.ap-checklist input { width: 16px; height: 16px; accent-color: var(--primary); }
+
+@media (max-width: 700px) {
+    .ap-hero-body { flex-direction: column; align-items: flex-start; }
+    .ap-hero-body.com-capa { align-items: flex-start; }
+    .ap-grid { grid-template-columns: 1fr; }
+    .ap-form-row,
+    .ap-form-row.tres { grid-template-columns: 1fr; }
+    .ap-page-header { flex-direction: column; }
+}

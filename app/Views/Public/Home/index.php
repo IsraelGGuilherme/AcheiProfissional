@@ -36,7 +36,7 @@
         FILTROS
         =================================== -->
 
-        <div class="search-box text-start">
+        <form method="get" action="<?= base_url('/') ?>" class="search-box text-start" id="formBusca">
 
             <div class="row g-2">
 
@@ -44,35 +44,21 @@
 
                 <div class="col-md-3">
 
-                    <label class="filter-label">
+                    <label class="filter-label" for="filtroCategoria">
                         Categoria
                     </label>
 
-                    <select class="form-select filter-select">
+                    <select class="form-select filter-select" name="categoria" id="filtroCategoria">
 
-                        <option>
+                        <option value="">
                             Todas as categorias
                         </option>
 
-                        <option>
-                            Eletricista
-                        </option>
-
-                        <option>
-                            Encanador
-                        </option>
-
-                        <option>
-                            Pedreiro
-                        </option>
-
-                        <option>
-                            Pintor
-                        </option>
-
-                        <option>
-                            Marceneiro
-                        </option>
+                        <?php foreach ($categorias as $categoria): ?>
+                            <option value="<?= $categoria->id ?>" <?= (int) $filtros['categoria'] === (int) $categoria->id ? 'selected' : '' ?>>
+                                <?= esc($categoria->nome) ?>
+                            </option>
+                        <?php endforeach; ?>
 
                     </select>
 
@@ -82,27 +68,21 @@
 
                 <div class="col-md-3">
 
-                    <label class="filter-label">
+                    <label class="filter-label" for="filtroCidade">
                         Cidade
                     </label>
 
-                    <select class="form-select filter-select">
+                    <select class="form-select filter-select" name="cidade" id="filtroCidade">
 
-                        <option>
-                            Muriaé
+                        <option value="">
+                            Todas as cidades
                         </option>
 
-                        <option>
-                            Mirai
-                        </option>
-
-                        <option>
-                            Eugenópolis
-                        </option>
-
-                        <option>
-                            Patrocínio do Muriaé
-                        </option>
+                        <?php foreach ($cidades as $cidade): ?>
+                            <option value="<?= $cidade->id ?>" <?= (int) $filtros['cidade'] === (int) $cidade->id ? 'selected' : '' ?>>
+                                <?= esc($cidade->nome) ?> - <?= esc($cidade->uf) ?>
+                            </option>
+                        <?php endforeach; ?>
 
                     </select>
 
@@ -112,35 +92,21 @@
 
                 <div class="col-md-3">
 
-                    <label class="filter-label">
+                    <label class="filter-label" for="filtroBairro">
                         Bairro
                     </label>
 
-                    <select class="form-select filter-select">
+                    <select class="form-select filter-select" name="bairro" id="filtroBairro">
 
-                        <option>
+                        <option value="">
                             Todos os bairros
                         </option>
 
-                        <option>
-                            Centro
-                        </option>
-
-                        <option>
-                            Barra
-                        </option>
-
-                        <option>
-                            Safira
-                        </option>
-
-                        <option>
-                            Porto
-                        </option>
-
-                        <option>
-                            São Joaquim
-                        </option>
+                        <?php foreach ($bairros as $bairro): ?>
+                            <option value="<?= $bairro->id ?>" <?= (int) $filtros['bairro'] === (int) $bairro->id ? 'selected' : '' ?>>
+                                <?= esc($bairro->nome) ?>
+                            </option>
+                        <?php endforeach; ?>
 
                     </select>
 
@@ -150,25 +116,25 @@
 
                 <div class="col-md-3">
 
-                    <label class="filter-label">
+                    <label class="filter-label" for="filtroNota">
                         Avaliação
                     </label>
 
-                    <select class="form-select filter-select">
+                    <select class="form-select filter-select" name="nota" id="filtroNota">
 
-                        <option>
+                        <option value="">
                             Qualquer nota
                         </option>
 
-                        <option>
+                        <option value="5" <?= $filtros['nota'] === 5 ? 'selected' : '' ?>>
                             5 estrelas
                         </option>
 
-                        <option>
+                        <option value="4" <?= $filtros['nota'] === 4 ? 'selected' : '' ?>>
                             4 estrelas ou mais
                         </option>
 
-                        <option>
+                        <option value="3" <?= $filtros['nota'] === 3 ? 'selected' : '' ?>>
                             3 estrelas ou mais
                         </option>
 
@@ -178,7 +144,7 @@
 
             </div>
 
-            <button type="button" class="btn-search">
+            <button type="submit" class="btn-search">
 
                 <i class="bi bi-search me-1"></i>
 
@@ -186,15 +152,26 @@
 
             </button>
 
-        </div>
+        </form>
 
     </div>
 
 </section>
 
+
 <!-- ==========================================
     CONTEÚDO
 =========================================== -->
+
+<?php
+    // Mantém os filtros atuais ao trocar de categoria ou de página.
+    $linkBusca = static function (array $sobrescrever = []) use ($filtros) {
+        $params = array_filter(array_merge($filtros, ['pagina' => null], $sobrescrever), static fn ($v) => $v !== null && $v !== '' && $v !== 0);
+        $query  = http_build_query($params);
+
+        return base_url('/') . ($query !== '' ? '?' . $query : '');
+    };
+?>
 
 <main class="content">
 
@@ -208,68 +185,25 @@
 
     <div class="category-list">
 
-        <button class="category active">
-            Eletricista
-        </button>
-
-        <button class="category">
-            Encanador
-        </button>
-
-        <button class="category">
-            Pedreiro
-        </button>
-
-        <button class="category">
-            Pintor
-        </button>
-
-        <button class="category">
-            Marceneiro
-        </button>
-
-        <button class="category">
-            Mecânico
-        </button>
-
-        <button class="category">
-            Costureira
-        </button>
-
-        <button class="category">
-            Diarista
-        </button>
-
-        <button class="category">
-            Cuidador de idosos
-        </button>
-
-        <button class="category">
-            Professor particular
-        </button>
-
-        <button class="category">
-            Técnico em informática
-        </button>
-
-        <button class="category">
-            Jardineiro
-        </button>
-
-        <button class="category">
-            Chaveiro
-        </button>
+        <?php foreach ($categorias as $categoria): ?>
+            <a href="<?= $linkBusca(['categoria' => (int) $filtros['categoria'] === (int) $categoria->id ? 0 : (int) $categoria->id]) ?>"
+               class="category text-decoration-none <?= (int) $filtros['categoria'] === (int) $categoria->id ? 'active' : '' ?>">
+                <?= esc($categoria->nome) ?>
+            </a>
+        <?php endforeach; ?>
 
     </div>
 
+
     <!-- ======================================
     RESULTADOS
-        ======================================= -->
+    ======================================= -->
 
     <div class="results-header">
 
         <h2 class="results-title">
-            5 profissionais encontrados
+            <?php $total = $resultado['total']; ?>
+            <?= $total === 0 ? 'Nenhum profissional encontrado' : $total . ($total === 1 ? ' profissional encontrado' : ' profissionais encontrados') ?>
         </h2>
 
         <span class="results-order">
@@ -278,413 +212,151 @@
 
     </div>
 
-    <!-- ======================================
-    PROFISSIONAL 1
-        ======================================= -->
+    <?php if (session()->getFlashdata('success')): ?>
+        <div class="alert alert-success py-2 px-3 mb-3" role="alert">
+            <?= esc(session()->getFlashdata('success')) ?>
+        </div>
+    <?php endif; ?>
 
-    <article class="professional-card">
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-danger py-2 px-3 mb-3" role="alert">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
 
-        <div class="avatar">
-            JE
+    <?php if (empty($resultado['itens'])): ?>
+
+        <div class="alert alert-light border text-center py-4">
+            Tente remover algum filtro ou escolher outra categoria.
         </div>
 
-        <div class="professional-info">
+    <?php endif; ?>
 
-            <div class="professional-name-row">
+    <?php foreach ($resultado['itens'] as $prof): ?>
 
-                <span class="professional-name">
-                    João Eletricista
-                </span>
+        <?php
+            $categoriasProf = $prof->categorias;
+            $principal      = $categoriasProf[0] ?? null;
+            $extras         = max(0, count($categoriasProf) - 1);
+            $linkZap        = link_whatsapp($prof->whatsapp);
+            $local          = trim(implode(', ', array_filter([$prof->bairro_nome, $prof->cidade_nome])));
+        ?>
 
-                <span class="professional-category">
-                    Eletricista
-                </span>
+        <article class="professional-card">
+
+            <div class="avatar">
+                <?php if ($prof->foto_perfil): ?>
+                    <img src="<?= esc(url_foto($prof->foto_perfil), 'attr') ?>" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+                <?php else: ?>
+                    <?= esc(iniciais_nome($prof->nome)) ?>
+                <?php endif; ?>
+            </div>
+
+            <div class="professional-info">
+
+                <div class="professional-name-row">
+
+                    <span class="professional-name">
+                        <?= esc($prof->nome) ?>
+                    </span>
+
+                    <?php if ($principal): ?>
+                        <span class="professional-category">
+                            <?= esc($principal) ?>
+                        </span>
+                    <?php endif; ?>
+
+                </div>
+
+                <div class="rating">
+
+                    <?php if ((int) $prof->total_avaliacoes > 0): ?>
+                        <span class="stars">
+                            <?= estrelas_texto($prof->media) ?>
+                        </span>
+                    <?php endif; ?>
+
+                    <span class="rating-text">
+                        <?php if ((int) $prof->total_avaliacoes > 0): ?>
+                            <?= formata_media($prof->media) ?> ·
+                        <?php endif; ?>
+                        <?= rotulo_avaliacoes((int) $prof->total_avaliacoes) ?>
+                    </span>
+
+                </div>
+
+                <?php if (!empty($prof->descricao)): ?>
+                    <div class="description">
+                        <?= esc(mb_strimwidth($prof->descricao, 0, 220, '...')) ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="professional-meta">
+
+                    <?php if ($local !== ''): ?>
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            <?= esc($local) ?>
+                        </span>
+                    <?php endif; ?>
+
+                    <?php if ($extras > 0): ?>
+                        <span class="tag">
+                            +<?= $extras ?> <?= $extras === 1 ? 'categoria' : 'categorias' ?>
+                        </span>
+                    <?php endif; ?>
+
+                </div>
 
             </div>
 
-            <div class="rating">
+            <div class="professional-actions">
 
-                <span class="stars">
-                    ★★★★★
-                </span>
+                <a href="<?= base_url('profissionais/' . $prof->slug) ?>" class="btn-profile text-decoration-none d-flex align-items-center justify-content-center">
+                    Ver perfil
+                </a>
 
-                <span class="rating-text">
-                    5,0 · 34 avaliações
-                </span>
-
-            </div>
-
-            <div class="description">
-
-                Instalações elétricas residenciais e comerciais,
-                troca de quadros de energia, chuveiros e tomadas.
-                Atendo emergências 24 horas em Muriaé e região.
+                <?php if ($linkZap): ?>
+                    <a href="<?= esc($linkZap, 'attr') ?>" target="_blank" rel="noopener" class="btn-whatsapp text-decoration-none d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-whatsapp"></i>
+                        WhatsApp
+                    </a>
+                <?php endif; ?>
 
             </div>
 
-            <div class="professional-meta">
+        </article>
 
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    Centro, Muriaé
-                </span>
+    <?php endforeach; ?>
 
-                <span>
-                    <i class="bi bi-house"></i>
-                    Atende em domicílio
-                </span>
-
-                <span class="tag">
-                    Atende emergência
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="professional-actions">
-
-            <button class="btn-profile">
-                Ver perfil
-            </button>
-
-            <button class="btn-whatsapp">
-
-                <i class="bi bi-whatsapp"></i>
-
-                WhatsApp
-
-            </button>
-
-        </div>
-
-    </article>
-
-    <!-- ======================================
-    PROFISSIONAL 2
-        ======================================= -->
-
-    <article class="professional-card">
-
-        <div class="avatar">
-            DR
-        </div>
-
-        <div class="professional-info">
-
-            <div class="professional-name-row">
-
-                <span class="professional-name">
-                    Dona Rita Diarista
-                </span>
-
-                <span class="professional-category">
-                    Diarista
-                </span>
-
-            </div>
-
-            <div class="rating">
-
-                <span class="stars">
-                    ★★★★★
-                </span>
-
-                <span class="rating-text">
-                    5,0 · 41 avaliações
-                </span>
-
-            </div>
-
-            <div class="description">
-
-                Limpeza residencial completa,
-                passadoria e organização de armários.
-
-            </div>
-
-            <div class="professional-meta">
-
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    Porto, Muriaé
-                </span>
-
-                <span>
-                    <i class="bi bi-house"></i>
-                    Atende em domicílio
-                </span>
-
-                <span class="tag">
-                    Diária o meio diária
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="professional-actions">
-
-            <button class="btn-profile">
-                Ver perfil
-            </button>
-
-            <button class="btn-whatsapp">
-
-                <i class="bi bi-whatsapp"></i>
-
-                WhatsApp
-
-            </button>
-
-        </div>
-
-    </article>
 
     <!-- ======================================
-    PROFISSIONAL 3
-        ======================================= -->
-
-    <article class="professional-card">
-
-        <div class="avatar">
-            CE
-        </div>
-
-        <div class="professional-info">
-
-            <div class="professional-name-row">
-
-                <span class="professional-name">
-                    Carlos Encanador
-                </span>
-
-                <span class="professional-category">
-                    Encanador
-                </span>
-
-            </div>
-
-            <div class="rating">
-
-                <span class="stars">
-                    ★★★★★
-                </span>
-
-                <span class="rating-text">
-                    4,8 · 27 avaliações
-                </span>
-
-            </div>
-
-            <div class="description">
-
-                Desentupimento, caça-vazamentos com equipamento
-                próprio e reparos hidráulicos em geral.
-
-            </div>
-
-            <div class="professional-meta">
-
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    Safira, Muriaé
-                </span>
-
-                <span>
-                    <i class="bi bi-house"></i>
-                    Atende em domicílio
-                </span>
-
-                <span class="tag">
-                    Caça-vazamentos
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="professional-actions">
-
-            <button class="btn-profile">
-                Ver perfil
-            </button>
-
-            <button class="btn-whatsapp">
-
-                <i class="bi bi-whatsapp"></i>
-
-                WhatsApp
-
-            </button>
-
-        </div>
-
-    </article>
-
-    <!-- ======================================
-    PROFISSIONAL 4
-        ======================================= -->
-
-    <article class="professional-card">
-
-        <div class="avatar">
-            TI
-        </div>
-
-        <div class="professional-info">
-
-            <div class="professional-name-row">
-
-                <span class="professional-name">
-                    Tiago Informática
-                </span>
-
-                <span class="professional-category">
-                    Técnico em informática
-                </span>
-
-            </div>
-
-            <div class="rating">
-
-                <span class="stars">
-                    ★★★★★
-                </span>
-
-                <span class="rating-text">
-                    4,6 · 22 avaliações
-                </span>
-
-            </div>
-
-            <div class="description">
-
-                Formatação, manutenção de notebooks,
-                montagem de redes e instalação de câmeras
-                de segurança.
-
-            </div>
-
-            <div class="professional-meta">
-
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    Bom Pastor, Muriaé
-                </span>
-
-                <span>
-                    <i class="bi bi-house"></i>
-                    Atende em domicílio
-                </span>
-
-                <span class="tag">
-                    Atende em domicílio
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="professional-actions">
-
-            <button class="btn-profile">
-                Ver perfil
-            </button>
-
-            <button class="btn-whatsapp">
-
-                <i class="bi bi-whatsapp"></i>
-
-                WhatsApp
-
-            </button>
-
-        </div>
-
-    </article>
-
-    <!-- ======================================
-    PROFISSIONAL 5
+    PAGINAÇÃO
     ======================================= -->
 
-    <article class="professional-card">
+    <?php if ($resultado['paginas'] > 1): ?>
 
-        <div class="avatar">
-            MI
-        </div>
+        <nav class="d-flex justify-content-center align-items-center gap-3 mt-3" aria-label="Paginação dos resultados">
 
-        <div class="professional-info">
+            <?php if ($resultado['pagina'] > 1): ?>
+                <a class="btn-profile text-decoration-none d-inline-flex align-items-center justify-content-center px-3" style="width:auto;" href="<?= $linkBusca(['pagina' => $resultado['pagina'] - 1]) ?>">
+                    Anterior
+                </a>
+            <?php endif; ?>
 
-            <div class="professional-name-row">
+            <span class="results-order">
+                Página <?= $resultado['pagina'] ?> de <?= $resultado['paginas'] ?>
+            </span>
 
-                <span class="professional-name">
-                    Maria Instalações
-                </span>
+            <?php if ($resultado['pagina'] < $resultado['paginas']): ?>
+                <a class="btn-profile text-decoration-none d-inline-flex align-items-center justify-content-center px-3" style="width:auto;" href="<?= $linkBusca(['pagina' => $resultado['pagina'] + 1]) ?>">
+                    Próxima
+                </a>
+            <?php endif; ?>
 
-                <span class="professional-category">
-                    Eletricista
-                </span>
+        </nav>
 
-            </div>
-
-            <div class="rating">
-
-                <span class="stars">
-                    ★★★★★
-                </span>
-
-                <span class="rating-text">
-                    4,5 · 18 avaliações
-                </span>
-
-            </div>
-
-            <div class="description">
-
-                Especialista em instalação residencial,
-                quadros de energia, ventiladores de teto
-                e iluminação em LED.
-
-            </div>
-
-            <div class="professional-meta">
-
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    Barra, Muriaé
-                </span>
-
-                <span>
-                    <i class="bi bi-house"></i>
-                    Atende em domicílio
-                </span>
-
-                <span class="tag">
-                    Especialista em residencial
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="professional-actions">
-
-            <button class="btn-profile">
-                Ver perfil
-            </button>
-
-            <button class="btn-whatsapp">
-
-                <i class="bi bi-whatsapp"></i>
-
-                WhatsApp
-
-            </button>
-
-        </div>
-
-    </article>
+    <?php endif; ?>
 
 </main>
 
@@ -694,25 +366,56 @@
 <script>
 
     /*
-    * Seleção visual das categorias
+    * Carrega os bairros da cidade escolhida (reaproveita a rota enderecos/filhos).
+    * Sem JavaScript, o filtro de bairro aparece depois de pesquisar pela cidade.
     */
 
-    const categories =
-        document.querySelectorAll('.category');
+    (function () {
 
-    categories.forEach(category => {
+        const selectCidade = document.getElementById('filtroCidade');
+        const selectBairro = document.getElementById('filtroBairro');
 
-        category.addEventListener('click', () => {
+        function limparBairros() {
+            selectBairro.innerHTML = '<option value="">Todos os bairros</option>';
+        }
 
-            categories.forEach(item => {
-                item.classList.remove('active');
-            });
+        selectCidade.addEventListener('change', async () => {
 
-            category.classList.add('active');
+            limparBairros();
+
+            const cidadeId = selectCidade.value;
+
+            if (!cidadeId) {
+                return;
+            }
+
+            try {
+                const resposta = await fetch('<?= base_url('enderecos/filhos') ?>/' + encodeURIComponent(cidadeId));
+
+                if (!resposta.ok) {
+                    return;
+                }
+
+                const bairros = await resposta.json();
+
+                bairros
+                    .filter(item => item.tipo === 'BAIRRO')
+                    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+                    .forEach(item => {
+                        const opcao = document.createElement('option');
+                        opcao.value = item.id;
+                        opcao.textContent = item.nome;
+                        selectBairro.appendChild(opcao);
+                    });
+
+            } catch (erro) {
+                /* mantém só "Todos os bairros" */
+            }
 
         });
 
-    });
+    })();
+
 </script>
 
 <?= $this->endSection() ?>
