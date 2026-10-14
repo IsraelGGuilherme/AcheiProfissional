@@ -186,6 +186,55 @@ class Register extends BaseController
         return view('Auth/Register/registerProfissionalForm');
     }
 
+    /**
+     * Regras de validação das fotos do cadastro. São opcionais: o campo só é validado
+     * se um arquivo foi realmente enviado.
+     *
+     * @param list<string> $campos
+     * @return array<string, string>
+     */
+    protected function regrasFotosOpcionais(array $campos): array
+    {
+        $regras = [];
+
+        foreach ($campos as $campo) {
+            $arquivo = $this->request->getFile($campo);
+
+            if ($arquivo !== null && $arquivo->getError() !== UPLOAD_ERR_NO_FILE) {
+                $regras[$campo] = 'uploaded[' . $campo . ']|' . ImagemUploadService::regra($campo);
+            }
+        }
+
+        return $regras;
+    }
+
+    /**
+     * Grava as fotos enviadas no cadastro. Uma falha aqui não desfaz o cadastro
+     * (a pessoa pode enviar a foto depois, em "Meu perfil").
+     */
+    protected function salvarFotosDoCadastro(int $usuarioId, bool $comCapa): void
+    {
+        try {
+            $imagens = new ImagemUploadService();
+
+            $fotoPerfil = $imagens->salvar($this->request->getFile('foto_perfil'), 'perfil');
+
+            if ($fotoPerfil !== null) {
+                $this->usuariosModel->update($usuarioId, ['foto_perfil' => $fotoPerfil]);
+            }
+
+            if ($comCapa) {
+                $fotoCapa = $imagens->salvar($this->request->getFile('foto_capa'), 'capas');
+
+                if ($fotoCapa !== null) {
+                    $this->profissionaisModel->update($usuarioId, ['foto_capa' => $fotoCapa]);
+                }
+            }
+        } catch (Throwable $e) {
+            log_message('error', '[Register] Erro ao salvar fotos do cadastro: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
     public function registerUsuarioComumDados()
     {
         $params = $this->request->getPost();
@@ -195,6 +244,8 @@ class Register extends BaseController
             'cpf'      => 'required|exact_length[11]',
             'telefone' => 'required|max_length[20]',
         ];
+
+        $rules += $this->regrasFotosOpcionais(['foto_perfil']);
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput();
@@ -216,6 +267,8 @@ class Register extends BaseController
             );
         }
 
+        $this->salvarFotosDoCadastro((int) session('usuario')->id, false);
+
         return redirect()->to('cadastrarendereco');
     }
 
@@ -234,14 +287,7 @@ class Register extends BaseController
             'site'             => 'permit_empty|max_length[255]',
         ];
 
-        // Fotos são opcionais: só validamos o campo se um arquivo foi realmente enviado.
-        foreach (['foto_perfil', 'foto_capa'] as $campoFoto) {
-            $arquivo = $this->request->getFile($campoFoto);
-
-            if ($arquivo !== null && $arquivo->getError() !== UPLOAD_ERR_NO_FILE) {
-                $rules[$campoFoto] = 'uploaded[' . $campoFoto . ']|' . ImagemUploadService::regra($campoFoto);
-            }
-        }
+        $rules += $this->regrasFotosOpcionais(['foto_perfil', 'foto_capa']);
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput();
@@ -292,23 +338,7 @@ class Register extends BaseController
             );
         }
 
-        // Fotos opcionais: uma falha aqui não impede o cadastro (dá para enviar depois em "Meu perfil").
-        try {
-            $imagens = new ImagemUploadService();
-            $id      = (int) session('usuario')->id;
-
-            $fotoPerfil = $imagens->salvar($this->request->getFile('foto_perfil'), 'perfil');
-            if ($fotoPerfil !== null) {
-                $this->usuariosModel->update($id, ['foto_perfil' => $fotoPerfil]);
-            }
-
-            $fotoCapa = $imagens->salvar($this->request->getFile('foto_capa'), 'capas');
-            if ($fotoCapa !== null) {
-                $this->profissionaisModel->update($id, ['foto_capa' => $fotoCapa]);
-            }
-        } catch (Throwable $e) {
-            log_message('error', '[Register] Erro ao salvar fotos do profissional: {error}', ['error' => $e->getMessage()]);
-        }
+        $this->salvarFotosDoCadastro((int) session('usuario')->id, true);
 
         return redirect()->to('profissional/categorias');
     }

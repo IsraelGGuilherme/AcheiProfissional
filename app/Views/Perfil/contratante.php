@@ -115,6 +115,8 @@
 
     </section>
 
+    <?= $this->setVar('tipoConta', 'COMUM')->include('Perfil/partials/excluir_conta') ?>
+
 </main>
 
 <?= $this->endSection() ?>

@@ -347,6 +347,8 @@
 
     </section>
 
+    <?= $this->setVar('tipoConta', 'PROFISSIONAL')->include('Perfil/partials/excluir_conta') ?>
+
 </main>
 
 <?= $this->endSection() ?>

@@ -167,6 +167,9 @@
     // Mantém os filtros atuais ao trocar de categoria ou de página.
     $linkBusca = static function (array $sobrescrever = []) use ($filtros) {
         $params = array_filter(array_merge($filtros, ['pagina' => null], $sobrescrever), static fn ($v) => $v !== null && $v !== '' && $v !== 0);
+
+        // "cidade" vai sempre na URL (mesmo vazia), para a escolha "Todas as cidades" não voltar ao padrão do cadastro.
+        $params['cidade'] = $params['cidade'] ?? '';
         $query  = http_build_query($params);
 
         return base_url('/') . ($query !== '' ? '?' . $query : '');
@@ -212,6 +215,15 @@
 
     </div>
 
+    <?php if (!empty($cidadePadrao)): ?>
+        <div class="alert alert-light border py-2 px-3 mb-3" role="status" style="font-size:12px;">
+            <i class="bi bi-geo-alt"></i>
+            Mostrando profissionais de <strong><?= esc($cidadePadrao->nome) ?> - <?= esc($cidadePadrao->uf) ?></strong>, a cidade do seu cadastro.
+            Para ver outras localidades, use o filtro de cidade ou
+            <a href="<?= $linkBusca(['cidade' => 0]) ?>">veja todas as cidades</a>.
+        </div>
+    <?php endif; ?>
+
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success py-2 px-3 mb-3" role="alert">
             <?= esc(session()->getFlashdata('success')) ?>
@@ -236,8 +248,6 @@
 
         <?php
             $categoriasProf = $prof->categorias;
-            $principal      = $categoriasProf[0] ?? null;
-            $extras         = max(0, count($categoriasProf) - 1);
             $linkZap        = link_whatsapp($prof->whatsapp);
             $local          = trim(implode(', ', array_filter([$prof->bairro_nome, $prof->cidade_nome])));
         ?>
@@ -260,13 +270,17 @@
                         <?= esc($prof->nome) ?>
                     </span>
 
-                    <?php if ($principal): ?>
-                        <span class="professional-category">
-                            <?= esc($principal) ?>
-                        </span>
-                    <?php endif; ?>
-
                 </div>
+
+                <?php if (!empty($categoriasProf)): ?>
+                    <div class="d-flex flex-wrap gap-1 mb-1">
+                        <?php foreach ($categoriasProf as $nomeCategoria): ?>
+                            <span class="professional-category">
+                                <?= esc($nomeCategoria) ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <div class="rating">
 
@@ -297,12 +311,6 @@
                         <span>
                             <i class="bi bi-geo-alt"></i>
                             <?= esc($local) ?>
-                        </span>
-                    <?php endif; ?>
-
-                    <?php if ($extras > 0): ?>
-                        <span class="tag">
-                            +<?= $extras ?> <?= $extras === 1 ? 'categoria' : 'categorias' ?>
                         </span>
                     <?php endif; ?>
 

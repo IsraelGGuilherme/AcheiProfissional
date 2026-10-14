@@ -19,3 +19,6 @@ $routes->post('perfil/profissional/locais/(:num)/remover', 'Perfil\Profissional:
 $routes->get('perfil/contratante', 'Perfil\Contratante::index', ['filter' => 'auth:COMUM']);
 $routes->post('perfil/contratante', 'Perfil\Contratante::salvarDados', ['filter' => ['csrf', 'auth:COMUM']]);
 $routes->post('perfil/contratante/endereco', 'Perfil\Contratante::salvarEnderecoPerfil', ['filter' => ['csrf', 'auth:COMUM']]);
+
+// Exclusão da própria conta (qualquer tipo de usuário logado)
+$routes->post('perfil/excluir-conta', 'Perfil\Conta::excluir', ['filter' => ['csrf', 'auth']]);

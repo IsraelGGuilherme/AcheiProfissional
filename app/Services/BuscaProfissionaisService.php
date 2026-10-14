@@ -195,6 +195,31 @@ class BuscaProfissionaisService
         return $this->db->query($sql)->getResult();
     }
 
+    /** Cidade do endereço cadastrado do usuário (profissional ou contratante), ou null. */
+    public function cidadeDoUsuario(int $usuarioId): ?object
+    {
+        return $this->db->table('enderecos e')
+            ->select('c.id, c.nome, uf.sigla AS uf')
+            ->join('localidades c', "c.id = e.cidade_id AND c.tipo = 'MUNICIPIO'")
+            ->join('localidades uf', 'uf.id = c.localidade_pai_id', 'left')
+            ->where('e.usuario_id', $usuarioId)
+            ->orderBy('e.id', 'DESC')
+            ->limit(1)
+            ->get()
+            ->getRow();
+    }
+
+    public function cidadePorId(int $cidadeId): ?object
+    {
+        return $this->db->table('localidades c')
+            ->select('c.id, c.nome, uf.sigla AS uf')
+            ->join('localidades uf', 'uf.id = c.localidade_pai_id', 'left')
+            ->where('c.id', $cidadeId)
+            ->where('c.tipo', 'MUNICIPIO')
+            ->get()
+            ->getRow();
+    }
+
     /** @return list<object> id, nome */
     public function bairrosDaCidade(int $cidadeId): array
     {
