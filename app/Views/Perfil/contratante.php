@@ -16,7 +16,11 @@
             <h1>Meu perfil</h1>
             <p class="ap-muted" style="margin:3px 0 0;">Mantenha seus dados atualizados.</p>
         </div>
-        <span class="ap-badge ok">Conta ativa</span>
+        <?php if ($usuario->status === 'ATIVO'): ?>
+            <span class="ap-badge ok">Conta ativa</span>
+        <?php else: ?>
+            <span class="ap-badge">Conta pendente</span>
+        <?php endif; ?>
     </div>
 
     <?= $this->include('Templates/partials/flash') ?>

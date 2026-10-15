@@ -1,8 +1,3 @@
-# Achei Profissional — alterações da etapa "área pública e perfis"
-
-Copie as pastas deste zip por cima do projeto (`app/` e `public/`), mantendo os caminhos.
-Nenhuma migration foi criada ou alterada e nenhuma tabela mudou.
-
 ## Arquivos ALTERADOS (autorizados)
 | Arquivo | O que mudou |
 |---|---|
@@ -11,6 +6,7 @@ Nenhuma migration foi criada ou alterada e nenhuma tabela mudou.
 | `app/Controllers/Public/Home.php` | Passou a consultar o banco (busca com filtros e paginação) |
 | `app/Views/Public/Home/index.php` | Mesmo layout; filtros viraram formulário GET e os cards vêm do banco |
 | `app/Views/Templates/partials/navbar.php` | Link "Meu perfil" quando logado |
+| `app/Services/AuthService.php` | `login()` e `montarSessaoUsuario()` passaram a apagar `registro_completo` da sessão. Antes, quem criava ou entrava em outra conta no mesmo navegador sem clicar em "Sair" herdava a marca da conta anterior: o `RegistrationFlowFilter` pulava as etapas e a conta nova ficava `PENDENTE` para sempre (e não aparecia na busca) |
 | `app/Controllers/Auth/Register.php` | Os dois cadastros (`registerUsuarioComumDados` e `registerProfissionalDados`) passaram a validar e salvar `foto_perfil` (e `foto_capa`, no profissional), opcionais, com o `ImagemUploadService`. Dois métodos novos (`regrasFotosOpcionais`, `salvarFotosDoCadastro`). Uma falha ao salvar foto não impede o cadastro |
 
 ## Arquivos NOVOS
@@ -55,7 +51,3 @@ Todos os POSTs novos passam pelo filtro `csrf`.
   (a FK é `RESTRICT`) e as fotos saem do disco. Avaliações feitas por um contratante permanecem, sem nome ("Usuário"), e as denúncias permanecem
   sem vínculo com a conta apagada, para o admin.
 - Horários continuam sendo editados na tela original `profissional/horarios` (é preciso informar todos de novo).
-
-## Não alterado, mas vale saber
-- O `.env` do projeto contém uma senha de app do Gmail em texto: troque-a se o repositório já foi compartilhado.
-- As telas de admin/denúncias/categorias da pasta View não foram usadas.

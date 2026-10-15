@@ -27,7 +27,11 @@
             <p class="ap-muted" style="margin:3px 0 0;">Estas informações aparecem na sua página pública.</p>
         </div>
         <div class="d-flex flex-column align-items-end gap-2">
-            <span class="ap-badge ok">Perfil ativo</span>
+            <?php if ($usuario->status === 'ATIVO'): ?>
+                <span class="ap-badge ok">Perfil ativo</span>
+            <?php else: ?>
+                <span class="ap-badge" title="Seu perfil só aparece na busca depois de ativado.">Perfil pendente</span>
+            <?php endif; ?>
             <a class="ap-btn ap-btn-outline ap-btn-small" href="<?= base_url('profissionais/' . $profissional->slug) ?>">
                 <i class="bi bi-eye"></i> Ver página pública
             </a>

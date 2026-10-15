@@ -25,6 +25,8 @@ class AuthService
         }
 
         session()->regenerate();
+        // Sessão nova de usuário: o "cadastro completo" da conta anterior não pode valer para esta.
+        session()->remove('registro_completo');
         session()->set('usuario', $usuario);
 
         return true;
@@ -49,6 +51,9 @@ class AuthService
         }
 
         session()->regenerate();
+
+        // Mesmo motivo do login(): não herdar o "cadastro completo" de outra conta.
+        session()->remove('registro_completo');
 
         session()->set('usuario', $usuario);
     }
