@@ -53,4 +53,50 @@ class UsuariosModel extends Model
         }
         return $data;
     }
+
+    public function listarUsuarios()
+    {
+        $sql = "
+            SELECT 
+                u.id,
+                u.tipo,
+                u.status,
+                COALESCE(uc.nome, p.nome) AS nome,
+
+                CASE
+                    WHEN u.tipo = 'PROFISSIONAL' THEN (
+                        SELECT c.nome
+                        FROM profissional_categoria pc
+                        INNER JOIN categorias c
+                            ON c.id = pc.categoria_id
+                        WHERE pc.profissional_id = u.id
+                        LIMIT 1
+                    )
+                END AS categoria,
+
+                CASE
+                    WHEN u.tipo = 'PROFISSIONAL' THEN (
+                        SELECT AVG(av.nota)
+                        FROM avaliacoes av
+                        WHERE av.profissional_id = u.id
+                    )
+                END AS media_notas,
+
+                CASE
+                    WHEN u.tipo = 'COMUM' THEN (
+                        SELECT COUNT(*)
+                        FROM denuncias dn
+                        WHERE dn.usuario_id = u.id
+                    )
+                END AS qtd_denucias
+
+            FROM usuarios u
+            LEFT JOIN usuarios_comuns uc
+                ON uc.id = u.id
+            LEFT JOIN profissionais p
+                ON p.id = u.id;
+            ";
+
+        return $this->db->query($sql)->getResultObject();
+    }
 }
