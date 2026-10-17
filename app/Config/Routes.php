@@ -5,6 +5,7 @@ $routesFiles = [
     'Auth',
     'Profissionais',
     'Perfil',
+    'Admin'
 ];
 
 foreach ($routesFiles as $filename) {
