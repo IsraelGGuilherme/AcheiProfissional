@@ -1,3 +1,5 @@
+# Achei Profissional — alterações da etapa "área pública e perfis"
+
 **Rode `php spark migrate` ** Há duas migrations novas, só de `ADD COLUMN` (nenhuma migration antiga foi alterada):
 - `2026-10-15-120000_AddDescricaoToProfissionalImagensGaleria.php`: coluna `descricao` (legenda) em `profissional_imagens_galeria`.
 - `2026-10-16-100000_AddGaleriaImagemIdToDenuncias.php`: coluna `galeria_imagem_id` em `denuncias` (FK com `ON DELETE SET NULL`).
@@ -49,6 +51,7 @@ Todos os POSTs novos passam pelo filtro `csrf`.
 - **Para o admin:** `Services/ContaService.php` tem `bloquear($id)` (some da busca, a página pública dá 404 e o login é
   encerrado), `desbloquear($id)` e `excluir($id)` (exclusão definitiva, já tratando a FK `RESTRICT` de `enderecos` e as imagens).
 - Usuário logado que abre a busca sem escolher cidade vê, por padrão, os profissionais da cidade do endereço dele (com aviso e link "ver todas as cidades"). Se ele escolher outra cidade ou "Todas", a escolha é respeitada; anônimos veem tudo.
+- Filtro de nota (5, 4+ ou 3+ estrelas) usa a média arredondada em 1 casa, a mesma exibida no card (4,95 aparece como "5,0" e entra em "5 estrelas"). Profissionais sem avaliação não aparecem quando há filtro de nota.
 - Filtro de cidade/bairro considera o endereço do profissional **e** as áreas de atuação (cidade, bairro ou estado).
 - Avaliação: uma por contratante por profissional (reenviar atualiza a anterior). O nome do autor aparece como "Maria S.".
 - **Denúncia de avaliação e de foto:** além do perfil, dá para denunciar uma avaliação (`denuncias.avaliacao_id`; as fotos da avaliação vão junto) e uma

@@ -328,7 +328,8 @@ class BuscaProfissionaisService
         }
 
         if ($nota >= 1 && $nota <= 5) {
-            $b->where("(SELECT AVG(a3.nota) FROM avaliacoes a3 WHERE a3.profissional_id = p.id) >= {$nota}", null, false);
+            // Compara a média ARREDONDADA, a mesma que aparece no card (4,95 aparece como "5,0" e entra em "5 estrelas").
+            $b->where("(SELECT ROUND(AVG(a3.nota), 1) FROM avaliacoes a3 WHERE a3.profissional_id = p.id) >= {$nota}", null, false);
         }
 
         return $b;
