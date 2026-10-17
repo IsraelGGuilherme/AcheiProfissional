@@ -7,6 +7,7 @@ use App\Models\ProfissionalCategoriaModel;
 use App\Models\ProfissionalLocaisAtendimentoModel;
 use App\Models\UsuariosModel;
 use App\Services\BuscaProfissionaisService;
+use App\Services\GaleriaService;
 
 /**
  * "Meu perfil" do profissional: dados, contato, fotos, categorias, endereço e áreas de atuação.
@@ -42,6 +43,8 @@ class Profissional extends PerfilBase
             'minhasCategorias' => $minhasCategorias,
             'locais'           => $busca->locaisDoProfissional($id),
             'horarios'         => $busca->horariosDoProfissional($id),
+            'galeria'          => $busca->galeriaDoProfissional($id),
+            'limiteGaleria'    => GaleriaService::LIMITE,
             'endereco'         => $this->dadosEndereco($id),
         ]);
     }

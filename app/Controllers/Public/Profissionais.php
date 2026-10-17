@@ -5,7 +5,10 @@ namespace App\Controllers\Public;
 use App\Controllers\BaseController;
 use App\Models\AvaliacoesModel;
 use App\Models\DenunciasModel;
+use App\Models\GaleriaModel;
+use App\Services\AvaliacaoService;
 use App\Services\BuscaProfissionaisService;
+use App\Services\ImagemUploadService;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 /**
@@ -41,7 +44,7 @@ class Profissionais extends BaseController
         $db = db_connect();
 
         $avaliacoes = $db->table('avaliacoes a')
-            ->select('a.id, a.nota, a.comentario, a.created_at, uc.nome AS autor_nome')
+            ->select('a.id, a.usuario_comum_id, a.nota, a.comentario, a.created_at, uc.nome AS autor_nome')
             ->join('usuarios_comuns uc', 'uc.id = a.usuario_comum_id', 'left')
             ->where('a.profissional_id', $profissional->id)
             ->orderBy('a.created_at', 'DESC')
@@ -61,9 +64,17 @@ class Profissionais extends BaseController
                 ->first();
         }
 
+        $servicoAvaliacao = new AvaliacaoService();
+
+        $fotosAvaliacoes = $servicoAvaliacao->fotosPorAvaliacoes(array_map(static fn ($a) => (int) $a->id, $avaliacoes));
+        $minhasFotos     = $minhaNota ? $servicoAvaliacao->fotosDaAvaliacao((int) $minhaNota->id) : [];
+
         return view('Public/Profissionais/ver', [
             'profissional'    => $profissional,
             'avaliacoes'      => $avaliacoes,
+            'fotosAvaliacoes' => $fotosAvaliacoes,
+            'minhasFotos'     => $minhasFotos,
+            'maxFotosAvaliacao' => AvaliacaoService::MAX_FOTOS,
             'usuario'         => $usuario,
             'podeAvaliar'     => $ehComum,
             'minhaAvaliacao'  => $minhaNota,
@@ -111,6 +122,31 @@ class Profissionais extends BaseController
             ->where('usuario_comum_id', $usuarioId)
             ->first();
 
+        // Fotos: confere tudo antes de gravar qualquer coisa.
+        $servicoAvaliacao = new AvaliacaoService();
+        $imagens          = new ImagemUploadService();
+
+        $novasFotos = array_values(array_filter(
+            (array) $this->request->getFileMultiple('fotos'),
+            static fn ($f) => $f->getError() !== UPLOAD_ERR_NO_FILE
+        ));
+
+        foreach ($novasFotos as $i => $arquivo) {
+            $erroFoto = $imagens->erroDoArquivo($arquivo, 'A foto ' . ($i + 1));
+
+            if ($erroFoto !== null) {
+                return redirect()->to($destino)->with('error', $erroFoto);
+            }
+        }
+
+        $fotosAtuais = $existente ? $servicoAvaliacao->fotosDaAvaliacao((int) $existente->id) : [];
+        $idsAtuais   = array_map(static fn ($f) => (int) $f->id, $fotosAtuais);
+        $remover     = array_values(array_intersect(array_map('intval', (array) $this->request->getPost('remover_fotos')), $idsAtuais));
+
+        if (count($fotosAtuais) - count($remover) + count($novasFotos) > AvaliacaoService::MAX_FOTOS) {
+            return redirect()->to($destino)->with('error', 'Cada avaliação pode ter no máximo ' . AvaliacaoService::MAX_FOTOS . ' fotos.');
+        }
+
         $dados = [
             'profissional_id'  => (int) $profissional->id,
             'usuario_comum_id' => $usuarioId,
@@ -121,10 +157,21 @@ class Profissionais extends BaseController
         try {
             if ($existente) {
                 $model->update($existente->id, $dados);
-                $mensagem = 'Sua avaliação foi atualizada.';
+                $avaliacaoId = (int) $existente->id;
+                $mensagem    = 'Sua avaliação foi atualizada.';
             } else {
-                $model->insert($dados);
-                $mensagem = 'Obrigado! Sua avaliação foi publicada.';
+                $avaliacaoId = (int) $model->insert($dados);
+                $mensagem    = 'Obrigado! Sua avaliação foi publicada.';
+            }
+
+            $servicoAvaliacao->removerFotos($avaliacaoId, $remover);
+
+            if (!empty($novasFotos)) {
+                $salvas = $servicoAvaliacao->adicionarFotos($avaliacaoId, $novasFotos);
+
+                if ($salvas < count($novasFotos)) {
+                    $mensagem .= ' Algumas fotos não puderam ser salvas.';
+                }
             }
         } catch (\Throwable $e) {
             log_message('error', '[Avaliacao] Erro ao salvar avaliação: {error}', ['error' => $e->getMessage()]);
@@ -146,7 +193,39 @@ class Profissionais extends BaseController
         $destino   = base_url('profissionais/' . $profissional->slug);
         $usuarioId = (int) session('usuario')->id;
 
-        if ($usuarioId === (int) $profissional->id) {
+        // O que está sendo denunciado: o perfil (padrão), uma avaliação ou uma foto da galeria.
+        $avaliacaoId = (int) $this->request->getPost('avaliacao_id');
+        $galeriaId   = (int) $this->request->getPost('galeria_id');
+
+        if ($avaliacaoId > 0 && $galeriaId > 0) {
+            return redirect()->to($destino)->with('error', 'Escolha uma única coisa para denunciar.');
+        }
+
+        $alvo = 'perfil';
+
+        if ($avaliacaoId > 0) {
+            $alvo      = 'avaliação';
+            $avaliacao = model(AvaliacoesModel::class)->where('id', $avaliacaoId)->where('profissional_id', $profissional->id)->first();
+
+            if (!$avaliacao) {
+                return redirect()->to($destino)->with('error', 'Avaliação não encontrada.');
+            }
+
+            if ((int) $avaliacao->usuario_comum_id === $usuarioId) {
+                return redirect()->to($destino)->with('error', 'Você não pode denunciar a sua própria avaliação.');
+            }
+        } elseif ($galeriaId > 0) {
+            $alvo = 'foto';
+            $foto = model(GaleriaModel::class)->where('id', $galeriaId)->where('profissional_id', $profissional->id)->first();
+
+            if (!$foto) {
+                return redirect()->to($destino)->with('error', 'Foto não encontrada.');
+            }
+
+            if ($usuarioId === (int) $profissional->id) {
+                return redirect()->to($destino)->with('error', 'Você não pode denunciar as próprias fotos.');
+            }
+        } elseif ($usuarioId === (int) $profissional->id) {
             return redirect()->to($destino)->with('error', 'Você não pode denunciar o próprio perfil.');
         }
 
@@ -178,20 +257,30 @@ class Profissionais extends BaseController
 
         $model = model(DenunciasModel::class);
 
-        $jaDenunciou = $model
+        $consultaDuplicada = $model
             ->where('profissional_id', $profissional->id)
             ->where('usuario_id', $usuarioId)
-            ->whereIn('status', ['PENDENTE', 'EM_ANALISE'])
-            ->first();
+            ->whereIn('status', ['PENDENTE', 'EM_ANALISE']);
 
-        if ($jaDenunciou) {
-            return redirect()->to($destino)->with('success', 'Você já denunciou este perfil. Nossa equipe está analisando.');
+        // Cada alvo tem a sua própria denúncia em aberto (denunciar uma avaliação não bloqueia denunciar o perfil).
+        if ($avaliacaoId > 0) {
+            $consultaDuplicada->where('avaliacao_id', $avaliacaoId);
+        } elseif ($galeriaId > 0) {
+            $consultaDuplicada->where('galeria_imagem_id', $galeriaId);
+        } else {
+            $consultaDuplicada->where('avaliacao_id', null)->where('galeria_imagem_id', null);
+        }
+
+        if ($consultaDuplicada->first()) {
+            return redirect()->to($destino)->with('success', 'Você já denunciou este conteúdo. Nossa equipe está analisando.');
         }
 
         try {
             $model->insert([
-                'profissional_id' => (int) $profissional->id,
-                'usuario_id'      => $usuarioId,
+                'profissional_id'   => (int) $profissional->id,
+                'usuario_id'        => $usuarioId,
+                'avaliacao_id'      => $avaliacaoId > 0 ? $avaliacaoId : null,
+                'galeria_imagem_id' => $galeriaId > 0 ? $galeriaId : null,
                 'motivo'          => $motivo,
                 'descricao'       => $descricao !== '' ? $descricao : null,
                 'status'          => 'PENDENTE',

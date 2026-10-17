@@ -27,11 +27,6 @@
             <p class="ap-muted" style="margin:3px 0 0;">Estas informações aparecem na sua página pública.</p>
         </div>
         <div class="d-flex flex-column align-items-end gap-2">
-            <?php if ($usuario->status === 'ATIVO'): ?>
-                <span class="ap-badge ok">Perfil ativo</span>
-            <?php else: ?>
-                <span class="ap-badge" title="Seu perfil só aparece na busca depois de ativado.">Perfil pendente</span>
-            <?php endif; ?>
             <a class="ap-btn ap-btn-outline ap-btn-small" href="<?= base_url('profissionais/' . $profissional->slug) ?>">
                 <i class="bi bi-eye"></i> Ver página pública
             </a>
@@ -317,6 +312,74 @@
                     <?= csrf_field() ?>
                     <button type="submit" class="ap-icon-btn" aria-label="Remover <?= esc($local->rotulo, 'attr') ?>"><i class="bi bi-trash"></i></button>
                 </form>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </section>
+
+    <!-- ======================================
+    GALERIA DE TRABALHOS
+    ======================================= -->
+
+    <section class="ap-card" id="galeria">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 style="margin:0;">Galeria de trabalhos</h2>
+            <span class="ap-muted"><?= count($galeria) ?> de <?= (int) $limiteGaleria ?> fotos</span>
+        </div>
+
+        <p>Mostre serviços que você já fez. Cada foto pode ter uma legenda e aparece na sua página pública.</p>
+
+        <?php if (count($galeria) < $limiteGaleria): ?>
+
+            <form method="post" action="<?= base_url('perfil/profissional/galeria') ?>" enctype="multipart/form-data" novalidate>
+
+                <?= csrf_field() ?>
+
+                <div class="ap-capa-preview" id="previaGaleria" style="height:130px;"></div>
+
+                <div class="ap-field">
+                    <input type="file" class="ap-input" name="foto" accept="image/png,image/jpeg,image/webp" data-preview="#previaGaleria" required>
+                    <div class="ap-help">JPG, PNG ou WEBP até 2MB. Não envie fotos com pessoas que não autorizaram nem com dados pessoais (documentos, placas).</div>
+                </div>
+
+                <div class="ap-field">
+                    <label for="legendaNova">Legenda <span class="ap-muted">(opcional)</span></label>
+                    <textarea class="ap-textarea" id="legendaNova" name="descricao" maxlength="300" style="min-height:64px;" placeholder="Ex.: Troca de fiação e quadro de luz em apartamento."></textarea>
+                </div>
+
+                <button type="submit" class="ap-btn ap-btn-primary ap-btn-small"><i class="bi bi-plus-lg"></i> Adicionar foto</button>
+
+            </form>
+
+        <?php else: ?>
+
+            <div class="alert alert-light border py-2 px-3 font-sm">Você atingiu o limite de fotos. Remova uma para adicionar outra.</div>
+
+        <?php endif; ?>
+
+        <?php foreach ($galeria as $foto): ?>
+
+            <div class="ap-gal-item">
+
+                <img src="<?= esc(url_foto($foto->arquivo), 'attr') ?>" alt="" loading="lazy">
+
+                <div class="ap-gal-corpo">
+
+                    <form method="post" action="<?= base_url('perfil/profissional/galeria/' . $foto->id . '/legenda') ?>">
+                        <?= csrf_field() ?>
+                        <textarea class="ap-textarea" name="descricao" maxlength="300" style="min-height:54px;" placeholder="Sem legenda" aria-label="Legenda da foto"><?= esc($foto->descricao ?? '') ?></textarea>
+                        <button type="submit" class="ap-btn ap-btn-outline ap-btn-small" style="margin-top:6px;">Salvar legenda</button>
+                    </form>
+
+                    <form method="post" action="<?= base_url('perfil/profissional/galeria/' . $foto->id . '/remover') ?>" onsubmit="return confirm('Remover esta foto da galeria?');">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="ap-link-danger" style="text-align:left;padding:6px 0 0;margin:0;width:auto;"><i class="bi bi-trash"></i> Remover foto</button>
+                    </form>
+
+                </div>
 
             </div>
 

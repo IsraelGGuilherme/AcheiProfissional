@@ -32,6 +32,11 @@
 
     $notaAtual = $minhaAvaliacao->nota ?? null;
 
+    // Pode denunciar uma avaliação quem está logado e não é o autor dela.
+    $podeDenunciarAvaliacao = static fn ($a) => $usuario && (int) $a->usuario_comum_id !== (int) $usuario->id;
+    // Pode denunciar fotos da galeria quem está logado e não é o dono do perfil.
+    $podeDenunciarFoto = $usuario && !$ehOProprio;
+
 ?>
 
 <main class="page-wide">
@@ -97,6 +102,28 @@
                     <p>Este profissional ainda não escreveu uma descrição.</p>
                 <?php endif; ?>
             </section>
+
+            <?php if (!empty($profissional->galeria)): ?>
+                <section class="ap-card" id="trabalhos">
+                    <h2>Trabalhos realizados</h2>
+                    <div class="ap-galeria">
+                        <?php foreach ($profissional->galeria as $i => $foto): ?>
+                            <?php $legenda = trim((string) $foto->descricao); ?>
+                            <figure class="ap-galeria-item">
+                                <button type="button" class="ap-galeria-btn" data-lightbox data-grupo="galeria"<?= $podeDenunciarFoto ? ' data-foto-id="' . (int) $foto->id . '"' : '' ?>
+                                        data-src="<?= esc(url_foto($foto->arquivo), 'attr') ?>"
+                                        data-legenda="<?= esc($legenda, 'attr') ?>"
+                                        aria-label="Ampliar foto <?= $i + 1 ?>">
+                                    <img src="<?= esc(url_foto($foto->arquivo), 'attr') ?>" alt="<?= esc($legenda !== '' ? $legenda : 'Trabalho realizado por ' . $profissional->nome, 'attr') ?>" loading="lazy">
+                                </button>
+                                <?php if ($legenda !== ''): ?>
+                                    <figcaption><?= esc($legenda) ?></figcaption>
+                                <?php endif; ?>
+                            </figure>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
+            <?php endif; ?>
 
             <?php if (!empty($profissional->categorias)): ?>
                 <section class="ap-card">
@@ -209,7 +236,7 @@
 
             <p>Conte como foi sua experiência para ajudar outras pessoas.</p>
 
-            <form method="post" action="<?= base_url('profissionais/' . $profissional->slug . '/avaliar') ?>">
+            <form method="post" action="<?= base_url('profissionais/' . $profissional->slug . '/avaliar') ?>" enctype="multipart/form-data">
 
                 <?= csrf_field() ?>
 
@@ -221,6 +248,27 @@
                 </div>
 
                 <textarea class="ap-textarea" name="comentario" maxlength="1000" placeholder="Escreva um comentário sobre o serviço (opcional)" style="margin-bottom:10px;"><?= esc($minhaAvaliacao->comentario ?? '') ?></textarea>
+
+                <?php if (!empty($minhasFotos)): ?>
+                    <div class="ap-field">
+                        <label>Suas fotos nesta avaliação</label>
+                        <div class="ap-review-fotos">
+                            <?php foreach ($minhasFotos as $foto): ?>
+                                <label class="ap-foto-rem">
+                                    <img src="<?= esc(url_foto($foto->arquivo), 'attr') ?>" alt="" loading="lazy">
+                                    <span class="ap-check"><input type="checkbox" name="remover_fotos[]" value="<?= $foto->id ?>" data-remover-foto> Remover</span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="ap-field">
+                    <label for="fotosAvaliacao">Fotos do serviço <span class="ap-muted">(opcional, até <?= (int) $maxFotosAvaliacao ?>)</span></label>
+                    <input type="file" class="ap-input" id="fotosAvaliacao" name="fotos[]" multiple accept="image/png,image/jpeg,image/webp"
+                           data-max="<?= (int) $maxFotosAvaliacao ?>" data-atuais="<?= count($minhasFotos) ?>">
+                    <div class="ap-help">JPG, PNG ou WEBP, até 2MB cada. Não envie fotos com pessoas que não autorizaram nem com dados pessoais.</div>
+                </div>
 
                 <button type="submit" class="ap-btn ap-btn-primary">
                     <i class="bi bi-send"></i> <?= $minhaAvaliacao ? 'Atualizar avaliação' : 'Enviar avaliação' ?>
@@ -264,7 +312,25 @@
                     <p style="white-space:pre-line;"><?= esc($avaliacao->comentario) ?></p>
                 <?php endif; ?>
 
+                <?php if (!empty($fotosAvaliacoes[$avaliacao->id])): ?>
+                    <div class="ap-review-fotos">
+                        <?php foreach ($fotosAvaliacoes[$avaliacao->id] as $n => $foto): ?>
+                            <button type="button" class="ap-review-foto" data-lightbox data-grupo="avaliacao-<?= (int) $avaliacao->id ?>"<?= $podeDenunciarAvaliacao($avaliacao) ? ' data-avaliacao-id="' . (int) $avaliacao->id . '"' : '' ?>
+                                    data-src="<?= esc(url_foto($foto->arquivo), 'attr') ?>" data-legenda=""
+                                    aria-label="Ampliar foto <?= $n + 1 ?> da avaliação de <?= esc($nomeAutor($avaliacao->autor_nome), 'attr') ?>">
+                                <img src="<?= esc(url_foto($foto->arquivo), 'attr') ?>" alt="" loading="lazy">
+                            </button>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
                 <span class="ap-muted">Publicado <?= esc(tempo_atras($avaliacao->created_at)) ?></span>
+
+                <?php if ($podeDenunciarAvaliacao($avaliacao)): ?>
+                    <button type="button" class="ap-review-denunciar" data-denunciar-avaliacao="<?= (int) $avaliacao->id ?>">
+                        <i class="bi bi-flag"></i> Denunciar
+                    </button>
+                <?php endif; ?>
 
             </article>
 
@@ -274,7 +340,22 @@
 
 </main>
 
-<?php if ($usuario && !$ehOProprio): ?>
+<?php if (!empty($profissional->galeria) || !empty($fotosAvaliacoes)): ?>
+
+    <div class="ap-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto ampliada" hidden>
+        <button type="button" class="ap-lightbox-fechar" id="lbFechar" aria-label="Fechar">&times;</button>
+        <button type="button" class="ap-lightbox-nav ap-lightbox-ant" id="lbAnt" aria-label="Foto anterior">&#8249;</button>
+        <figure class="ap-lightbox-fig">
+            <img src="" alt="" id="lbImg">
+            <figcaption id="lbLegenda"></figcaption>
+            <button type="button" class="ap-lightbox-denunciar" id="lbDenunciar" hidden><i class="bi bi-flag"></i> <span>Denunciar</span></button>
+        </figure>
+        <button type="button" class="ap-lightbox-nav ap-lightbox-prox" id="lbProx" aria-label="Próxima foto">&#8250;</button>
+    </div>
+
+<?php endif; ?>
+
+<?php if ($usuario): ?>
 
     <!-- ======================================
     MODAL DE DENÚNCIA
@@ -295,6 +376,9 @@
             <form method="post" action="<?= base_url('profissionais/' . $profissional->slug . '/denunciar') ?>">
 
                 <?= csrf_field() ?>
+
+                <input type="hidden" name="avaliacao_id" id="denAvaliacao" value="">
+                <input type="hidden" name="galeria_id" id="denFoto" value="">
 
                 <label class="ap-label" for="motivoDenuncia">Motivo da denúncia</label>
                 <select class="ap-select" name="motivo" id="motivoDenuncia" required>
@@ -333,10 +417,36 @@
             return;
         }
 
-        const abrir  = () => modal.classList.add('open');
+        const titulo         = document.getElementById('tituloDenuncia');
+        const campoAvaliacao = document.getElementById('denAvaliacao');
+        const campoFoto      = document.getElementById('denFoto');
+
         const fechar = () => modal.classList.remove('open');
 
-        document.getElementById('abrirDenuncia').addEventListener('click', abrir);
+        // alvo: {} (perfil), {avaliacaoId} ou {fotoId}
+        function abrir(alvo) {
+            alvo = alvo || {};
+
+            campoAvaliacao.value = alvo.avaliacaoId || '';
+            campoFoto.value      = alvo.fotoId || '';
+            titulo.textContent   = alvo.avaliacaoId ? 'Denunciar avaliação' : (alvo.fotoId ? 'Denunciar foto' : 'Denunciar perfil');
+
+            modal.classList.add('open');
+        }
+
+        const botaoPerfil = document.getElementById('abrirDenuncia');
+
+        if (botaoPerfil) {
+            botaoPerfil.addEventListener('click', () => abrir());
+        }
+
+        document.querySelectorAll('[data-denunciar-avaliacao]').forEach((botao) => {
+            botao.addEventListener('click', () => abrir({ avaliacaoId: botao.dataset.denunciarAvaliacao }));
+        });
+
+        // a lightbox pede a denúncia da foto aberta
+        document.addEventListener('ap:denunciar', (evento) => abrir(evento.detail));
+
         document.getElementById('fecharDenuncia').addEventListener('click', fechar);
         document.getElementById('cancelarDenuncia').addEventListener('click', fechar);
 
@@ -349,6 +459,115 @@
         document.addEventListener('keydown', (evento) => {
             if (evento.key === 'Escape') {
                 fechar();
+            }
+        });
+
+    })();
+
+    (function () {
+
+        const botoes = Array.from(document.querySelectorAll('[data-lightbox]'));
+        const caixa  = document.getElementById('lightbox');
+
+        if (!caixa || botoes.length === 0) {
+            return;
+        }
+
+        const img     = document.getElementById('lbImg');
+        const legenda = document.getElementById('lbLegenda');
+        const anterior = document.getElementById('lbAnt');
+        const proxima  = document.getElementById('lbProx');
+        const denunciar = document.getElementById('lbDenunciar');
+
+        let grupo = botoes;
+        let atual = 0;
+
+        function mostrar(indice) {
+            atual = (indice + grupo.length) % grupo.length;
+
+            const dados = grupo[atual].dataset;
+
+            img.src = dados.src;
+            img.alt = dados.legenda || 'Foto ampliada';
+            legenda.textContent = dados.legenda || '';
+            legenda.style.display = dados.legenda ? '' : 'none';
+
+            // botão de denúncia: só aparece quando o servidor liberou (usuário logado e não é o dono)
+            if (denunciar) {
+                denunciar.hidden = !(dados.fotoId || dados.avaliacaoId);
+                denunciar.querySelector('span').textContent = dados.fotoId ? 'Denunciar foto' : 'Denunciar avaliação';
+            }
+
+            // com uma foto só, as setas não fazem sentido
+            anterior.style.display = proxima.style.display = grupo.length > 1 ? '' : 'none';
+        }
+
+        const fechar = () => { caixa.hidden = true; document.body.style.overflow = ''; };
+
+        botoes.forEach((botao) => botao.addEventListener('click', () => {
+            // as setas navegam só entre as fotos do mesmo grupo (galeria ou uma avaliação)
+            grupo = botoes.filter((outro) => outro.dataset.grupo === botao.dataset.grupo);
+            mostrar(grupo.indexOf(botao));
+            caixa.hidden = false;
+            document.body.style.overflow = 'hidden';
+        }));
+
+        document.getElementById('lbFechar').addEventListener('click', fechar);
+
+        if (denunciar) {
+            denunciar.addEventListener('click', () => {
+                const dados = grupo[atual].dataset;
+
+                fechar();
+                document.dispatchEvent(new CustomEvent('ap:denunciar', { detail: { fotoId: dados.fotoId, avaliacaoId: dados.avaliacaoId } }));
+            });
+        }
+
+        anterior.addEventListener('click', () => mostrar(atual - 1));
+        proxima.addEventListener('click', () => mostrar(atual + 1));
+
+        caixa.addEventListener('click', (evento) => {
+            if (evento.target === caixa) {
+                fechar();
+            }
+        });
+
+        document.addEventListener('keydown', (evento) => {
+            if (caixa.hidden) return;
+
+            if (evento.key === 'Escape') fechar();
+            if (evento.key === 'ArrowLeft' && grupo.length > 1) mostrar(atual - 1);
+            if (evento.key === 'ArrowRight' && grupo.length > 1) mostrar(atual + 1);
+        });
+
+    })();
+
+    (function () {
+
+        const campo = document.getElementById('fotosAvaliacao');
+
+        if (!campo) {
+            return;
+        }
+
+        campo.addEventListener('change', () => {
+            const maximo   = parseInt(campo.dataset.max, 10);
+            const atuais   = parseInt(campo.dataset.atuais, 10);
+            const removidas = document.querySelectorAll('[data-remover-foto]:checked').length;
+            const vagas    = maximo - (atuais - removidas);
+
+            if (campo.files.length > vagas) {
+                alert('Você pode ter no máximo ' + maximo + ' fotos nesta avaliação.');
+                campo.value = '';
+                return;
+            }
+
+            for (const arquivo of campo.files) {
+                if (arquivo.size > 2 * 1024 * 1024) {
+                    alert('Cada foto deve ter no máximo 2MB.');
+                    campo.value = '';
+                    return;
+                }
             }
         });
 

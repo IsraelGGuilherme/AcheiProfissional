@@ -15,6 +15,11 @@ $routes->post('perfil/profissional/endereco', 'Perfil\Profissional::salvarEndere
 $routes->post('perfil/profissional/locais', 'Perfil\Profissional::adicionarLocal', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
 $routes->post('perfil/profissional/locais/(:num)/remover', 'Perfil\Profissional::removerLocal/$1', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
 
+// Galeria de trabalhos do profissional
+$routes->post('perfil/profissional/galeria', 'Perfil\\Galeria::adicionar', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/galeria/(:num)/legenda', 'Perfil\\Galeria::legenda/$1', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+$routes->post('perfil/profissional/galeria/(:num)/remover', 'Perfil\\Galeria::remover/$1', ['filter' => ['csrf', 'auth:PROFISSIONAL']]);
+
 // Contratante (usuário comum)
 $routes->get('perfil/contratante', 'Perfil\Contratante::index', ['filter' => 'auth:COMUM']);
 $routes->post('perfil/contratante', 'Perfil\Contratante::salvarDados', ['filter' => ['csrf', 'auth:COMUM']]);
