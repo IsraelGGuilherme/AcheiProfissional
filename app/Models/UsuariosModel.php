@@ -46,6 +46,12 @@ class UsuariosModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    private $statusUsers = [
+        'ATIVO' => 'Ativo', 
+        'INATIVO' => 'Inativo',
+        'BLOQUEADO' => 'Bloqueado'
+    ];
+
     public function criptografarSenha(array $data): array
     {
         if (isset($data['data']['senha'])) {
@@ -98,5 +104,10 @@ class UsuariosModel extends Model
             ";
 
         return $this->db->query($sql)->getResultObject();
+    }
+
+    public function listarStatus()
+    {
+        return $this->statusUsers;
     }
 }

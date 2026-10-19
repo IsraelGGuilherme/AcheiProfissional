@@ -51,7 +51,7 @@ class Register extends BaseController
         $rules = [
             'email' => 'required|valid_email|max_length[191]',
             'senha' => 'required',
-            'tipo'  => 'required|in_list[COMUM,PROFISSIONAL]',
+            'tipo'  => 'required|in_list[COMUM,PROFISSIONAL,ADMIN]',
         ];
 
         if (!$this->validate($rules)) {
@@ -84,6 +84,54 @@ class Register extends BaseController
         $this->authService->montarSessaoUsuario($params['email']);
 
         return redirect()->to('verificaremail');
+    }
+
+    public function register_admin()
+    {
+        $params = $this->request->getPost();
+        $params['tipo'] = 'ADMIN';
+        $params['status'] = 'ATIVO';
+
+        if ($params['senha'] !== $params['confirmar_senha']) {
+            return redirect()->back()->with(
+                'error',
+                'A senha e a confirmação da senha deve ser iguais'
+            );
+        }
+
+        $rules = [
+            'email' => 'required|valid_email|max_length[191]',
+            'senha' => 'required|min_length[8]'
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput();
+        }
+
+        try {
+            $this->usuariosModel->save($params);
+        } catch (DatabaseException $e) {
+            $redirect = redirect()->back()->withInput();
+
+            if ($e->getCode() === 1062) {
+                return $redirect->with(
+                    'error',
+                    'Já existe uma conta cadastrada para esse email'
+                );
+            }
+
+            log_message('error', '[Register] Erro ao cadastrar usuário: {error} \nStack Trace: {trace}', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $redirect->with(
+                'error',
+                'Ocorreu um erro inesperado'
+            );
+        }
+
+        return redirect()->to('admin/administradores')->with('success','Administrador criado com sucesso!');
     }
 
     public function formValidarEmail()

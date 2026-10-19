@@ -45,4 +45,13 @@ class Services extends BaseService
 
         return new \App\Services\AuthService();
     }
+
+    public static function usuarioService(bool $getShared = true): \App\Services\UsuarioService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('UsuarioService');
+        }
+
+        return new \App\Services\UsuarioService();
+    }
 }

@@ -33,6 +33,7 @@
     <div class="top-border"></div>
 
     <?= $this->include('Templates/partials/navbar') ?>
+    <?= $this->include('Templates/partials/flash') ?>
 
     <?= $this->renderSection('content') ?>
 

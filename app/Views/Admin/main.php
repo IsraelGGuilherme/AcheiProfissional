@@ -140,7 +140,14 @@
                                             data-user-name="<?= esc($user->nome) ?>">
                                             <i class="bi bi-lock me-1"></i>Bloquear
                                         </button>
-                                        <button class="btn-row btn-row-danger"><i class="bi bi-trash me-1"></i>Excluir</button>
+                                        <button
+                                            type="button"
+                                            class="btn-row btn-row-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalExclusao"
+                                            data-user-id="<?= (int) $user->id ?>">
+                                            <i class="bi bi-trash me-1"></i>Excluir
+                                        </button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -170,8 +177,23 @@
                                         </div>
                                     </div>
                                     <div class="row-actions">
-                                        <button class="btn-row" data-bs-toggle="modal" data-bs-target="#modalBloqueio"><i class="bi bi-lock me-1"></i>Bloquear</button>
-                                        <button class="btn-row btn-row-danger"><i class="bi bi-trash me-1"></i>Excluir</button>
+                                        <button
+                                            type="button"
+                                            class="btn-row"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalBloqueio"
+                                            data-user-id="<?= (int) $user->id ?>"
+                                            data-user-name="<?= esc($user->nome) ?>">
+                                            <i class="bi bi-lock me-1"></i>Bloquear
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="btn-row btn-row-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalExclusao"
+                                            data-user-id="<?= (int) $user->id ?>">
+                                            <i class="bi bi-trash me-1"></i>Excluir
+                                        </button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -183,39 +205,14 @@
         </section>
 
         <section class="card-custom">
-            <div class="mb-3">
-                <div class="section-title">Categorias</div>
-                <div class="section-subtitle">Visualize as categorias cadastradas e adicione novas categorias à plataforma.</div>
-            </div>
-            <div class="category-management">
-                <div class="category-create">
-                    <label class="form-label" for="novaCategoria">Nova categoria</label>
-                    <div class="input-group">
-                        <input type="text" id="novaCategoria" class="form-control" placeholder="Ex.: Técnico de refrigeração">
-                        <button class="btn-admin" type="button" id="btnCriarCategoria"><i class="bi bi-plus-lg me-1"></i>Criar</button>
-                    </div>
-                    <div class="input-help">A nova categoria ficará disponível para profissionais selecionarem em seus perfis.</div>
-                </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold" style="font-size:9px">Categorias cadastradas</span>
-                        <span class="section-subtitle m-0">20 categorias</span>
-                    </div>
-                    <div class="category-chips" id="categoryChips">
-                        <span class="category-chip">Eletricista <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Encanador <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Pedreiro <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Pintor <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Marceneiro <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Costureira <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Diarista <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Jardineiro <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Técnico em informática <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Chaveiro <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Cuidador de idosos <button type="button"><i class="bi bi-x"></i></button></span>
-                        <span class="category-chip">Professor particular <button type="button"><i class="bi bi-x"></i></button></span>
-                    </div>
+                    <div class="section-title">Categorias do sistema</div>
+                    <div class="section-subtitle">O gerenciamento de categoria fica em uma tela exclusiva, separada dos usuários da plataforma.</div>
                 </div>
+                <a href="#" data-admin-view="admins" class="btn-admin text-decoration-none">
+                    <i class="bi bi-tags me-1"></i>Gerenciar categorias
+                </a>
             </div>
         </section>
 
@@ -225,82 +222,12 @@
                     <div class="section-title">Administradores do sistema</div>
                     <div class="section-subtitle">O gerenciamento de administradores fica em uma tela exclusiva, separada dos usuários da plataforma.</div>
                 </div>
-                <a href="#" data-admin-view="admins" class="btn-admin text-decoration-none">
+                <a href="<?= site_url('admin/administradores') ?>" data-admin-view="admins" class="btn-admin text-decoration-none">
                     <i class="bi bi-shield-lock me-1"></i>Gerenciar administradores
                 </a>
             </div>
         </section>
     </div>
-
-    <!-- ===== TELA DE ADMINISTRADORES ===== -->
-    <div id="telaAdministradores" class="container-admin d-none">
-
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">Administradores</h1>
-                <div class="page-description">Gerencie exclusivamente as contas que possuem acesso administrativo.</div>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="#" data-admin-view="dashboard" class="btn-row text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Voltar</a>
-                <button class="btn-admin" data-bs-toggle="modal" data-bs-target="#modalAdmin">
-                    <i class="bi bi-person-plus me-1"></i>Novo administrador
-                </button>
-            </div>
-        </div>
-
-        <div class="card-custom">
-            <div class="filter-bar">
-                <input class="form-control filter-search" placeholder="Pesquisar administrador pelo nome ou e-mail...">
-                <span class="admin-badge"><i class="bi bi-shield-check me-1"></i>3 administradores</span>
-            </div>
-            <div class="user-list">
-                <div class="admin-row">
-                    <div class="user-main">
-                        <div class="avatar"><i class="bi bi-shield-lock"></i></div>
-                        <div>
-                            <div class="admin-name">Administrador Principal</div>
-                            <div class="admin-email">admin@acheiprofissional.com.br</div>
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <span class="admin-tag">Administrador</span>
-                        <button class="btn-row">Editar</button>
-                    </div>
-                </div>
-
-                <div class="admin-row">
-                    <div class="user-main">
-                        <div class="avatar">MS</div>
-                        <div>
-                            <div class="admin-name">Marcos Silva</div>
-                            <div class="admin-email">marcos@acheiprofissional.com.br</div>
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <span class="admin-tag">Administrador</span>
-                        <button class="btn-row">Editar</button>
-                        <button class="btn-row btn-row-danger"><i class="bi bi-trash me-1"></i>Excluir</button>
-                    </div>
-                </div>
-
-                <div class="admin-row">
-                    <div class="user-main">
-                        <div class="avatar">JC</div>
-                        <div>
-                            <div class="admin-name">Juliana Costa</div>
-                            <div class="admin-email">juliana@acheiprofissional.com.br</div>
-                        </div>
-                    </div>
-                    <div class="row-actions">
-                        <span class="admin-tag">Administrador</span>
-                        <button class="btn-row">Editar</button>
-                        <button class="btn-row btn-row-danger"><i class="bi bi-trash me-1"></i>Excluir</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- ===== MODAL: BLOQUEIO TEMPORÁRIO ===== -->
@@ -314,7 +241,8 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="" method="post" id="form_bloqueio">
+            <form action="" method="post" id="form_bloqueio" data-action-base="<?= site_url('admin/bloqueio') ?>">
+                <?= csrf_field() ?>
                 <div class="modal-body">
 
                     <label class="form-label">Período do bloqueio</label>
@@ -339,38 +267,36 @@
                     <div class="input-help">Enquanto estiver bloqueado, o usuário não poderá utilizar as funcionalidades que exigem acesso à plataforma.</div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-row" data-bs-dismiss="modal">Cancelar</button>
-                    <button submit class="btn-admin" data-bs-dismiss="modal"><i class="bi bi-lock me-1"></i> Confirmar bloqueio</button>
+                    <button type="button" class="btn-row" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-admin"><i class="bi bi-lock me-1"></i> Confirmar bloqueio</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- ===== MODAL: NOVO ADMINISTRADOR ===== -->
-<div class="modal fade modal-admin" id="modalAdmin" tabindex="-1" aria-hidden="true">
+<!-- ===== MODAL: CONFIRMAÇÃO DE EXCLUSÃO DO USUÁRIO ===== -->
+<div class="modal fade modal-admin" id="modalExclusao" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:430px">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fs-6">Cadastrar administrador</h5>
+                <div>
+                    <h5 class="modal-title fs-6"><i class="bi bi-lock me-1"></i> Remover usuário</h5>
+                    <div class="section-subtitle">Não será possível recuperar esse registro novamente depois de apagado.</div>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="modal-body">
-                <label class="form-label">Nome</label>
-                <input id="adminNome" class="form-control mb-3" placeholder="Nome do administrador">
-                <label class="form-label">E-mail</label>
-                <input type="email" class="form-control mb-3" placeholder="admin@exemplo.com">
-                <label class="form-label">Senha</label>
-                <input type="password" class="form-control" placeholder="Digite a senha">
-                <div class="input-help">Esse cadastro cria um usuário com permissão exclusivamente administrativa.</div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-row" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn-admin" data-bs-dismiss="modal">Cadastrar administrador</button>
-            </div>
+            <form action="" method="post" id="form_exclusao" data-action-base="<?= site_url('admin/excluir') ?>">
+                <?= csrf_field() ?>
+                <div class="modal-footer">
+                    <button type="button" class="btn-row" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-admin"><i class="bi bi-trash me-1"></i> Confirmar exclusão</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
 
 <?php $this->endSection() ?>
 

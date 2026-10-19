@@ -16,6 +16,7 @@ $routes->get('register', 'Auth\Register::index');
 $routes->get('register/usuario', 'Auth\Register::registerUsuarioComum');
 $routes->get('register/profissional', 'Auth\Register::registerProfissional');
 $routes->post('register', 'Auth\Register::register');
+$routes->post('register/admin', 'Auth\Register::register_admin');
 
 // Validação de email
 $routes->get('verificaremail', 'Auth\Register::formValidarEmail');
