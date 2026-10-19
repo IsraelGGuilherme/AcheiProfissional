@@ -1,6 +1,6 @@
 # Achei Profissional — alterações da etapa "área pública e perfis"
 
-**Rode `php spark migrate` ** Há duas migrations novas, só de `ADD COLUMN` (nenhuma migration antiga foi alterada):
+**Rode `php spark migrate`** Há duas migrations novas, só de `ADD COLUMN` (nenhuma migration antiga foi alterada):
 - `2026-10-15-120000_AddDescricaoToProfissionalImagensGaleria.php`: coluna `descricao` (legenda) em `profissional_imagens_galeria`.
 - `2026-10-16-100000_AddGaleriaImagemIdToDenuncias.php`: coluna `galeria_imagem_id` em `denuncias` (FK com `ON DELETE SET NULL`).
 
@@ -16,6 +16,7 @@
 | `app/Controllers/Auth/Register.php` | Os dois cadastros (`registerUsuarioComumDados` e `registerProfissionalDados`) passaram a validar e salvar `foto_perfil` (e `foto_capa`, no profissional), opcionais, com o `ImagemUploadService`. Dois métodos novos (`regrasFotosOpcionais`, `salvarFotosDoCadastro`). Uma falha ao salvar foto não impede o cadastro |
 
 ## Arquivos NOVOS
+- Verificação de CNPJ: `Services/CnpjService.php` e `Controllers/Cnpj.php` (+ rota `POST /api/cnpj/validar`)
 - Fotos nas avaliações: `Services/AvaliacaoService.php`, `Models/AvaliacaoImagensModel.php` (a tabela `avaliacoes_imagens` já existia; não precisa de migration)
 - Galeria de trabalhos: `Controllers/Perfil/Galeria.php`, `Services/GaleriaService.php`, `Models/GaleriaModel.php` e a migration acima
 - Rotas: `Config/Routes/Profissionais.php`, `Config/Routes/Perfil.php`
@@ -41,6 +42,7 @@
 | `GET/POST /perfil/contratante` e `endereco` | usuário comum |
 | `POST /perfil/profissional/galeria`, `.../galeria/{id}/legenda`, `.../galeria/{id}/remover` | profissional |
 | `POST /perfil/excluir-conta` | qualquer usuário logado |
+| `POST /api/cnpj/validar` | cadastro de profissional ou profissional logado (consulta de CNPJ na OpenCNPJ) |
 
 Todos os POSTs novos passam pelo filtro `csrf`.
 
@@ -81,4 +83,19 @@ Todos os POSTs novos passam pelo filtro `csrf`.
   Ao excluir a conta, as fotos que o contratante enviou saem do banco e do disco (a avaliação em si permanece, sem nome); ao excluir um profissional,
   as fotos das avaliações que ele recebeu também são apagadas do disco.
   Para o admin: `AvaliacaoService::excluirFoto($fotoId)` e `AvaliacaoService::excluirAvaliacao($avaliacaoId)`.
+- **Verificação de CNPJ (OpenCNPJ).** Em "Meu perfil", quando o profissional marca Pessoa Jurídica, o campo de CNPJ ganha o botão **Verificar** e o
+  seletor "Buscar os dados em": Receita Federal, CNO (Cadastro Nacional de Obras) ou RNTRC (Transportadores). O servidor consulta
+  `https://api.opencnpj.org/{cnpj}?datasets={base}` e devolve JSON com `sucesso`, `mensagem`, `codigo` e, quando a empresa é encontrada, `nome` (razão social),
+  `fantasia`, `situacao`, `ativa`, `mei`, `endereco` e a base que respondeu. O resultado aparece na tela (verde = ativo, amarelo = encontrado mas inativo,
+  vermelho = erro) com botões para usar a razão social ou o nome fantasia no campo "Nome profissional". A consulta é opcional e não impede de salvar.
+  - **Escolha da base:** se a base escolhida não trouxer dados da empresa ou responder com erro, as outras são tentadas e a resposta informa qual respondeu
+    (`dataset`, `fonte_alternativa`). Se não houver conexão (timeout), desiste na hora.
+  - **CNPJ alfanumérico:** aceito na máscara, na validação e no banco (`cpf_cnpj` tem 14 posições). Os dígitos verificadores são conferidos no navegador, no endpoint e ao
+    salvar o perfil (validação local, que não depende da API externa).
+  - **Proteções:** CSRF obrigatório, no máximo 10 consultas por minuto por usuário logado ou por endereço IP no cadastro e cache de 6 horas por CNPJ+base. O CSRF desta aplicação é
+    regenerado a cada requisição, então o endpoint devolve `csrf` e o JavaScript atualiza os campos escondidos (sem isso o "Salvar dados" dava 403 depois da consulta).
+  - **Configuração opcional no `.env`:** `opencnpj.baseUrl = https://api.opencnpj.org` e `opencnpj.timeout = 6` (segundos por tentativa).
+  - **Cadastro:** o botão **Verificar** e o seletor de base também estão disponíveis durante o cadastro. A consulta é opcional e não impede concluir o cadastro.
+  - **Importante:** a consulta depende da API externa e foi testada contra uma API simulada. Se a resposta real tiver outro formato, o serviço registra no log
+    (`writable/logs`) as chaves recebidas ("[CNPJ] Resposta da base ... sem dados da empresa").
 - Horários continuam sendo editados na tela original `profissional/horarios` (é preciso informar todos de novo).

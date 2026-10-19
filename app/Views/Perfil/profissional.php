@@ -89,7 +89,23 @@
 
                 <div class="ap-field">
                     <label for="cpf_cnpj" id="rotuloDocumento"><?= $ehPj ? 'CNPJ' : 'CPF' ?></label>
-                    <input type="text" class="ap-input" id="cpf_cnpj" name="cpf_cnpj" inputmode="numeric" data-mask="documento" maxlength="18" value="<?= esc(old('cpf_cnpj', formata_documento($profissional->cpf_cnpj)), 'attr') ?>" required>
+
+                    <div class="ap-input-botao">
+                        <input type="text" class="ap-input" id="cpf_cnpj" name="cpf_cnpj" inputmode="<?= $ehPj ? 'text' : 'numeric' ?>" autocapitalize="characters" autocomplete="off" data-mask="documento" maxlength="18" value="<?= esc(old('cpf_cnpj', formata_documento($profissional->cpf_cnpj)), 'attr') ?>" required>
+                        <button type="button" class="ap-btn ap-btn-outline" id="btnVerificarCnpj" data-url="<?= base_url('api/cnpj/validar') ?>" <?= $ehPj ? '' : 'hidden' ?>>
+                            <i class="bi bi-shield-check"></i> Verificar
+                        </button>
+                    </div>
+
+                    <div id="blocoCnpjFonte" <?= $ehPj ? '' : 'hidden' ?>>
+                        <label for="cnpjFonte" class="ap-label-pequeno">Buscar os dados em</label>
+                        <select class="ap-select" id="cnpjFonte" aria-describedby="ajudaCnpj">
+                            <?php foreach (\App\Services\CnpjService::DATASETS as $valor => $rotulo): ?>
+                                <option value="<?= esc($valor, 'attr') ?>"><?= esc($rotulo) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="ap-help" id="ajudaCnpj">Consulta a base pública OpenCNPJ. É opcional e não impede de salvar.</div>
+                    </div>
                 </div>
 
                 <div class="ap-field">
@@ -98,6 +114,8 @@
                 </div>
 
             </div>
+
+            <div id="cnpjResultado" class="ap-cnpj-resultado" role="status" aria-live="polite" hidden></div>
 
             <div class="ap-field">
                 <label for="descricao">Descrição</label>

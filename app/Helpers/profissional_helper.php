@@ -92,11 +92,12 @@ if (!function_exists('formata_telefone')) {
 }
 
 if (!function_exists('formata_documento')) {
+    /** CPF (11 dígitos) ou CNPJ (14 caracteres, numérico ou alfanumérico) com máscara. */
     function formata_documento(?string $doc): string
     {
-        $d = preg_replace('/\D/', '', (string) $doc);
+        $d = strtoupper(preg_replace('/[^0-9A-Za-z]/', '', (string) $doc));
 
-        if (strlen($d) === 11) {
+        if (strlen($d) === 11 && ctype_digit($d)) {
             return sprintf('%s.%s.%s-%s', substr($d, 0, 3), substr($d, 3, 3), substr($d, 6, 3), substr($d, 9));
         }
 

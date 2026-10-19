@@ -7,6 +7,7 @@ use App\Models\ProfissionalCategoriaModel;
 use App\Models\ProfissionalLocaisAtendimentoModel;
 use App\Models\UsuariosModel;
 use App\Services\BuscaProfissionaisService;
+use App\Services\CnpjService;
 use App\Services\GaleriaService;
 
 /**
@@ -56,8 +57,12 @@ class Profissional extends PerfilBase
         $post    = $this->request->getPost();
 
         $tipoPessoa = (string) ($post['tipo_pessoa'] ?? '');
-        $documento  = preg_replace('/\D/', '', (string) ($post['cpf_cnpj'] ?? ''));
         $tamanhoDoc = $tipoPessoa === 'PJ' ? 14 : 11;
+
+        // CNPJ pode ser alfanumérico (letras e números); CPF é só número.
+        $documento = $tipoPessoa === 'PJ'
+            ? CnpjService::normalizar((string) ($post['cpf_cnpj'] ?? ''))
+            : preg_replace('/\D/', '', (string) ($post['cpf_cnpj'] ?? ''));
 
         $site = trim((string) ($post['site'] ?? ''));
         if ($site !== '' && !preg_match('#^https?://#i', $site)) {
@@ -88,7 +93,7 @@ class Profissional extends PerfilBase
 
         $mensagens = [
             'tipo_pessoa'      => ['required' => 'Escolha Pessoa Física ou Jurídica.', 'in_list' => 'Escolha Pessoa Física ou Jurídica.'],
-            'cpf_cnpj'         => ['required' => 'Informe o CPF ou CNPJ.', 'exact_length' => $tipoPessoa === 'PJ' ? 'O CNPJ deve ter 14 dígitos.' : 'O CPF deve ter 11 dígitos.'],
+            'cpf_cnpj'         => ['required' => 'Informe o CPF ou CNPJ.', 'exact_length' => $tipoPessoa === 'PJ' ? 'O CNPJ deve ter 14 caracteres.' : 'O CPF deve ter 11 dígitos.'],
             'nome'             => ['required' => 'Informe o nome.', 'min_length' => 'O nome deve ter ao menos 3 caracteres.', 'max_length' => 'O nome é muito longo.'],
             'descricao'        => ['max_length' => 'A descrição pode ter no máximo 2000 caracteres.'],
             'telefone_contato' => ['min_length' => 'Telefone inválido.', 'max_length' => 'Telefone inválido.'],
@@ -101,6 +106,11 @@ class Profissional extends PerfilBase
 
         if (!$this->validateData($dados, $rules, $mensagens)) {
             $erros = $this->validator->getErrors();
+        }
+
+        // Para PJ, confere também os dígitos verificadores (validação local, sem depender da API externa).
+        if ($tipoPessoa === 'PJ' && !isset($erros['cpf_cnpj']) && !CnpjService::valido($documento)) {
+            $erros['cpf_cnpj'] = 'CNPJ inválido. Confira os números digitados.';
         }
 
         $erros = array_merge($erros, $this->validarFotos([
