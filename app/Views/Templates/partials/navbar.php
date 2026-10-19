@@ -3,6 +3,8 @@
 $currentUri = uri_string();
 $activeNav  = $activeNav ?? null;
 $estaLogado = session()->has('usuario');
+$usuarioSessao = $estaLogado ? session('usuario') : null;
+$ehAdmin = $usuarioSessao && ($usuarioSessao->tipo ?? null) === 'ADMIN';
 
 ?>
 
@@ -37,6 +39,11 @@ $estaLogado = session()->has('usuario');
                     <a href="<?= base_url('perfil') ?>" class="nav-link-custom <?= ($activeNav === 'perfil' || url_is('perfil*')) ? 'active' : '' ?>">
                         Meu perfil
                     </a>
+                    <?php if ($ehAdmin): ?>
+                        <a href="<?= site_url('admin') ?>" class="nav-link-custom <?= url_is('admin*') ? 'active' : '' ?>">
+                            <i class="bi bi-shield-lock me-1"></i> Administração
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= base_url('logout') ?>" class="nav-link-custom nav-link-logout">
                         Sair
                     </a>

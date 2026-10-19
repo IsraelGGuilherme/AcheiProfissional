@@ -24,76 +24,52 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon"><i class="bi bi-people"></i></div>
-                <div class="stat-number">1.284</div>
+                <div class="stat-number"><?= number_format((int) $total_usuarios, 0, ',', '.') ?></div>
                 <div class="stat-label">Usuários cadastrados</div>
-                <div class="stat-change">↑ 12% este mês</div>
+                <div class="stat-change">Todos os tipos de conta</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
-                <div class="stat-number">128</div>
+                <div class="stat-number"><?= number_format((int) $qtd_profissionais_ativos, 0, ',', '.') ?></div>
                 <div class="stat-label">Profissionais ativos</div>
-                <div class="stat-change">↑ 8 novos esta semana</div>
+                <div class="stat-change">De <?= number_format((int) $qtd_profissionais, 0, ',', '.') ?> profissionais cadastrados</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon"><i class="bi bi-person"></i></div>
-                <div class="stat-number">1.156</div>
-                <div class="stat-label">Contratantes</div>
-                <div class="stat-change">↑ 9% este mês</div>
+                <div class="stat-number"><?= number_format((int) $qtd_contratantes, 0, ',', '.') ?></div>
+                <div class="stat-label">Contratantes cadastrados</div>
+                <div class="stat-change">Usuários do tipo comum</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-briefcase"></i></div>
-                <div class="stat-number">18,4</div>
-                <div class="stat-label">Média de vagas por dia</div>
-                <div class="stat-change">↑ 6% nos últimos 30 dias</div>
+                <div class="stat-icon"><i class="bi bi-lock"></i></div>
+                <div class="stat-number"><?= number_format((int) $qtd_bloqueados, 0, ',', '.') ?></div>
+                <div class="stat-label">Contas bloqueadas</div>
+                <div class="stat-change"><?= number_format((int) $qtd_pendentes, 0, ',', '.') ?> cadastros pendentes</div>
             </div>
         </div>
 
         <div class="card-custom">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <div class="section-title">Atividade da plataforma</div>
-                    <div class="section-subtitle">Média de vagas publicadas por dia nos últimos 7 dias.</div>
+                    <div class="section-title">Novos cadastros</div>
+                    <div class="section-subtitle">Quantidade de contas criadas nos últimos 7 dias.</div>
                 </div>
-                <select class="form-select select-periodo">
-                    <option>Últimos 7 dias</option>
-                    <option>Últimos 30 dias</option>
-                    <option>Este ano</option>
-                </select>
+                <span class="section-subtitle">Últimos 7 dias</span>
             </div>
+            <?php $maxCadastros = max(1, ...array_column($cadastros_por_dia, 'total')); ?>
             <div class="chart">
-                <div class="bar-wrap">
-                    <div class="bar" style="height:42%"><span>12</span></div>
-                    <div class="day">07/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:60%"><span>17</span></div>
-                    <div class="day">08/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:51%"><span>15</span></div>
-                    <div class="day">09/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:76%"><span>22</span></div>
-                    <div class="day">10/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:65%"><span>19</span></div>
-                    <div class="day">11/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:91%"><span>27</span></div>
-                    <div class="day">12/08</div>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar" style="height:72%"><span>21</span></div>
-                    <div class="day">13/08</div>
-                </div>
+                <?php foreach ($cadastros_por_dia as $cadastro): ?>
+                    <?php $altura = $cadastro['total'] > 0 ? max(8, (int) round(($cadastro['total'] / $maxCadastros) * 100)) : 2; ?>
+                    <div class="bar-wrap">
+                        <div class="bar" style="height:<?= $altura ?>%"><span><?= (int) $cadastro['total'] ?></span></div>
+                        <div class="day"><?= esc($cadastro['rotulo']) ?></div>
+                    </div>
+                <?php endforeach; ?>
             </div>
-            <div class="chart-note">Total no período: <strong>133 vagas</strong> · Média: <strong>19 vagas/dia</strong></div>
+            <div class="chart-note">Total no período: <strong><?= array_sum(array_column($cadastros_por_dia, 'total')) ?> cadastros</strong></div>
         </div>
 
         <section class="card-custom">
@@ -113,11 +89,11 @@
                 <div class="tab-pane fade show active" id="profissionais">
                     <div class="filter-bar">
                         <input class="form-control filter-search" placeholder="Pesquisar pelo nome...">
-                        <div class="status-tabs">
+                        <!-- <div class="status-tabs">
                             <a href="?usu=aprovados" class="status-tab active">Aprovados</a>
                             <a href="?usu=bloqueados" class="status-tab">Bloqueados</a>
                             <a href="?usu=denunciados" class="status-tab reported">Denunciados</a>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="user-list">
 
@@ -127,19 +103,27 @@
                                     <div class="user-main">
                                         <div class="avatar"><?= iniciais_nome($user->nome) ?></div>
                                         <div>
-                                            <div class="user-name"><?= $user->nome ?><span class="user-status status-approved"><?= $user->status ?></span></div>
+                                            <div class="user-name"><?= esc($user->nome) ?><span class="user-status <?= $user->status === 'BLOQUEADO' ? 'status-reported' : 'status-approved' ?>"><?= esc($user->status) ?></span></div>
                                             <div class="user-meta"><?= estrelas_texto($user->media_notas) ?></div>
                                         </div>
                                     </div>
                                     <div class="row-actions">
-                                        <button
-                                            class="btn-row"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalBloqueio"
-                                            data-user-id="<?= $user->id ?>"
-                                            data-user-name="<?= esc($user->nome) ?>">
-                                            <i class="bi bi-lock me-1"></i>Bloquear
-                                        </button>
+                                        <?php if ($user->status === 'BLOQUEADO'): ?>
+                                            <form action="<?= site_url('admin/desbloqueio/' . (int) $user->id) ?>" method="post">
+                                                <?= csrf_field() ?>
+                                                <button type="submit" class="btn-row"><i class="bi bi-unlock me-1"></i>Desbloquear</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button
+                                                type="button"
+                                                class="btn-row"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalBloqueio"
+                                                data-user-id="<?= (int) $user->id ?>"
+                                                data-user-name="<?= esc($user->nome, 'attr') ?>">
+                                                <i class="bi bi-lock me-1"></i>Bloquear
+                                            </button>
+                                        <?php endif; ?>
                                         <button
                                             type="button"
                                             class="btn-row btn-row-danger"
@@ -159,11 +143,11 @@
                 <div class="tab-pane fade" id="contratantes">
                     <div class="filter-bar">
                         <input class="form-control filter-search" placeholder="Pesquisar pelo nome...">
-                        <div class="status-tabs">
+                        <!-- <div class="status-tabs">
                             <button class="status-tab active">Aprovados</button>
                             <button class="status-tab">Bloqueados</button>
                             <button class="status-tab reported">Denunciados <span>3</span></button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="user-list">
                         <?php foreach ($users as $user): ?>
@@ -172,20 +156,27 @@
                                     <div class="user-main">
                                         <div class="avatar"><?= iniciais_nome($user->nome) ?></div>
                                         <div>
-                                            <div class="user-name"><?= $user->nome ?> <span class="user-status status-reported"><?= $user->status ?></span></div>
-                                            <div class="user-meta">Muriaé/MG · <?= $user->qtd_denucias ?> denúncia</div>
+                                            <div class="user-name"><?= esc($user->nome) ?> <span class="user-status <?= $user->status === 'BLOQUEADO' ? 'status-reported' : 'status-approved' ?>"><?= esc($user->status) ?></span></div>
+                                            <div class="user-meta">Muriaé/MG · <?= (int) $user->qtd_denucias ?> denúncia(s)</div>
                                         </div>
                                     </div>
                                     <div class="row-actions">
-                                        <button
-                                            type="button"
-                                            class="btn-row"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalBloqueio"
-                                            data-user-id="<?= (int) $user->id ?>"
-                                            data-user-name="<?= esc($user->nome) ?>">
-                                            <i class="bi bi-lock me-1"></i>Bloquear
-                                        </button>
+                                        <?php if ($user->status === 'BLOQUEADO'): ?>
+                                            <form action="<?= site_url('admin/desbloqueio/' . (int) $user->id) ?>" method="post">
+                                                <?= csrf_field() ?>
+                                                <button type="submit" class="btn-row"><i class="bi bi-unlock me-1"></i>Desbloquear</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <button
+                                                type="button"
+                                                class="btn-row"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalBloqueio"
+                                                data-user-id="<?= (int) $user->id ?>"
+                                                data-user-name="<?= esc($user->nome, 'attr') ?>">
+                                                <i class="bi bi-lock me-1"></i>Bloquear
+                                            </button>
+                                        <?php endif; ?>
                                         <button
                                             type="button"
                                             class="btn-row btn-row-danger"
@@ -210,7 +201,7 @@
                     <div class="section-title">Categorias do sistema</div>
                     <div class="section-subtitle">O gerenciamento de categoria fica em uma tela exclusiva, separada dos usuários da plataforma.</div>
                 </div>
-                <a href="#" data-admin-view="admins" class="btn-admin text-decoration-none">
+                <a href="<?= site_url('admin/categorias') ?>" class="btn-admin text-decoration-none">
                     <i class="bi bi-tags me-1"></i>Gerenciar categorias
                 </a>
             </div>
@@ -245,21 +236,7 @@
                 <?= csrf_field() ?>
                 <div class="modal-body">
 
-                    <label class="form-label">Período do bloqueio</label>
-                    <select class="form-select mb-3" name="tempo_bloqueio" id="tempo_bloqueio">
-                        <option value="1H">1 hora</option>
-                        <option value="24H">24 horas</option>
-                        <option value="3D">3 dias</option>
-                        <option value="7D">7 dias</option>
-                        <option value="15D">15 dias</option>
-                        <option value="1M">30 dias</option>
-                        <option value="PERSONALIZADO">Até uma data específica</option>
-                    </select>
-
                     <input type="hidden" name="user_id" id="bloqueioUserId">
-
-                    <label class="form-label">Data de desbloqueio</label>
-                    <input type="datetime-local" class="form-control mb-3" name="data_personalizada">
 
                     <label class="form-label">Motivo</label>
                     <textarea class="form-control" rows="3" placeholder="Informe o motivo do bloqueio..." name="motivo"></textarea>

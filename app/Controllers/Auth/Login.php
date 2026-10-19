@@ -46,6 +46,10 @@ class Login extends BaseController
 
         $usuario = session('usuario');
 
+        if ($usuario->tipo === 'ADMIN') {
+            return redirect()->to('admin');
+        }
+
         // O filtro RegistrationFlowFilter interceptará se estiver faltando algo
         return redirect()->to('/');
     }

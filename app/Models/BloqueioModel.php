@@ -33,7 +33,7 @@ class BloqueioModel extends Model
     protected $validationRules      = [
         'profissional_id' => 'required',
         'motivo' => 'required',
-        'dt_desbloqueio' => 'required'
+        'dt_desbloqueio' => 'permit_empty'
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

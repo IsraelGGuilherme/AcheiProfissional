@@ -9,6 +9,8 @@
 
 <?php $this->section('content') ?>
 
+<?php $editando = !empty($admins); ?>
+
 <div class="container py-4" style="max-width: 560px;">
     <form method="post"
         action="<?= esc($action, 'attr') ?>"
@@ -17,8 +19,14 @@
 
         <?= csrf_field() ?>
 
-        <h1 class="h5 fw-bold mb-1">Novo administrador</h1>
-        <p class="text-secondary small mb-3">Esse cadastro cria um usuário com permissão exclusivamente administrativa.</p>
+        <h1 class="h5 fw-bold mb-1"><?= $editando ? 'Editar administrador' : 'Novo administrador' ?></h1>
+        <p class="text-secondary small mb-3">
+            <?= $editando ? 'Deixe a senha em branco para manter a atual.' : 'Esse cadastro cria um usuário com permissão exclusivamente administrativa.' ?>
+        </p>
+
+        <?php if ($editando): ?>
+            <input type="hidden" name="id" value="<?= (int) $admins->id ?>">
+        <?php endif; ?>
 
         <div class="row g-3">
 
@@ -29,7 +37,7 @@
                     name="email"
                     class="form-control form-control-sm"
                     placeholder="admin@exemplo.com"
-                    value="<?= esc(old('email')) ?>"
+                    value="<?= esc(old('email', $editando ? $admins->email : '')) ?>"
                     autocomplete="off"
                     required>
             </div>
@@ -43,7 +51,7 @@
                     placeholder="Mínimo de 8 caracteres"
                     autocomplete="new-password"
                     minlength="8"
-                    required>
+                    <?= $editando ? '' : 'required' ?>>
             </div>
 
             <div class="col-sm-6">
@@ -54,12 +62,23 @@
                     class="form-control form-control-sm"
                     placeholder="Repita a senha"
                     autocomplete="new-password"
-                    required>
+                    <?= $editando ? '' : 'required' ?>>
             </div>
+
+            <?php if ($editando): ?>
+                <div class="col-sm-6">
+                    <label for="status" class="form-label small fw-semibold mb-1">Status</label>
+                    <select id="status" name="status" class="form-select form-select-sm">
+                        <?php $statusAtual = old('status', $admins->status); ?>
+                        <option value="ATIVO" <?= $statusAtual === 'ATIVO' ? 'selected' : '' ?>>Ativo</option>
+                        <option value="BLOQUEADO" <?= $statusAtual === 'BLOQUEADO' ? 'selected' : '' ?>>Bloqueado</option>
+                    </select>
+                </div>
+            <?php endif; ?>
 
             <div class="col-12 d-flex gap-2 pt-1">
                 <button type="submit" class="btn btn-primary btn-sm px-4">Salvar administrador</button>
-                <a href="<?= site_url('admin') ?>" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+                <a href="<?= site_url('admin/administradores') ?>" class="btn btn-outline-secondary btn-sm">Cancelar</a>
             </div>
 
         </div>

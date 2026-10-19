@@ -13,26 +13,57 @@ class Admin extends BaseController
     public function index()
     {
         helper('profissional');
-        $data = [];
 
         $usuariosModel = model('UsuariosModel');
         $categoriaModel = model('CategoriasModel');
-        
+
+        // Mantém a listagem existente e calcula indicadores com dados reais.
         $usuarios = $usuariosModel->listarUsuarios();
+        $totalUsuarios = $usuariosModel->countAllResults();
+        $qtdProfissionais = $usuariosModel->where('tipo', 'PROFISSIONAL')->countAllResults();
+        $qtdProfissionaisAtivos = $usuariosModel
+            ->where('tipo', 'PROFISSIONAL')
+            ->where('status', 'ATIVO')
+            ->countAllResults();
+        $qtdContratantes = $usuariosModel->where('tipo', 'COMUM')->countAllResults();
+        $qtdBloqueados = $usuariosModel->where('status', 'BLOQUEADO')->countAllResults();
+        $qtdPendentes = $usuariosModel->where('status', 'PENDENTE')->countAllResults();
 
+        // O schema atual não possui tabela de vagas; o gráfico mostra novos cadastros.
+        $resultadoCadastros = $usuariosModel->builder()
+            ->select('DATE(created_at) AS dia, COUNT(*) AS total')
+            ->where('created_at >=', date('Y-m-d 00:00:00', strtotime('-6 days')))
+            ->groupBy('DATE(created_at)')
+            ->orderBy('dia', 'ASC')
+            ->get()
+            ->getResultArray();
 
-        /*
-            trazer a quantidade de profissionais e usuarios comuns 
-        */
-        return view(
-            'Admin/main',
-            [
-                'users' => $usuarios,
-                'qtd_profissionais' => $usuariosModel->where('tipo', 'PROFISSIONAL')->countAllResults(),
-                'qtd_contratantes'  => $usuariosModel->where('tipo', 'COMUM')->countAllResults(),
-                'categorias' => $categoriaModel->findAll(20)
-            ]
-        );
+        $cadastrosPorDia = [];
+        $totaisPorDia = [];
+        foreach ($resultadoCadastros as $linha) {
+            $totaisPorDia[$linha['dia']] = (int) $linha['total'];
+        }
+
+        for ($i = 6; $i >= 0; $i--) {
+            $dia = date('Y-m-d', strtotime("-$i days"));
+            $cadastrosPorDia[] = [
+                'dia' => $dia,
+                'rotulo' => date('d/m', strtotime($dia)),
+                'total' => $totaisPorDia[$dia] ?? 0,
+            ];
+        }
+
+        return view('Admin/main', [
+            'users' => $usuarios,
+            'total_usuarios' => $totalUsuarios,
+            'qtd_profissionais' => $qtdProfissionais,
+            'qtd_profissionais_ativos' => $qtdProfissionaisAtivos,
+            'qtd_contratantes' => $qtdContratantes,
+            'qtd_bloqueados' => $qtdBloqueados,
+            'qtd_pendentes' => $qtdPendentes,
+            'cadastros_por_dia' => $cadastrosPorDia,
+            'categorias' => $categoriaModel->findAll(20),
+        ]);
     }
 
     public function bloqueio_user()
@@ -41,9 +72,7 @@ class Admin extends BaseController
         $data = $this->request->getPost();
 
         $validator->setRules([
-            'tempo_bloqueio' => 'required|in_list[1H,24H,3D,7D,15D,1M,PERSONALIZADO]',
             'user_id' => 'required|integer',
-            'data_personalizada' => 'permit_empty|valid_date[Y-m-d\TH:i]',
             'motivo' => 'required|min_length[10]'
         ]);
 
@@ -52,38 +81,34 @@ class Admin extends BaseController
                 ->withInput()
                 ->with('error', $validator->getErrors());
         }
-        $dataAtual = Time::parse(Time::now());
 
-        switch ($data['tempo_bloqueio']) {
-            case '1H':
-                $dataAtual->addHours(1);
-                break;
-            case '24H':
-                $dataAtual->addDays(1);
-                break;
-            case '3D':
-                $dataAtual->addDays(3);
-                break;
-            case '7D':
-                $dataAtual->addDays(7);
-                break;
-            case '15D':
-                $dataAtual->addDays(15);
-                break;
-            case '1M':
-                $dataAtual->addMonths(1);
-                break;
-            // Quando selecionado personalizado no select pega a data do campo datetime no front-end
-            case 'PERSONALIZADO':
-                $dataAtual = Time::parse($data['data_personalizada']);
-                break;
+        $userService = service('usuarioService');
+        $bloqueado = $userService->bloquear_usuario(
+            (int) $data['user_id'],
+            $data['motivo']
+        );
+        
+        if (!$bloqueado) {
+            return redirect()->to(site_url('admin'))
+                ->with('error', 'Não foi possível bloquear este usuário. Verifique se ele existe e se não é administrador.');
         }
 
-        $dataDesbloqueio = $dataAtual->toDateTimeString();
-        $userService = service('usuarioService');
-        $userService->bloquear_usuario($data['user_id'], $dataDesbloqueio, $data['motivo']);
         return redirect()->to(site_url('admin'))
             ->with('success', 'Usuário bloqueado com sucesso.');
+    }
+
+
+    public function desbloquear_usuario(int $id)
+    {
+        $userService = service('usuarioService');
+
+        if (!$userService->desbloquear_usuario($id)) {
+            return redirect()->to(site_url('admin'))
+                ->with('error', 'Não foi possível desbloquear este usuário. Verifique se ele está bloqueado.');
+        }
+
+        return redirect()->to(site_url('admin'))
+            ->with('success', 'Usuário desbloqueado com sucesso.');
     }
 
     public function excluir_usuario(int $id)

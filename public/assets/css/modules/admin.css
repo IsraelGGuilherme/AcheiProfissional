@@ -53,6 +53,7 @@
 .status-approved{background:#e9f7f0;color:#278e68}
 .status-reported{background:#fff0f1;color:#bd3545}
 .row-actions{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.row-actions form{margin:0}
 .btn-row{border:1px solid #d4dfe7;background:#fff;color:#526575;border-radius:6px;padding:5px 8px;font-size:8px}
 .btn-row:hover{background:#f5f9fc}
 .btn-row-danger{color:#c63745}
