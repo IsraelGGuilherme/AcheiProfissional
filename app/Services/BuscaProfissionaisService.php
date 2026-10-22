@@ -9,11 +9,16 @@ use CodeIgniter\Database\BaseConnection;
  * Consultas de leitura sobre profissionais: busca da home, perfil público
  * e listas auxiliares (categorias, cidades com profissionais, bairros).
  *
- * Só aparecem profissionais com cadastro concluído (usuarios.status = 'ATIVO').
+ * Quem aparece: profissional com o cadastro completo (categoria, endereço, área de atuação e horário)
+ * e que não foi bloqueado (usuarios.status <> 'BLOQUEADO'). Não existe etapa de ativação:
+ * o perfil fica público assim que o cadastro termina, e o admin pode bloquear ou excluir depois.
  */
 class BuscaProfissionaisService
 {
     public const POR_PAGINA = 10;
+
+    /** Condição de "perfil publicado" sobre a tabela usuarios (alias informado). */
+    protected const NAO_BLOQUEADO = "u.tipo = 'PROFISSIONAL' AND u.status <> 'BLOQUEADO'";
 
     protected BaseConnection $db;
 
@@ -70,11 +75,12 @@ class BuscaProfissionaisService
             ->select('(SELECT ROUND(AVG(a.nota), 1) FROM avaliacoes a WHERE a.profissional_id = p.id) AS media', false)
             ->select('(SELECT COUNT(*) FROM avaliacoes a2 WHERE a2.profissional_id = p.id) AS total_avaliacoes', false)
             ->select('cid.nome AS cidade_nome, uf.sigla AS uf, COALESCE(bai.nome, e.bairro_outro) AS bairro_nome')
-            ->join('usuarios u', "u.id = p.id AND u.tipo = 'PROFISSIONAL' AND u.status = 'ATIVO'")
+            ->join('usuarios u', 'u.id = p.id AND ' . self::NAO_BLOQUEADO)
             ->join('enderecos e', 'e.id = (SELECT MAX(e2.id) FROM enderecos e2 WHERE e2.usuario_id = p.id)', 'left')
             ->join('localidades cid', 'cid.id = e.cidade_id', 'left')
             ->join('localidades uf', 'uf.id = cid.localidade_pai_id', 'left')
             ->join('localidades bai', 'bai.id = e.bairro_id', 'left')
+            ->where($this->sqlCadastroCompleto('p.id'), null, false)
             ->where('p.slug', $slug)
             ->get()
             ->getRow();
@@ -86,8 +92,24 @@ class BuscaProfissionaisService
         $perfil->categorias = $this->categoriasDoProfissional((int) $perfil->id);
         $perfil->locais     = $this->locaisDoProfissional((int) $perfil->id);
         $perfil->horarios   = $this->horariosDoProfissional((int) $perfil->id);
+        $perfil->galeria    = $this->galeriaDoProfissional((int) $perfil->id);
 
         return $perfil;
+    }
+
+    /**
+     * Fotos da galeria de trabalhos, da mais nova para a mais antiga.
+     *
+     * @return list<object> id, arquivo, descricao
+     */
+    public function galeriaDoProfissional(int $profissionalId): array
+    {
+        return $this->db->table('profissional_imagens_galeria')
+            ->select('id, arquivo, descricao')
+            ->where('profissional_id', $profissionalId)
+            ->orderBy('id', 'DESC')
+            ->get()
+            ->getResult();
     }
 
     /** @return list<object> id, nome */
@@ -175,6 +197,10 @@ class BuscaProfissionaisService
      */
     public function cidadesComProfissionais(): array
     {
+        $naoBloqueado = self::NAO_BLOQUEADO;
+        $completoEnd  = $this->sqlCadastroCompleto('e.usuario_id');
+        $completoLoc  = $this->sqlCadastroCompleto('pl.profissional_id');
+
         $sql = "
             SELECT DISTINCT c.id, c.nome, uf.sigla AS uf
             FROM localidades c
@@ -183,11 +209,13 @@ class BuscaProfissionaisService
               AND c.id IN (
                   SELECT e.cidade_id
                   FROM enderecos e
-                  JOIN usuarios u ON u.id = e.usuario_id AND u.tipo = 'PROFISSIONAL' AND u.status = 'ATIVO'
+                  JOIN usuarios u ON u.id = e.usuario_id AND {$naoBloqueado}
+                  WHERE {$completoEnd}
                   UNION
                   SELECT pl.localidade_id
                   FROM profissional_locais_atendimento pl
-                  JOIN usuarios u ON u.id = pl.profissional_id AND u.status = 'ATIVO'
+                  JOIN usuarios u ON u.id = pl.profissional_id AND {$naoBloqueado}
+                  WHERE {$completoLoc}
               )
             ORDER BY c.nome ASC
         ";
@@ -233,16 +261,31 @@ class BuscaProfissionaisService
     }
 
     /**
+     * Cadastro completo, derivado dos dados (não depende de nenhum status gravado):
+     * tem categoria, endereço, ao menos uma área de atuação e ao menos um horário.
+     *
+     * @param string $idExpr expressão SQL com o id do profissional (ex.: "p.id")
+     */
+    protected function sqlCadastroCompleto(string $idExpr): string
+    {
+        return "EXISTS (SELECT 1 FROM profissional_categoria c_ok WHERE c_ok.profissional_id = {$idExpr})
+            AND EXISTS (SELECT 1 FROM enderecos e_ok WHERE e_ok.usuario_id = {$idExpr})
+            AND EXISTS (SELECT 1 FROM profissional_locais_atendimento l_ok WHERE l_ok.profissional_id = {$idExpr})
+            AND EXISTS (SELECT 1 FROM profissional_horarios h_ok WHERE h_ok.profissional_id = {$idExpr})";
+    }
+
+    /**
      * Monta FROM + JOINs + WHERE comuns à contagem e à listagem.
      */
     protected function base(array $filtros): BaseBuilder
     {
         $b = $this->db->table('profissionais p')
-            ->join('usuarios u', "u.id = p.id AND u.tipo = 'PROFISSIONAL' AND u.status = 'ATIVO'")
+            ->join('usuarios u', 'u.id = p.id AND ' . self::NAO_BLOQUEADO)
             ->join('enderecos e', 'e.id = (SELECT MAX(e2.id) FROM enderecos e2 WHERE e2.usuario_id = p.id)', 'left')
             ->join('localidades cid', 'cid.id = e.cidade_id', 'left')
             ->join('localidades uf', 'uf.id = cid.localidade_pai_id', 'left')
-            ->join('localidades bai', 'bai.id = e.bairro_id', 'left');
+            ->join('localidades bai', 'bai.id = e.bairro_id', 'left')
+            ->where($this->sqlCadastroCompleto('p.id'), null, false);
 
         $categoria = (int) ($filtros['categoria'] ?? 0);
         $cidade    = (int) ($filtros['cidade'] ?? 0);
@@ -285,7 +328,8 @@ class BuscaProfissionaisService
         }
 
         if ($nota >= 1 && $nota <= 5) {
-            $b->where("(SELECT AVG(a3.nota) FROM avaliacoes a3 WHERE a3.profissional_id = p.id) >= {$nota}", null, false);
+            // Compara a média ARREDONDADA, a mesma que aparece no card (4,95 aparece como "5,0" e entra em "5 estrelas").
+            $b->where("(SELECT ROUND(AVG(a3.nota), 1) FROM avaliacoes a3 WHERE a3.profissional_id = p.id) >= {$nota}", null, false);
         }
 
         return $b;

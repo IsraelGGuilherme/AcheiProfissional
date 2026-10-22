@@ -205,6 +205,21 @@
                             Documento necessário para segurança da plataforma.
                         </div>
                         <div id="cpfCnpjFeedback" class="field-feedback"></div>
+                        <div id="blocoCnpjFonteCadastro" class="mt-2" hidden>
+                            <label for="cnpjFonteCadastro" class="form-label">Buscar os dados em</label>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-control-custom" id="cnpjFonteCadastro">
+                                    <?php foreach (\App\Services\CnpjService::DATASETS as $valor => $rotulo): ?>
+                                        <option value="<?= esc($valor, 'attr') ?>"><?= esc($rotulo) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <button type="button" class="btn btn-outline-primary flex-shrink-0" id="btnVerificarCnpjCadastro" data-url="<?= base_url('api/cnpj/validar') ?>" hidden>
+                                    <i class="bi bi-shield-check"></i> Verificar
+                                </button>
+                            </div>
+                            <div class="form-helper">Consulta opcional à base pública OpenCNPJ; não impede o cadastro.</div>
+                        </div>
+                        <div id="cnpjResultadoCadastro" class="alert mt-2" role="status" aria-live="polite" hidden></div>
                     </div>
 
                     <!-- Campo: Nome / Razão Social -->
@@ -374,6 +389,10 @@
         const labelCpfCnpj = document.getElementById('labelCpfCnpj');
         const iconCpfCnpj = document.getElementById('iconCpfCnpj');
         const labelNome = document.getElementById('labelNome');
+        const botaoVerificarCnpj = document.getElementById('btnVerificarCnpjCadastro');
+        const blocoCnpjFonte = document.getElementById('blocoCnpjFonteCadastro');
+        const fonteCnpj = document.getElementById('cnpjFonteCadastro');
+        const resultadoCnpj = document.getElementById('cnpjResultadoCadastro');
 
         const avatarPreviewBox = document.getElementById('avatarPreviewBox');
         const avatarPlaceholder = document.getElementById('avatarPlaceholder');
@@ -394,38 +413,48 @@
         const fotoCapaFeedback = document.getElementById('fotoCapaFeedback');
         const clientErrorAlert = document.getElementById('clientErrorAlert');
 
-        // Adicionando validadores e máscaras para CNPJ
-        // Isso normalmente iria nos arquivos core, mas para evitar alterar muitos arquivos,
-        // adicionamos a lógica complementar aqui ou expandimos os objetos existentes.
-        
+        // Adicionando validadores e máscaras para CNPJ alfanumérico
+        // Mantém letras e números no campo e usa a mesma lógica do backend.
+        function limparDocumento(value) {
+            return (value || '').toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 14);
+        }
+
+        function formatarCnpj(value) {
+            const val = limparDocumento(value);
+
+            if (!val) return '';
+            if (val.length <= 2) return val;
+            if (val.length <= 5) return val.replace(/^([0-9A-Z]{2})([0-9A-Z]*)$/, '$1.$2');
+            if (val.length <= 8) return val.replace(/^([0-9A-Z]{2})([0-9A-Z]{3})([0-9A-Z]*)$/, '$1.$2.$3');
+            if (val.length <= 12) return val.replace(/^([0-9A-Z]{2})([0-9A-Z]{3})([0-9A-Z]{3})([0-9A-Z]*)$/, '$1.$2.$3/$4');
+
+            return val.replace(/^([0-9A-Z]{2})([0-9A-Z]{3})([0-9A-Z]{3})([0-9A-Z]{4})([0-9A-Z]{0,2})$/, '$1.$2.$3/$4-$5');
+        }
+
         if (!Masks.cnpj) {
             Masks.cnpj = function(value) {
-                let val = value.replace(/\D/g, '');
-                if (val.length > 14) val = val.substring(0, 14);
-                
-                if (val.length > 12) return val.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
-                if (val.length > 8) return val.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
-                if (val.length > 5) return val.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                if (val.length > 2) return val.replace(/(\d{2})(\d{1,3})/, '$1.$2');
-                return val;
+                return formatarCnpj(value);
             };
         }
 
         if (!Validators.cnpj) {
             Validators.cnpj = function(cnpj) {
-                const b = [ 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 ];
-                const c = String(cnpj).replace(/[^\d]/g, '');
-                
-                if(c.length !== 14) return false;
-                if(/0{14}/.test(c)) return false;
-                
-                for (var i = 0, n = 0; i < 12; n += c[i] * b[++i]);
-                if(c[12] != (((n %= 11) < 2) ? 0 : 11 - n)) return false;
-                
-                for (var i = 0, n = 0; i <= 12; n += c[i] * b[i++]);
-                if(c[13] != (((n %= 11) < 2) ? 0 : 11 - n)) return false;
-                
-                return true;
+                const c = limparDocumento(cnpj);
+
+                if (!/^[0-9A-Z]{12}[0-9]{2}$/.test(c) || /^(\d)\1{13}$/.test(c)) {
+                    return false;
+                }
+
+                const digito = (base) => {
+                    let soma = 0;
+                    for (let i = base.length - 1, p = 0; i >= 0; i--, p++) {
+                        soma += (base.charCodeAt(i) - 48) * (2 + (p % 8));
+                    }
+                    const resto = soma % 11;
+                    return resto < 2 ? 0 : 11 - resto;
+                };
+
+                return digito(c.slice(0, 12)) === Number(c[12]) && digito(c.slice(0, 13)) === Number(c[13]);
             };
         }
 
@@ -508,6 +537,9 @@
             
             // Re-aplicar máscara no valor atual
             cpfCnpjInput.value = isPF ? Masks.cpf(cpfCnpjInput.value) : Masks.cnpj(cpfCnpjInput.value);
+            botaoVerificarCnpj.hidden = isPF;
+            blocoCnpjFonte.hidden = isPF;
+            resultadoCnpj.hidden = true;
             
             validateCpfCnpj();
         }
@@ -574,8 +606,8 @@
         nomeInput.addEventListener('input', validateNome);
 
         function validateCpfCnpj() {
-            const raw = Masks.clean(cpfCnpjInput.value);
             const isPF = tipoPF.checked;
+            const raw = isPF ? Masks.clean(cpfCnpjInput.value) : limparDocumento(cpfCnpjInput.value);
 
             if (raw.length === 0) {
                 cpfCnpjInput.classList.remove('is-invalid', 'is-valid');
@@ -592,7 +624,7 @@
                 errorMsg = raw.length < 11 ? 'O CPF deve conter 11 dígitos.' : 'O CPF digitado é inválido.';
             } else {
                 isValid = raw.length === 14 && Validators.cnpj(raw);
-                errorMsg = raw.length < 14 ? 'O CNPJ deve conter 14 dígitos.' : 'O CNPJ digitado é inválido.';
+                errorMsg = raw.length < 14 ? 'O CNPJ deve conter 14 caracteres.' : 'O CNPJ digitado é inválido.';
             }
 
             if (!isValid) {
@@ -609,6 +641,123 @@
             cpfCnpjFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${isPF ? 'CPF' : 'CNPJ'} válido.`;
             return true;
         }
+
+        function atualizarTokenCsrf(novoToken) {
+            if (!novoToken) return;
+            document.querySelectorAll('input[name="csrf_test_name"]').forEach((input) => {
+                input.value = novoToken;
+            });
+        }
+
+        function mostrarResultadoCnpj(tipo, mensagem, dados) {
+            resultadoCnpj.replaceChildren();
+            resultadoCnpj.className = 'alert mt-2 ' + (tipo === 'ok' ? 'alert-success' : (tipo === 'alerta' ? 'alert-warning' : 'alert-danger'));
+            resultadoCnpj.hidden = false;
+
+            const titulo = document.createElement('div');
+            titulo.textContent = mensagem;
+            resultadoCnpj.appendChild(titulo);
+
+            if (!dados || !dados.nome) return;
+
+            const endereco = dados.endereco || {};
+            const rua = [endereco.logradouro, endereco.numero].filter(Boolean).join(', ');
+            const local = [endereco.bairro, [endereco.municipio, endereco.uf].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
+            const campos = [
+                ['Razão social', dados.nome],
+                ['Nome fantasia', dados.fantasia],
+                ['Situação', dados.situacao],
+                ['Endereço', [rua, endereco.complemento, local, endereco.cep].filter(Boolean).join(' · ')],
+                ['Fonte', dados.dataset_nome],
+            ];
+
+            campos.forEach(([rotulo, valor]) => {
+                if (!valor) return;
+                const linha = document.createElement('div');
+                const forte = document.createElement('strong');
+                forte.textContent = rotulo + ': ';
+                linha.append(forte, document.createTextNode(valor));
+                resultadoCnpj.appendChild(linha);
+            });
+
+            if (dados.mei === true) {
+                const selo = document.createElement('div');
+                selo.textContent = 'MEI';
+                resultadoCnpj.appendChild(selo);
+            }
+
+            const acoes = document.createElement('div');
+            acoes.className = 'd-flex flex-wrap gap-2 mt-2';
+            [['Usar razão social como nome', dados.nome], ['Usar nome fantasia como nome', dados.fantasia]].forEach(([texto, valor]) => {
+                if (!valor) return;
+                const botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'btn btn-sm btn-outline-primary';
+                botao.textContent = texto;
+                botao.addEventListener('click', () => {
+                    nomeInput.value = valor;
+                    nomeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+                acoes.appendChild(botao);
+            });
+            if (acoes.childElementCount) resultadoCnpj.appendChild(acoes);
+        }
+
+        botaoVerificarCnpj.addEventListener('click', async () => {
+            if (!validateCpfCnpj()) {
+                mostrarResultadoCnpj('erro', 'Informe um CNPJ válido antes de consultar.');
+                return;
+            }
+
+            botaoVerificarCnpj.disabled = true;
+            const textoOriginal = botaoVerificarCnpj.innerHTML;
+            botaoVerificarCnpj.textContent = 'Consultando...';
+
+            try {
+                const corpo = new URLSearchParams();
+                corpo.set('cnpj', cpfCnpjInput.value);
+                corpo.set('dataset', fonteCnpj.value);
+                const token = form.querySelector('input[name="csrf_test_name"]');
+                if (token) corpo.set('csrf_test_name', token.value);
+
+                const resposta = await fetch(botaoVerificarCnpj.dataset.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: corpo,
+                    credentials: 'same-origin',
+                });
+                let dados = null;
+                try {
+                    dados = await resposta.json();
+                } catch (erro) {
+                    // Mostra uma mensagem explícita abaixo quando o servidor não devolve JSON.
+                }
+
+                if (dados && dados.csrf) atualizarTokenCsrf(dados.csrf);
+
+                if (!dados) {
+                    mostrarResultadoCnpj('erro', resposta.status === 403
+                        ? 'Sua sessão expirou. Recarregue a página e tente novamente.'
+                        : 'Não foi possível consultar agora. Tente novamente.');
+                } else if (dados.sucesso) {
+                    mostrarResultadoCnpj('ok', dados.mensagem, dados);
+                } else if (dados.codigo === 'inativo') {
+                    mostrarResultadoCnpj('alerta', dados.mensagem, dados);
+                } else {
+                    mostrarResultadoCnpj('erro', dados.mensagem || 'Não foi possível consultar agora.');
+                }
+            } catch (erro) {
+                mostrarResultadoCnpj('erro', 'Sem conexão com o servidor. Tente novamente.');
+            } finally {
+                botaoVerificarCnpj.disabled = false;
+                botaoVerificarCnpj.innerHTML = textoOriginal;
+            }
+        });
+
+        [cpfCnpjInput, fonteCnpj].forEach((campo) => {
+            campo.addEventListener('input', () => { resultadoCnpj.hidden = true; });
+            campo.addEventListener('change', () => { resultadoCnpj.hidden = true; });
+        });
 
         function validateTelefone(inputEl, feedbackEl) {
             const raw = Masks.clean(inputEl.value);
@@ -689,7 +838,7 @@
                 }
             } else {
                 if (typeof AuthUI !== 'undefined') AuthUI.clearErrors(clientErrorAlert);
-                cpfCnpjInput.value = Masks.clean(cpfCnpjInput.value);
+                cpfCnpjInput.value = tipoPF.checked ? Masks.clean(cpfCnpjInput.value) : limparDocumento(cpfCnpjInput.value);
                 if (telefoneInput.value) telefoneInput.value = Masks.clean(telefoneInput.value);
                 if (whatsappInput.value) whatsappInput.value = Masks.clean(whatsappInput.value);
             }

@@ -7,6 +7,7 @@ use App\Models\ProfissionaisModel;
 use App\Models\UsuariosComunsModel;
 use App\Models\UsuariosModel;
 use App\Services\AuthService;
+use App\Services\CnpjService;
 use App\Services\CodigoVerificacaoService;
 use App\Services\ImagemUploadService;
 use CodeIgniter\Database\Exceptions\DatabaseException;
@@ -323,10 +324,11 @@ class Register extends BaseController
     public function registerProfissionalDados()
     {
         $params = $this->request->getPost();
+        $tipoPessoa = (string) ($params['tipo_pessoa'] ?? '');
 
         $rules = [
             'tipo_pessoa'      => 'required|in_list[PF,PJ]',
-            'cpf_cnpj'         => 'required|max_length[18]',
+            'cpf_cnpj'         => 'required',
             'nome'             => 'required|max_length[150]',
             'descricao'        => 'permit_empty|string',
             'telefone_contato' => 'permit_empty|max_length[20]',
@@ -339,6 +341,18 @@ class Register extends BaseController
 
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput();
+        }
+
+        $documento = $tipoPessoa === 'PJ'
+            ? CnpjService::normalizar((string) ($params['cpf_cnpj'] ?? ''))
+            : preg_replace('/\D/', '', (string) ($params['cpf_cnpj'] ?? ''));
+
+        if ($tipoPessoa === 'PF' && strlen($documento) !== 11) {
+            return redirect()->back()->withInput()->with('error', 'O CPF informado é inválido.');
+        }
+
+        if ($tipoPessoa === 'PJ' && (strlen($documento) !== 14 || !CnpjService::valido($documento))) {
+            return redirect()->back()->withInput()->with('error', 'O CNPJ informado é inválido.');
         }
 
         helper('url');
@@ -354,9 +368,8 @@ class Register extends BaseController
         $insert = $params;
         $insert['id'] = session('usuario')->id;
         $insert['slug'] = $slug;
-        
-        // Remove non-numeric characters just to be safe (matching constraint sizes)
-        $insert['cpf_cnpj'] = preg_replace('/\D/', '', $insert['cpf_cnpj']);
+        $insert['cpf_cnpj'] = $documento;
+
         if (!empty($insert['telefone_contato'])) {
             $insert['telefone_contato'] = preg_replace('/\D/', '', $insert['telefone_contato']);
         }

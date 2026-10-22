@@ -305,3 +305,229 @@
     .ap-form-row.tres { grid-template-columns: 1fr; }
     .ap-page-header { flex-direction: column; }
 }
+
+/* ---------- Galeria de trabalhos ---------- */
+
+.ap-galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+
+.ap-galeria-item { margin: 0; }
+
+.ap-galeria-btn {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    border: 1px solid var(--ap-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #eef3f7;
+    cursor: zoom-in;
+}
+
+.ap-galeria-btn img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s; }
+.ap-galeria-btn:hover img { transform: scale(1.04); }
+
+.ap-galeria-item figcaption {
+    margin-top: 6px;
+    color: #566675;
+    font-size: 12px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ap-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 64px;
+    background: rgba(12, 22, 32, .88);
+}
+
+.ap-lightbox[hidden] { display: none; }
+
+.ap-lightbox-fig { margin: 0; max-width: min(900px, 100%); text-align: center; }
+.ap-lightbox-fig img { max-width: 100%; max-height: 78vh; border-radius: 10px; background: #fff; }
+.ap-lightbox-fig figcaption { margin-top: 12px; color: #e8eef3; font-size: 14px; line-height: 1.5; }
+
+.ap-lightbox-fechar,
+.ap-lightbox-nav {
+    position: absolute;
+    border: 0;
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.ap-lightbox-fechar:hover,
+.ap-lightbox-nav:hover { background: rgba(255, 255, 255, .28); }
+
+.ap-lightbox-fechar { top: 16px; right: 16px; }
+.ap-lightbox-nav { top: 50%; transform: translateY(-50%); }
+.ap-lightbox-ant { left: 12px; }
+.ap-lightbox-prox { right: 12px; }
+
+/* gerenciamento no "Meu perfil" */
+
+.ap-gal-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid #edf1f4; margin-top: 14px; }
+.ap-gal-item img { width: 96px; height: 96px; flex: 0 0 96px; object-fit: cover; border-radius: 10px; border: 1px solid var(--ap-border); }
+.ap-gal-corpo { flex: 1; min-width: 0; }
+
+@media (max-width: 700px) {
+    .ap-lightbox { padding: 60px 12px 20px; }
+    .ap-lightbox-nav { top: auto; bottom: 14px; transform: none; }
+    .ap-gal-item { flex-direction: column; }
+    .ap-gal-item img { width: 100%; height: 180px; flex-basis: auto; }
+}
+
+/* ---------- Fotos nas avaliações ---------- */
+
+.ap-review-fotos { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+
+.ap-review-foto {
+    width: 74px;
+    height: 74px;
+    padding: 0;
+    border: 1px solid var(--ap-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #eef3f7;
+    cursor: zoom-in;
+}
+
+.ap-review-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.ap-foto-rem { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; margin: 0; }
+.ap-foto-rem img { width: 74px; height: 74px; object-fit: cover; border-radius: 8px; border: 1px solid var(--ap-border); }
+
+/* ---------- Denúncia de avaliação e de foto ---------- */
+
+.ap-review-denunciar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #8a98a6;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.ap-review-denunciar:hover { color: var(--ap-danger); text-decoration: underline; }
+
+.ap-lightbox-denunciar {
+    margin-top: 12px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 18px;
+    background: transparent;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.ap-lightbox-denunciar:hover { background: rgba(255, 255, 255, .16); }
+.ap-lightbox-denunciar[hidden] { display: none; }
+
+/* ---------- Verificação de CNPJ ---------- */
+
+.ap-input-botao { display: flex; gap: 8px; align-items: stretch; }
+.ap-input-botao .ap-input { flex: 1; min-width: 0; }
+.ap-input-botao .ap-btn { white-space: nowrap; }
+.ap-input-botao .ap-btn[hidden] { display: none; }
+#blocoCnpjFonte[hidden] { display: none; }
+#blocoCnpjFonte { margin-top: 8px; }
+.ap-label-pequeno { display: block; margin: 0 0 4px; font-size: 11px; color: #6b7a88; font-weight: 600; }
+
+.ap-cnpj-resultado {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--ap-border);
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #354454;
+    background: #f7fafc;
+}
+
+.ap-cnpj-resultado[hidden] { display: none; }
+.ap-cnpj-resultado.ok     { border-color: #bfe8d6; background: #effaf5; }
+.ap-cnpj-resultado.alerta { border-color: #f1d9a8; background: #fff8e8; }
+.ap-cnpj-resultado.erro   { border-color: #f0c9c9; background: #fdf1f1; }
+
+.ap-cnpj-titulo { font-weight: 700; margin-bottom: 6px; }
+.ap-cnpj-resultado.ok .ap-cnpj-titulo { color: #1b6e3c; }
+.ap-cnpj-resultado.alerta .ap-cnpj-titulo { color: #8a5a00; }
+.ap-cnpj-resultado.erro .ap-cnpj-titulo { color: var(--ap-danger); }
+
+.ap-cnpj-selo { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; background: #dff0ff; color: var(--primary); font-weight: 700; font-size: 11px; }
+.ap-cnpj-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* ---------- Abas do "Meu perfil" ---------- */
+
+.ap-tabs-card { padding: 0; overflow: hidden; }
+
+.ap-tabs-card .ap-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin: 0;
+    padding: 14px 16px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--ap-border);
+    list-style: none;
+    scrollbar-width: thin;
+}
+
+.ap-tabs-card .ap-tabs .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 10px 10px 0 0;
+    background: transparent;
+    color: #566675;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ap-tabs-card .ap-tabs .nav-link:hover { background: #f3f8fd; color: var(--primary); }
+.ap-tabs-card .ap-tabs .nav-link.active { background: #dff0ff; color: var(--primary); }
+.ap-tabs-card .ap-tabs .nav-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+.ap-tabs-card .ap-tabs .badge {
+    padding: 3px 7px;
+    border: 1px solid var(--ap-border);
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #354454;
+    background: #fff;
+}
+
+.ap-tab-content { padding: 22px; }
+
+.ap-resumo-nota { margin-top: 8px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+@media (max-width: 700px) {
+    .ap-tab-content { padding: 16px; }
+}
+
+/* ---------- "Ver mais" da galeria pública ---------- */
+
+.ap-galeria-mais { display: flex; justify-content: center; margin-top: 16px; }
+.ap-galeria-extra[hidden] { display: none; }

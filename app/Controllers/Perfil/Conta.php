@@ -4,15 +4,13 @@ namespace App\Controllers\Perfil;
 
 use App\Controllers\BaseController;
 use App\Models\UsuariosModel;
-use App\Services\ImagemUploadService;
+use App\Services\ContaService;
 
 /**
  * Exclusão da própria conta (profissional ou usuário comum).
  *
- * A exclusão é definitiva e exige a senha atual. O banco cuida do resto em cascata:
- * perfil, categorias, horários, áreas de atuação, favoritos e avaliações recebidas somem junto.
- * Avaliações feitas por um contratante continuam no perfil do profissional, sem identificação do autor,
- * e as denúncias ficam registradas (sem vínculo com a conta apagada) para o administrador.
+ * A exclusão é definitiva e exige a senha atual. A regra de exclusão fica em ContaService
+ * (o mesmo serviço pode ser usado pelo administrador).
  */
 class Conta extends BaseController
 {
@@ -33,42 +31,12 @@ class Conta extends BaseController
             return redirect()->to($voltar)->with('error', 'Senha incorreta. Sua conta não foi excluída.');
         }
 
-        $db = db_connect();
-
-        // Arquivos que precisam ser apagados do disco depois que o banco confirmar a exclusão.
-        $arquivos = [$usuario->foto_perfil];
-
-        if ($usuario->tipo === 'PROFISSIONAL') {
-            $capa = $db->table('profissionais')->select('foto_capa')->where('id', $id)->get()->getRow();
-            $arquivos[] = $capa->foto_capa ?? null;
-
-            foreach ($db->table('profissional_imagens_galeria')->select('arquivo')->where('profissional_id', $id)->get()->getResult() as $linha) {
-                $arquivos[] = $linha->arquivo;
-            }
-        }
-
         try {
-            $db->transStart();
-
-            // enderecos.usuario_id é RESTRICT: precisa sair antes do usuário.
-            $db->table('enderecos')->where('usuario_id', $id)->delete();
-            $db->table('usuarios')->where('id', $id)->delete();
-
-            $db->transComplete();
-
-            if (!$db->transStatus()) {
-                throw new \RuntimeException('Transação de exclusão falhou.');
-            }
+            (new ContaService())->excluir($id);
         } catch (\Throwable $e) {
             log_message('error', '[Conta] Erro ao excluir a conta {id}: {error}', ['id' => $id, 'error' => $e->getMessage()]);
 
             return redirect()->to($voltar)->with('error', 'Não foi possível excluir sua conta agora. Tente novamente.');
-        }
-
-        $imagens = new ImagemUploadService();
-
-        foreach (array_filter($arquivos) as $caminho) {
-            $imagens->apagar($caminho);
         }
 
         // Encerra o login mantendo a sessão ativa para exibir a mensagem na próxima tela.
