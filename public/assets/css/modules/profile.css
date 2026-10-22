@@ -474,3 +474,60 @@
 
 .ap-cnpj-selo { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; background: #dff0ff; color: var(--primary); font-weight: 700; font-size: 11px; }
 .ap-cnpj-acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* ---------- Abas do "Meu perfil" ---------- */
+
+.ap-tabs-card { padding: 0; overflow: hidden; }
+
+.ap-tabs-card .ap-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin: 0;
+    padding: 14px 16px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--ap-border);
+    list-style: none;
+    scrollbar-width: thin;
+}
+
+.ap-tabs-card .ap-tabs .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 10px 10px 0 0;
+    background: transparent;
+    color: #566675;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ap-tabs-card .ap-tabs .nav-link:hover { background: #f3f8fd; color: var(--primary); }
+.ap-tabs-card .ap-tabs .nav-link.active { background: #dff0ff; color: var(--primary); }
+.ap-tabs-card .ap-tabs .nav-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+.ap-tabs-card .ap-tabs .badge {
+    padding: 3px 7px;
+    border: 1px solid var(--ap-border);
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #354454;
+    background: #fff;
+}
+
+.ap-tab-content { padding: 22px; }
+
+.ap-resumo-nota { margin-top: 8px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+@media (max-width: 700px) {
+    .ap-tab-content { padding: 16px; }
+}
+
+/* ---------- "Ver mais" da galeria pública ---------- */
+
+.ap-galeria-mais { display: flex; justify-content: center; margin-top: 16px; }
+.ap-galeria-extra[hidden] { display: none; }

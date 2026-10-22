@@ -99,3 +99,19 @@ Todos os POSTs novos passam pelo filtro `csrf`.
   - **Importante:** a consulta depende da API externa e foi testada contra uma API simulada. Se a resposta real tiver outro formato, o serviço registra no log
     (`writable/logs`) as chaves recebidas ("[CNPJ] Resposta da base ... sem dados da empresa").
 - Horários continuam sendo editados na tela original `profissional/horarios` (é preciso informar todos de novo).
+
+## Atualização: perfil do profissional em abas e "Ver mais" na galeria pública
+Mudanças só de tela (nenhuma migration, nenhuma rota, nenhum arquivo do cadastro/admin). Arquivos:
+`Views/Perfil/profissional.php`, `Views/Perfil/partials/excluir_conta.php`, `Views/Public/Profissionais/ver.php`,
+`public/assets/js/modules/perfil.js` e `public/assets/css/modules/profile.css`.
+
+- **"Meu perfil" do profissional em abas:** Dados e contato · Categorias · Minha localização · Áreas de atuação · Galeria de trabalhos ·
+  Horários de atendimento · Conta. As abas com lista mostram um contador. O cartão "Minha avaliação" virou um resumo (estrelas, média e total)
+  no cabeçalho da página, e "Excluir conta" ficou na aba **Conta**. A página ficou mais larga e as abas rolam na horizontal no celular.
+- **Âncoras:** depois de salvar, o servidor já volta para `perfil/profissional#galeria`, `#categorias`, `#localizacao` e `#atuacao`;
+  agora essa âncora abre a aba certa e trocar de aba atualiza a URL (recarregar mantém a aba). Sem âncora abre "Dados e contato".
+  Os modais (categorias e excluir conta) ficam fora das abas para o Bootstrap posicioná-los corretamente.
+- **Galeria pública ("Trabalhos realizados"):** mostra as 4 fotos mais novas; havendo mais de 4, aparece o botão **Ver mais fotos (N)**, que
+  vira **Ver menos** depois de aberto. A ampliação (setas e Esc) navega só entre as fotos que estão visíveis. Com 4 fotos ou menos não há botão.
+  Sem JavaScript, todas as fotos aparecem.
+- **Excluir conta (contratante):** continua igual (o partial passou a aceitar `$parte` = `card` ou `modal`; sem ele mostra os dois).

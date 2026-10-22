@@ -105,11 +105,16 @@
 
             <?php if (!empty($profissional->galeria)): ?>
                 <section class="ap-card" id="trabalhos">
+                    <?php
+                        // Só as primeiras fotos aparecem de início; o resto abre em "Ver mais".
+                        $galeriaVisivel = 4;
+                        $galeriaExtras  = max(0, count($profissional->galeria) - $galeriaVisivel);
+                    ?>
                     <h2>Trabalhos realizados</h2>
-                    <div class="ap-galeria">
+                    <div class="ap-galeria" id="galeriaPublica">
                         <?php foreach ($profissional->galeria as $i => $foto): ?>
                             <?php $legenda = trim((string) $foto->descricao); ?>
-                            <figure class="ap-galeria-item">
+                            <figure class="ap-galeria-item<?= $i >= $galeriaVisivel ? ' ap-galeria-extra' : '' ?>"<?= $i >= $galeriaVisivel ? ' hidden' : '' ?>>
                                 <button type="button" class="ap-galeria-btn" data-lightbox data-grupo="galeria"<?= $podeDenunciarFoto ? ' data-foto-id="' . (int) $foto->id . '"' : '' ?>
                                         data-src="<?= esc(url_foto($foto->arquivo), 'attr') ?>"
                                         data-legenda="<?= esc($legenda, 'attr') ?>"
@@ -122,6 +127,15 @@
                             </figure>
                         <?php endforeach; ?>
                     </div>
+
+                    <?php if ($galeriaExtras > 0): ?>
+                        <div class="ap-galeria-mais">
+                            <button type="button" class="ap-btn ap-btn-outline" id="galeriaVerMais" aria-expanded="false" aria-controls="galeriaPublica" data-extras="<?= $galeriaExtras ?>">
+                                <i class="bi bi-chevron-down"></i> <span>Ver mais fotos (<?= $galeriaExtras ?>)</span>
+                            </button>
+                        </div>
+                        <noscript><style>.ap-galeria-extra[hidden] { display: block; }</style></noscript>
+                    <?php endif; ?>
                 </section>
             <?php endif; ?>
 
@@ -505,8 +519,8 @@
         const fechar = () => { caixa.hidden = true; document.body.style.overflow = ''; };
 
         botoes.forEach((botao) => botao.addEventListener('click', () => {
-            // as setas navegam só entre as fotos do mesmo grupo (galeria ou uma avaliação)
-            grupo = botoes.filter((outro) => outro.dataset.grupo === botao.dataset.grupo);
+            // as setas navegam só entre as fotos visíveis do mesmo grupo (galeria ou uma avaliação)
+            grupo = botoes.filter((outro) => outro.dataset.grupo === botao.dataset.grupo && !outro.closest('[hidden]'));
             mostrar(grupo.indexOf(botao));
             caixa.hidden = false;
             document.body.style.overflow = 'hidden';
@@ -538,6 +552,31 @@
             if (evento.key === 'Escape') fechar();
             if (evento.key === 'ArrowLeft' && grupo.length > 1) mostrar(atual - 1);
             if (evento.key === 'ArrowRight' && grupo.length > 1) mostrar(atual + 1);
+        });
+
+    })();
+
+    (function () {
+
+        const botao = document.getElementById('galeriaVerMais');
+
+        if (!botao) {
+            return;
+        }
+
+        const extras = Array.from(document.querySelectorAll('.ap-galeria-extra'));
+        const texto  = botao.querySelector('span');
+        const seta   = botao.querySelector('i');
+        const quanto = botao.dataset.extras;
+
+        botao.addEventListener('click', () => {
+            const abrir = botao.getAttribute('aria-expanded') !== 'true';
+
+            extras.forEach((item) => { item.hidden = !abrir; });
+
+            botao.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+            texto.textContent = abrir ? 'Ver menos' : 'Ver mais fotos (' + quanto + ')';
+            seta.className = 'bi ' + (abrir ? 'bi-chevron-up' : 'bi-chevron-down');
         });
 
     })();

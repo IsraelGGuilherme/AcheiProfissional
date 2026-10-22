@@ -469,4 +469,37 @@
 
     })();
 
+
+    /* ---------- Abas do perfil: abrir pela âncora (#galeria, #atuacao...) e lembrar a aba ---------- */
+
+    (function () {
+
+        const abas = document.querySelectorAll('#abasPerfil [data-bs-toggle="tab"]');
+
+        if (!abas.length || !window.bootstrap) {
+            return;
+        }
+
+        function ativar(hash) {
+            if (!hash) return;
+
+            const aba = document.querySelector('#abasPerfil [data-bs-target="' + hash + '"]');
+
+            if (aba) {
+                window.bootstrap.Tab.getOrCreateInstance(aba).show();
+            }
+        }
+
+        // Depois de salvar, o servidor redireciona para /perfil/profissional#galeria (por exemplo): abre essa aba.
+        ativar(window.location.hash);
+
+        window.addEventListener('hashchange', () => ativar(window.location.hash));
+
+        // Ao trocar de aba, a URL passa a apontar para ela (recarregar a página mantém a aba).
+        abas.forEach((aba) => aba.addEventListener('shown.bs.tab', () => {
+            history.replaceState(null, '', aba.dataset.bsTarget);
+        }));
+
+    })();
+
 })();

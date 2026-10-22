@@ -2,12 +2,18 @@
 
 /**
  * Bloco "Excluir conta" (profissional e contratante).
- * Recebe: $tipoConta ('PROFISSIONAL' ou 'COMUM').
+ * Recebe: $tipoConta ('PROFISSIONAL' ou 'COMUM') e, opcionalmente, $parte:
+ *   'card'  => só o cartão com o botão (usado dentro de uma aba)
+ *   'modal' => só a janela de confirmação (precisa ficar fora das abas)
+ *   (omitido) => os dois
  */
 
 $ehProfissional = ($tipoConta ?? '') === 'PROFISSIONAL';
+$parte          = $parte ?? 'ambos';
 
 ?>
+
+<?php if ($parte !== 'modal'): ?>
 
 <section class="ap-card" id="excluir-conta" style="border-color:#f0c9c9;">
 
@@ -28,6 +34,10 @@ $ehProfissional = ($tipoConta ?? '') === 'PROFISSIONAL';
     </button>
 
 </section>
+
+<?php endif; ?>
+
+<?php if ($parte !== 'card'): ?>
 
 <div class="modal fade" id="modalExcluirConta" tabindex="-1" aria-labelledby="tituloExcluirConta" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -68,3 +78,5 @@ $ehProfissional = ($tipoConta ?? '') === 'PROFISSIONAL';
         </div>
     </div>
 </div>
+
+<?php endif; ?>
