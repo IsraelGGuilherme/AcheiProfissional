@@ -45,3 +45,12 @@ $routes->group('admin/categorias', ['filter' => 'auth:ADMIN'], static function (
     $routes->post('editar/(:num)', 'Admin\Categorias::editar/$1');
     $routes->post('excluir/(:num)', 'Admin\Categorias::excluir/$1');
 });
+
+
+// ---------- Denúncias (somente ADMIN) ----------
+$routes->group('admin/denuncias', ['filter' => 'auth:ADMIN'], static function ($routes) {
+    // denúncias agrupadas por usuário denunciado
+    $routes->get('/', 'Admin\Denuncias::index');
+    // denúncias de um único usuário (id 0 = contas já excluídas)
+    $routes->get('usuario/(:num)', 'Admin\Denuncias::usuario/$1');
+});

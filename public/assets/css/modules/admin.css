@@ -75,6 +75,24 @@
 .admin-email{font-size:8px;color:var(--muted)}
 .admin-tag{padding:3px 6px;border-radius:8px;background:#e7f3ff;color:var(--primary);font-size:7px}
 
+/* Denúncias */
+.filter-bar .form-select{height:32px;width:auto;font-size:9px;border:1px solid #ccd9e3;border-radius:7px;box-shadow:none}
+.user-status.st-tipo{background:#eaf5ff;color:var(--primary)}
+.user-status.st-pendente{background:#fff6e5;color:#936414}
+.user-status.st-em_analise{background:#e7f3ff;color:var(--primary)}
+.user-status.st-resolvida{background:#e9f7f0;color:#278e68}
+.user-status.st-rejeitada{background:#eef1f4;color:#657584}
+.resumo-contagem{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:11px}
+.denuncia-item{padding:13px 2px;border-bottom:1px solid #e1e8ed}
+.denuncia-item:last-child{border-bottom:0}
+.denuncia-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.denuncia-motivo{font-size:10px;font-weight:700}
+.denuncia-data{margin-left:auto;font-size:8px;color:var(--muted)}
+.denuncia-desc{font-size:9px;line-height:1.5;margin-top:7px;word-break:break-word}
+.denuncia-desc.vazia{color:var(--muted);font-style:italic}
+.denuncia-avaliacao{margin-top:8px;border:1px solid #e1e8ed;background:#fafcfe;border-radius:8px;padding:8px 10px;font-size:8px;word-break:break-word}
+.denuncia-meta{font-size:8px;color:var(--muted);margin-top:7px}
+
 /* Gráfico */
 .chart{height:135px;display:flex;align-items:flex-end;gap:13px;padding:15px 5px 22px;border-bottom:1px solid #dfe7ec}
 .bar-wrap{height:100%;flex:1;display:flex;align-items:flex-end;justify-content:center;position:relative}

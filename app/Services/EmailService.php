@@ -129,6 +129,30 @@ class EmailService
     }
 
     /**
+     * Avisa o usuário de que a conta foi bloqueada por um administrador, com o motivo informado.
+     */
+    public function enviarBloqueioConta(string $to, string $nome, string $motivo): bool
+    {
+        $motivoHtml = nl2br(esc($motivo));
+
+        $mensagem = "Olá <strong>" . esc($nome ?: 'Usuário') . "</strong>,<br><br>"
+            . "Sua conta na plataforma <strong>AcheiProfissional</strong> foi bloqueada por um administrador."
+            . "<div style='margin: 20px 0; padding: 14px 16px; background-color: #fff0f1; border-left: 4px solid #bd3545; border-radius: 4px; color: #212529;'>"
+            . "<strong>Motivo do bloqueio:</strong><br>{$motivoHtml}"
+            . "</div>"
+            . "Enquanto a conta estiver bloqueada, você não conseguirá acessar a plataforma.";
+
+        $html = $this->gerarHtmlPadrao(
+            'Conta bloqueada',
+            $mensagem,
+            '',
+            'Se você acredita que isso foi um engano, responda a este e-mail para que possamos analisar o seu caso.'
+        );
+
+        return $this->enviar($to, 'Sua conta foi bloqueada - AcheiProfissional', $html);
+    }
+
+    /**
      * Retorna a última mensagem de erro capturada pelo debugger.
      */
     public function getLastError(): ?string

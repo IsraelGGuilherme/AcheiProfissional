@@ -210,6 +210,23 @@
         <section class="card-custom">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
+                    <div class="section-title">Denúncias</div>
+                    <div class="section-subtitle">
+                        Veja as denúncias recebidas agrupadas por usuário denunciado.
+                        <?php if ((int) $qtd_denuncias_pendentes > 0): ?>
+                            <strong><?= number_format((int) $qtd_denuncias_pendentes, 0, ',', '.') ?> pendente(s)</strong> aguardando análise.
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <a href="<?= site_url('admin/denuncias') ?>" class="btn-admin text-decoration-none">
+                    <i class="bi bi-flag me-1"></i>Ver denúncias
+                </a>
+            </div>
+        </section>
+
+        <section class="card-custom">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
                     <div class="section-title">Administradores do sistema</div>
                     <div class="section-subtitle">O gerenciamento de administradores fica em uma tela exclusiva, separada dos usuários da plataforma.</div>
                 </div>
@@ -242,6 +259,7 @@
                     <textarea class="form-control" rows="3" placeholder="Informe o motivo do bloqueio..." name="motivo"></textarea>
 
                     <div class="input-help">Enquanto estiver bloqueado, o usuário não poderá utilizar as funcionalidades que exigem acesso à plataforma.</div>
+                    <div class="input-help"><i class="bi bi-envelope me-1"></i>O usuário receberá um e-mail avisando do bloqueio e informando o motivo.</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-row" data-bs-dismiss="modal">Cancelar</button>

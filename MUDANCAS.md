@@ -51,3 +51,16 @@ Todos os POSTs novos passam pelo filtro `csrf`.
   (a FK é `RESTRICT`) e as fotos saem do disco. Avaliações feitas por um contratante permanecem, sem nome ("Usuário"), e as denúncias permanecem
   sem vínculo com a conta apagada, para o admin.
 - Horários continuam sendo editados na tela original `profissional/horarios` (é preciso informar todos de novo).
+
+## Denúncias no painel admin (somente ADMIN, somente leitura)
+- Rotas (`Config/Routes/Admin.php`, grupo `admin/denuncias` com `auth:ADMIN`):
+  | Rota | O que faz |
+  |---|---|
+  | `GET /admin/denuncias` | Denúncias agrupadas por usuário denunciado (filtro por nome e por status) |
+  | `GET /admin/denuncias/usuario/{id}` | Só as denúncias daquele usuário (`id` 0 = contas já excluídas) |
+- Novos: `Controllers/Admin/Denuncias.php`, `Views/Admin/Denuncias/lista.php`, `Views/Admin/Denuncias/usuario.php`.
+- Alterados: `Models/DenunciasModel.php` (consultas + rótulos de motivo/status), `Controllers/Admin/Admin.php` (conta pendentes),
+  `Views/Admin/main.php` (card "Denúncias", logo abaixo de Categorias), `public/assets/css/modules/admin.css` (bloco "Denúncias").
+- Regra do "denunciado": denúncia de perfil = `profissional_id`; denúncia de avaliação (`avaliacao_id` preenchido) = autor da avaliação.
+  `usuario_id` é sempre o **denunciante**. Denúncias cuja conta denunciada não existe mais aparecem como "Conta excluída".
+- Ainda não há ação de mudar o status (analisar/resolver/rejeitar); a tela só consulta.

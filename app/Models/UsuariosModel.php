@@ -106,6 +106,20 @@ class UsuariosModel extends Model
         return $this->db->query($sql)->getResultObject();
     }
 
+    /** Nome de exibição do usuário (contratante ou profissional); string vazia se não houver. */
+    public function buscarNome(int $id): string
+    {
+        $sql = "
+            SELECT COALESCE(uc.nome, p.nome) AS nome
+            FROM usuarios u
+            LEFT JOIN usuarios_comuns uc ON uc.id = u.id
+            LEFT JOIN profissionais p ON p.id = u.id
+            WHERE u.id = ?
+        ";
+
+        return (string) ($this->db->query($sql, [$id])->getRow()->nome ?? '');
+    }
+
     public function listarStatus()
     {
         return $this->statusUsers;

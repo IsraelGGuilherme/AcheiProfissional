@@ -63,21 +63,36 @@ class Admin extends BaseController
             'qtd_pendentes' => $qtdPendentes,
             'cadastros_por_dia' => $cadastrosPorDia,
             'categorias' => $categoriaModel->findAll(20),
+            'qtd_denuncias_pendentes' => model('DenunciasModel')->where('status', 'PENDENTE')->countAllResults(),
         ]);
+    }
+
+    /**
+     * Tela para onde voltar depois de bloquear/desbloquear (campo `retorno` do formulário).
+     * Só aceita caminhos internos da área admin; qualquer outra coisa cai em /admin.
+     */
+    private function destinoRetorno(): string
+    {
+        $retorno = trim((string) $this->request->getPost('retorno'), '/');
+
+        return preg_match('#^admin(/[A-Za-z0-9_-]+)*$#', $retorno) === 1
+            ? site_url($retorno)
+            : site_url('admin');
     }
 
     public function bloqueio_user()
     {
         $validator = service('validation');
         $data = $this->request->getPost();
+        $destino = $this->destinoRetorno();
 
         $validator->setRules([
             'user_id' => 'required|integer',
-            'motivo' => 'required|min_length[10]'
+            'motivo' => 'required|min_length[10]|max_length[255]'
         ]);
 
         if (!$validator->run($data)) {
-            return redirect()->back()
+            return redirect()->to($destino)
                 ->withInput()
                 ->with('error', $validator->getErrors());
         }
@@ -89,25 +104,32 @@ class Admin extends BaseController
         );
         
         if (!$bloqueado) {
-            return redirect()->to(site_url('admin'))
+            return redirect()->to($destino)
                 ->with('error', 'Não foi possível bloquear este usuário. Verifique se ele existe e se não é administrador.');
         }
 
-        return redirect()->to(site_url('admin'))
-            ->with('success', 'Usuário bloqueado com sucesso.');
+        // O bloqueio vale mesmo que o e-mail falhe; só avisamos o admin.
+        if (!$userService->emailBloqueioEnviado()) {
+            return redirect()->to($destino)
+                ->with('success', 'Usuário bloqueado, mas não foi possível enviar o e-mail de aviso para ele.');
+        }
+
+        return redirect()->to($destino)
+            ->with('success', 'Usuário bloqueado com sucesso. Um e-mail de aviso foi enviado para ele.');
     }
 
 
     public function desbloquear_usuario(int $id)
     {
         $userService = service('usuarioService');
+        $destino = $this->destinoRetorno();
 
         if (!$userService->desbloquear_usuario($id)) {
-            return redirect()->to(site_url('admin'))
+            return redirect()->to($destino)
                 ->with('error', 'Não foi possível desbloquear este usuário. Verifique se ele está bloqueado.');
         }
 
-        return redirect()->to(site_url('admin'))
+        return redirect()->to($destino)
             ->with('success', 'Usuário desbloqueado com sucesso.');
     }
 
