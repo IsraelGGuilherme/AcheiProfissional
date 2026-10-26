@@ -62,13 +62,6 @@
                 <!-- Alerta de Erro em Tempo Real (Cliente) -->
                 <div id="clientErrorAlert" class="alert alert-danger py-2 px-3 mb-4 d-none" role="alert"></div>
 
-                <!-- Mensagens de Erro de Validação (Backend) -->
-                <?php if (function_exists('validation_list_errors') && validation_list_errors()): ?>
-                    <div class="alert alert-danger py-2 px-3 mb-4 font-sm" role="alert">
-                        <?= validation_list_errors() ?>
-                    </div>
-                <?php endif; ?>
-
                 <?php if (session()->getFlashdata('error')): ?>
                     <div class="alert alert-danger py-2 px-3 mb-4 font-sm" role="alert">
                         <?= session()->getFlashdata('error') ?>
