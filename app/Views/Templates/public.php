@@ -7,6 +7,10 @@
 
     <title><?= $this->renderSection('title') ?: 'Achei Profissional' ?></title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="<?= base_url('favicon.svg') ?>">
+    <link rel="alternate icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>">
+
     <!-- CSRF Tokens -->
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <meta name="csrf-header" content="<?= config('Security')->headerName ?? 'X-CSRF-TOKEN' ?>">
